@@ -792,7 +792,7 @@ async function handleFiles(files){
     }catch(e){console.warn(e);setStatus('No se pudo leer '+f.name+': '+(e.message||e.code||'formato no reconocido')+'.',true);await pause(2500)}
   }
   if(imgs.length){
-    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Transcribiendo fotos con Claude… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text));added++}}
+    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Transcribiendo fotos con IA… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text));added++}}
     catch(e){setStatus(errMsg(e),true);await pause(3000)}
   }
   V.status=null;render();
@@ -822,7 +822,7 @@ async function pdfText(f){
     if(!lim)throw new Error('parece escaneado; entra con tu cuenta para que la IA lo lea');
     const maxP=Math.min(doc.numPages,30);const blobs=[];
     for(let p=1;p<=maxP;p++){setStatus('Preparando páginas escaneadas… '+p+' de '+maxP);const pg=await doc.getPage(p);const vp=pg.getViewport({scale:1.6});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;blobs.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.82)))}
-    out=await imagesToText(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas con Claude… '+i+' de '+n));
+    out=await imagesToText(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas con IA… '+i+' de '+n));
     if(doc.numPages>maxP)toast('Solo se han leído las primeras '+maxP+' páginas escaneadas.');
   }
   return out;
@@ -1133,7 +1133,7 @@ function startReview(all){
 function cardModal(c,pre){
   const s=cur();pre=pre||{};
   const topicOpts=s.topics.map(t=>'<option value="'+t.id+'"'+(c&&c.topicId===t.id?' selected':'')+'>'+esc(t.title)+'</option>').join('');
-  openModal('<h3>'+(c?'Editar tarjeta':'Nueva tarjeta')+'</h3>'+(s.topics.length?'<label class="lbl" for="mTopic">Tema<select id="mTopic">'+topicOpts+'</select></label>':'')+'<label class="lbl" for="mQ">Pregunta<textarea id="mQ" rows="3">'+esc(c?c.q:'')+'</textarea></label>'+(pre.a?'<button class="btn small soft" type="button" data-mact="suggest" style="align-self:flex-start">Sugerir pregunta con Claude</button>':'')+'<label class="lbl" for="mA">Respuesta<textarea id="mA" rows="3">'+esc(c?c.a:(pre.a||''))+'</textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="save">Guardar</button></div>',b=>{
+  openModal('<h3>'+(c?'Editar tarjeta':'Nueva tarjeta')+'</h3>'+(s.topics.length?'<label class="lbl" for="mTopic">Tema<select id="mTopic">'+topicOpts+'</select></label>':'')+'<label class="lbl" for="mQ">Pregunta<textarea id="mQ" rows="3">'+esc(c?c.q:'')+'</textarea></label>'+(pre.a?'<button class="btn small soft" type="button" data-mact="suggest" style="align-self:flex-start">Sugerir pregunta con IA</button>':'')+'<label class="lbl" for="mA">Respuesta<textarea id="mA" rows="3">'+esc(c?c.a:(pre.a||''))+'</textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="save">Guardar</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();
       if(a.dataset.mact==='suggest'){a.disabled=true;a.innerHTML='<span class="spin"></span>Pensando…';
         try{const sm=await needSample();const r=await sm.json('Este es un fragmento de los apuntes de un estudiante:\n<fragmento>\n'+$('#mA').value.slice(0,1500)+'\n</fragmento>\nEscribe una pregunta de examen concreta cuya respuesta sea ese fragmento, y una respuesta breve (máximo 30 palabras) basada solo en él. Español de España. Responde solo con JSON: {"pregunta":"","respuesta":""}',{modelTier:'quick'});
@@ -1270,7 +1270,7 @@ async function finishTest(){
   saveSubject(s);markActive(T.qs.length);pushScore(s,{test:score});render();
 }
 function renderResults(s,T){
-  if(T.grading)return '<div class="panel empty"><span class="spin" style="width:28px;height:28px;color:var(--spark)"></span><h2 class="sec">Corrigiendo tu examen</h2><p class="muted">Claude está revisando tus respuestas abiertas con el temario delante.</p></div>';
+  if(T.grading)return '<div class="panel empty"><span class="spin" style="width:28px;height:28px;color:var(--spark)"></span><h2 class="sec">Corrigiendo tu examen</h2><p class="muted">La IA está revisando tus respuestas abiertas con el temario delante.</p></div>';
   const nota=(T.score*10).toFixed(1);const wrong=T.qs.filter((q,i)=>(T.ans[i].score||0)<0.6).length;
   return '<div class="stack qcard"><div class="panel stack" style="align-items:center;text-align:center"><span class="eyebrow">'+esc(T.label)+'</span><div class="count num">'+nota.replace('.',',')+'</div><span class="muted">sobre 10 · '+(T.qs.length-wrong)+' de '+T.qs.length+' bien</span>'+mbar(T.score)+
   '<div class="row" style="justify-content:center">'+(wrong?'<button class="btn" type="button" data-act="failCards">Crear tarjetas con los '+wrong+' fallos</button>':'')+'<button class="btn ghost" type="button" data-act="newTest">Otro test</button></div></div>'+

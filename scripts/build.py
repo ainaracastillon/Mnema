@@ -13,6 +13,10 @@ replacements = [
   ("Leer fotos necesita abrir Mnema desde claude.ai", "Leer fotos con IA necesita entrar con tu cuenta"),
   ("Inicia sesión en Claude para guardarlo en la nube.", "Entra con tu cuenta para guardarlo en la nube."),
   ("Comparte la app Mnema desde el menú <b>Compartir</b> de esta página, con permiso para usarla (no solo ver).", "Pásales el enlace de Mnema y que se creen una cuenta."),
+  ("Claude está revisando tus respuestas", "La IA está revisando tus respuestas"),
+  ("Leyendo páginas escaneadas con Claude", "Leyendo páginas escaneadas con IA"),
+  ("Sugerir pregunta con Claude", "Sugerir pregunta con IA"),
+  ("Transcribiendo fotos con Claude", "Transcribiendo fotos con IA"),
   ("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/", "<script src=\"/mnema-shim.js\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/"),
 ]
 for a, b in replacements:

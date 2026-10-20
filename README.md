@@ -10,7 +10,7 @@ App de estudio que trabaja con **tu propio temario**: subes PDF, Word, texto o f
   - cuentas de usuario (nombre + contraseña, sesión en cookie firmada),
   - guardado de asignaturas, materiales e imágenes en Postgres,
   - grupos de estudio y clasificación,
-  - proxy a la API de Claude con respuesta en streaming.
+  - IA con Grok (xAI) como modelo principal y Cloudflare Workers AI para las tareas rápidas y como respaldo si Grok falla, con respuesta en streaming.
 
 ## Variables de entorno
 
@@ -18,8 +18,11 @@ App de estudio que trabaja con **tu propio temario**: subes PDF, Word, texto o f
 | --- | --- |
 | `DATABASE_URL` | Conexión a Postgres (Neon). Las tablas se crean solas al arrancar. |
 | `SESSION_SECRET` | Firma de las sesiones. |
-| `ANTHROPIC_API_KEY` | Activa las funciones de IA. Sin ella la app funciona, pero sin generar contenido. |
-| `ANTHROPIC_MODEL`, `ANTHROPIC_MODEL_QUICK` | Opcionales. |
+| `XAI_API_KEY` | Clave de Grok (xAI). Modelo principal. |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Cloudflare Workers AI: tareas rápidas y respaldo. El token necesita permiso «Workers AI». |
+| `XAI_MODEL`, `XAI_MODEL_QUICK`, `CLOUDFLARE_MODEL` | Opcionales, para cambiar de modelo. |
+
+Con una sola de las dos IAs configurada la app ya funciona; sin ninguna, todo menos la generación de contenido.
 
 ## En local
 

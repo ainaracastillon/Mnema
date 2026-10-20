@@ -7,10 +7,16 @@ const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
-const MODEL_QUICK = process.env.ANTHROPIC_MODEL_QUICK || 'claude-haiku-5-5';
-const MODEL_COMPLEX = process.env.ANTHROPIC_MODEL_COMPLEX || MODEL;
+/* IA: Grok (xAI) como principal y Cloudflare Workers AI para lo rápido y como respaldo */
+const XAI_API_KEY = process.env.XAI_API_KEY || '';
+const XAI_MODEL = process.env.XAI_MODEL || 'grok-latest';
+const XAI_MODEL_QUICK = process.env.XAI_MODEL_QUICK || 'grok-4.20-0309-non-reasoning';
+const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || '';
+const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || '';
+const CF_MODEL = process.env.CLOUDFLARE_MODEL || '@cf/meta/llama-4-scout-17b-16e-instruct';
+const HAS_GROK = !!XAI_API_KEY;
+const HAS_CF = !!(CF_ACCOUNT_ID && CF_API_TOKEN);
+const AI_READY = HAS_GROK || HAS_CF;
 
 if (!DATABASE_URL) { console.error('Falta DATABASE_URL'); process.exit(1); }
 if (!process.env.SESSION_SECRET) console.warn('Aviso: SESSION_SECRET no está definido; las sesiones se cerrarán al reiniciar.');
@@ -84,9 +90,9 @@ app.post('/api/login', async (req, res) => {
 });
 app.post('/api/logout', (req, res) => { setSession(res, null); res.json({ ok: true }); });
 app.get('/api/me', async (req, res) => {
-  const uid = readToken(cookies(req)[COOKIE]); if (!uid) return res.json({ user: null, ai: !!ANTHROPIC_API_KEY });
+  const uid = readToken(cookies(req)[COOKIE]); if (!uid) return res.json({ user: null, ai: AI_READY });
   const r = await pool.query('SELECT id, username FROM users WHERE id=$1', [uid]);
-  res.json({ user: r.rows[0] || null, ai: !!ANTHROPIC_API_KEY });
+  res.json({ user: r.rows[0] || null, ai: AI_READY });
 });
 app.get('/api/profiles', auth, async (req, res) => {
   const ids = String(req.query.ids || '').split(',').filter(Boolean).slice(0, 200);
@@ -154,53 +160,81 @@ app.get('/a/:id', async (req, res) => {
   res.setHeader('Content-Type', r.rows[0].mime); res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); res.end(r.rows[0].data);
 });
 
-/* IA (Claude) */
+/* IA (Grok + Cloudflare) */
+const SYSTEM_PROMPT = 'Eres el asistente de estudio de la app Mnema. Responde siempre en español de España, con claridad. Sigue exactamente el formato que se te pida.';
+function providersFor(tier, hasImages) {
+  const grok = HAS_GROK ? { name: 'grok', url: 'https://api.x.ai/v1/chat/completions', key: XAI_API_KEY, model: tier === 'quick' ? XAI_MODEL_QUICK : XAI_MODEL, maxTokens: 8000, maxChars: 900000 } : null;
+  const cf = HAS_CF ? { name: 'cloudflare', url: `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`, key: CF_API_TOKEN, model: CF_MODEL, maxTokens: 4096, maxChars: 300000 } : null;
+  const order = (tier === 'quick' && !hasImages) ? [cf, grok] : [grok, cf];
+  return order.filter(Boolean);
+}
+function fitMessages(msgs, maxChars) {
+  const size = () => msgs.reduce((n, m) => n + (typeof m.content === 'string' ? m.content.length : m.content.reduce((k, c) => k + (c.text ? c.text.length : 0), 0)), 0);
+  let over = size() - maxChars;
+  if (over <= 0) return msgs;
+  // recorta el texto más largo por el medio
+  let biggest = null, len = 0;
+  msgs.forEach(m => { const t = typeof m.content === 'string' ? m.content : (m.content.find(c => c.text) || {}).text || ''; if (t.length > len) { len = t.length; biggest = m; } });
+  if (!biggest) return msgs;
+  const cut = (t) => { const keep = Math.max(2000, t.length - over - 200); const half = Math.floor(keep / 2); return t.slice(0, half) + '\n\n[…]\n\n' + t.slice(t.length - half); };
+  if (typeof biggest.content === 'string') biggest.content = cut(biggest.content); else { const c = biggest.content.find(x => x.text); c.text = cut(c.text); }
+  return msgs;
+}
 app.post('/api/ai', auth, async (req, res) => {
-  if (!ANTHROPIC_API_KEY) return res.status(503).json({ code: 'unavailable', message: 'La IA no está configurada en el servidor (falta ANTHROPIC_API_KEY).' });
+  if (!AI_READY) return res.status(503).json({ code: 'unavailable', message: 'La IA no está configurada en el servidor (faltan las claves de Grok o Cloudflare).' });
   if (!limit('ai:' + req.uid, 80, 3600e3)) return res.status(429).json({ code: 'rate_limited', message: 'Has hecho muchas peticiones seguidas.' });
   const { messages, images, tier } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ code: 'bad_request', message: 'Faltan mensajes.' });
-  const total = JSON.stringify(messages).length; if (total > 400_000) return res.status(413).json({ code: 'prompt_too_large', message: 'Demasiado texto.' });
-  const msgs = []; for (const m of messages.slice(-30)) { const role = m.role === 'assistant' ? 'assistant' : 'user'; const content = String(m.content || '…'); if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content[0].text += '\n\n' + content; else msgs.push({ role, content: [{ type: 'text', text: content }] }); }
-  if (msgs[0].role !== 'user') msgs.unshift({ role: 'user', content: [{ type: 'text', text: '…' }] });
-  if (Array.isArray(images) && images.length) {
-    const last = msgs[msgs.length - 1];
-    const blocks = images.slice(0, 4).filter(i => i && /^image\/(png|jpeg|webp|gif)$/.test(i.media_type) && typeof i.data === 'string').map(i => ({ type: 'image', source: { type: 'base64', media_type: i.media_type, data: i.data } }));
-    last.content = blocks.concat(last.content);
+  if (JSON.stringify(messages).length > 400_000) return res.status(413).json({ code: 'prompt_too_large', message: 'Demasiado texto.' });
+  const base = [];
+  for (const m of messages.slice(-30)) {
+    const role = m.role === 'assistant' ? 'assistant' : 'user'; const content = String(m.content || '…');
+    if (base.length && base[base.length - 1].role === role) base[base.length - 1].content += '\n\n' + content; else base.push({ role, content });
   }
-  const model = tier === 'quick' ? MODEL_QUICK : tier === 'complex' ? MODEL_COMPLEX : MODEL;
+  if (base[0].role !== 'user') base.unshift({ role: 'user', content: '…' });
+  const imgs = Array.isArray(images) ? images.slice(0, 4).filter(i => i && /^image\/(png|jpeg|webp|gif)$/.test(i.media_type) && typeof i.data === 'string') : [];
+  const providers = providersFor(tier, imgs.length > 0);
   const ctrl = new AbortController(); req.on('close', () => ctrl.abort());
-  let upstream;
-  try {
-    upstream = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', signal: ctrl.signal,
-      headers: { 'content-type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model, max_tokens: 8000, stream: true, messages: msgs })
-    });
-  } catch (e) { return res.status(502).json({ code: 'unavailable', message: 'No se pudo contactar con Claude.' }); }
-  if (!upstream.ok) {
-    const txt = await upstream.text().catch(() => '');
-    console.error('Anthropic', upstream.status, txt.slice(0, 500));
-    const code = upstream.status === 429 ? 'rate_limited' : upstream.status === 413 ? 'prompt_too_large' : 'unavailable';
-    return res.status(upstream.status === 429 ? 429 : 502).json({ code, message: 'Claude devolvió un error (' + upstream.status + ').' });
-  }
-  res.setHeader('Content-Type', 'text/plain; charset=utf-8'); res.setHeader('Cache-Control', 'no-cache'); res.setHeader('X-Accel-Buffering', 'no');
-  const reader = upstream.body.getReader(); const dec = new TextDecoder(); let buf = ''; let stop = '';
-  try {
-    for (;;) {
-      const { done, value } = await reader.read(); if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let i; while ((i = buf.indexOf('\n')) >= 0) {
-        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
-        if (!line.startsWith('data:')) continue;
-        let ev; try { ev = JSON.parse(line.slice(5)); } catch { continue; }
-        if (ev.type === 'content_block_delta' && ev.delta && ev.delta.type === 'text_delta') res.write(ev.delta.text);
-        else if (ev.type === 'message_delta' && ev.delta && ev.delta.stop_reason) stop = ev.delta.stop_reason;
-      }
+  let lastErr = null;
+  for (const p of providers) {
+    let msgs = base.map(m => ({ role: m.role, content: m.content }));
+    msgs = fitMessages(msgs, p.maxChars);
+    if (imgs.length) {
+      const last = msgs[msgs.length - 1];
+      last.content = [{ type: 'text', text: last.content }].concat(imgs.map(i => ({ type: 'image_url', image_url: { url: `data:${i.media_type};base64,${i.data}` } })));
     }
-  } catch (e) { /* cliente cerró */ }
-  if (stop === 'max_tokens') res.write('\u0000TRUNCATED');
-  res.end();
+    let upstream;
+    try {
+      upstream = await fetch(p.url, {
+        method: 'POST', signal: ctrl.signal,
+        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + p.key },
+        body: JSON.stringify({ model: p.model, stream: true, max_tokens: p.maxTokens, temperature: 0.4, messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(msgs) })
+      });
+    } catch (e) { if (ctrl.signal.aborted) return res.end(); lastErr = { status: 502, text: String(e && e.message) }; console.error(p.name, 'fetch', lastErr.text); continue; }
+    if (!upstream.ok) { const txt = await upstream.text().catch(() => ''); lastErr = { status: upstream.status, text: txt.slice(0, 500) }; console.error(p.name, upstream.status, lastErr.text); continue; }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8'); res.setHeader('Cache-Control', 'no-cache'); res.setHeader('X-Accel-Buffering', 'no'); res.setHeader('X-Mnema-Provider', p.name);
+    const reader = upstream.body.getReader(); const dec = new TextDecoder(); let buf = ''; let finish = '';
+    try {
+      outer: for (;;) {
+        const { done, value } = await reader.read(); if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i; while ((i = buf.indexOf('\n')) >= 0) {
+          const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+          if (!line.startsWith('data:')) continue;
+          const data = line.slice(5).trim(); if (data === '[DONE]') break outer;
+          let ev; try { ev = JSON.parse(data); } catch { continue; }
+          const ch = ev.choices && ev.choices[0]; if (!ch) { if (typeof ev.response === 'string') res.write(ev.response); continue; }
+          const t = ch.delta && typeof ch.delta.content === 'string' ? ch.delta.content : ''; if (t) res.write(t);
+          if (ch.finish_reason) finish = ch.finish_reason;
+        }
+      }
+    } catch (e) { /* cliente cerró */ }
+    if (finish === 'length') res.write('\u0000TRUNCATED');
+    return res.end();
+  }
+  const st = lastErr && lastErr.status;
+  const code = st === 429 ? 'rate_limited' : st === 413 ? 'prompt_too_large' : 'unavailable';
+  res.status(st === 429 ? 429 : 502).json({ code, message: 'La IA devolvió un error' + (st ? ' (' + st + ')' : '') + '. Prueba de nuevo en un momento.' });
 });
 
 /* estáticos */
