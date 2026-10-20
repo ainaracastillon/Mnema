@@ -7,16 +7,16 @@ const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
-/* IA: Grok (xAI) como principal y Cloudflare Workers AI para lo rápido y como respaldo */
-const XAI_API_KEY = process.env.XAI_API_KEY || '';
-const XAI_MODEL = process.env.XAI_MODEL || 'grok-latest';
-const XAI_MODEL_QUICK = process.env.XAI_MODEL_QUICK || 'grok-4.20-0309-non-reasoning';
+/* IA: Groq como principal (texto) y Cloudflare Workers AI para imágenes y como respaldo */
+const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+const GROQ_MODEL_QUICK = process.env.GROQ_MODEL_QUICK || 'llama-3.1-8b-instant';
 const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || '';
 const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || '';
 const CF_MODEL = process.env.CLOUDFLARE_MODEL || '@cf/meta/llama-4-scout-17b-16e-instruct';
-const HAS_GROK = !!XAI_API_KEY;
+const HAS_GROQ = !!GROQ_API_KEY;
 const HAS_CF = !!(CF_ACCOUNT_ID && CF_API_TOKEN);
-const AI_READY = HAS_GROK || HAS_CF;
+const AI_READY = HAS_GROQ || HAS_CF;
 
 if (!DATABASE_URL) { console.error('Falta DATABASE_URL'); process.exit(1); }
 if (!process.env.SESSION_SECRET) console.warn('Aviso: SESSION_SECRET no está definido; las sesiones se cerrarán al reiniciar.');
@@ -160,12 +160,13 @@ app.get('/a/:id', async (req, res) => {
   res.setHeader('Content-Type', r.rows[0].mime); res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); res.end(r.rows[0].data);
 });
 
-/* IA (Grok + Cloudflare) */
+/* IA (Groq + Cloudflare) */
 const SYSTEM_PROMPT = 'Eres el asistente de estudio de la app Mnema. Responde siempre en español de España, con claridad. Sigue exactamente el formato que se te pida.';
 function providersFor(tier, hasImages) {
-  const grok = HAS_GROK ? { name: 'grok', url: 'https://api.x.ai/v1/chat/completions', key: XAI_API_KEY, model: tier === 'quick' ? XAI_MODEL_QUICK : XAI_MODEL, maxTokens: 8000, maxChars: 900000 } : null;
+  const groq = HAS_GROQ ? { name: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: GROQ_API_KEY, model: tier === 'quick' ? GROQ_MODEL_QUICK : GROQ_MODEL, maxTokens: 8000, maxChars: 380000 } : null;
   const cf = HAS_CF ? { name: 'cloudflare', url: `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`, key: CF_API_TOKEN, model: CF_MODEL, maxTokens: 4096, maxChars: 300000 } : null;
-  const order = (tier === 'quick' && !hasImages) ? [cf, grok] : [grok, cf];
+  // Los modelos de Groq no leen imágenes: las fotos van a Cloudflare (Llama 4 Scout, con visión)
+  const order = hasImages ? [cf] : [groq, cf];
   return order.filter(Boolean);
 }
 function fitMessages(msgs, maxChars) {
@@ -181,7 +182,7 @@ function fitMessages(msgs, maxChars) {
   return msgs;
 }
 app.post('/api/ai', auth, async (req, res) => {
-  if (!AI_READY) return res.status(503).json({ code: 'unavailable', message: 'La IA no está configurada en el servidor (faltan las claves de Grok o Cloudflare).' });
+  if (!AI_READY) return res.status(503).json({ code: 'unavailable', message: 'La IA no está configurada en el servidor (faltan las claves de Groq o Cloudflare).' });
   if (!limit('ai:' + req.uid, 80, 3600e3)) return res.status(429).json({ code: 'rate_limited', message: 'Has hecho muchas peticiones seguidas.' });
   const { messages, images, tier } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ code: 'bad_request', message: 'Faltan mensajes.' });
