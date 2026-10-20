@@ -26,11 +26,15 @@ for a, b in replacements:
     head_part = head_part.replace(a, b); body_part = body_part.replace(a, b)
 head_part = head_part.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', '')
 reset = ('<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
-         'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>')
+         'body{margin:0}img{max-width:100%}[hidden]{display:none!important}'
+         '.booting body>header.top,.booting body>main{visibility:hidden}</style>'
+         '<script>document.documentElement.classList.add("booting");setTimeout(function(){document.documentElement.classList.remove("booting")},4000)</script>')
 page = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
         '<meta name="description" content="Mnema: sube tu temario y estudia con resúmenes, mapas mentales, pódcast, tarjetas, tests corregidos y tutor.">\n'
         '<meta name="theme-color" content="#1F2C86">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n'
-        '<link rel="manifest" href="/manifest.webmanifest">\n' + reset + '\n' + head_part + '</head>\n<body>\n' + body_part + '\n</body>\n</html>\n')
+        '<link rel="manifest" href="/manifest.webmanifest">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n'
+        '<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="mobile-web-app-capable" content="yes">\n'
+        '<meta name="apple-mobile-web-app-title" content="Mnema">\n<meta name="apple-mobile-web-app-status-bar-style" content="default">\n' + reset + '\n' + head_part + '</head>\n<body>\n' + body_part + '\n</body>\n</html>\n')
 (root / 'public' / 'index.html').write_text(page, encoding='utf-8')
 print('public/index.html generado')

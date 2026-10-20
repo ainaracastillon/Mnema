@@ -33,6 +33,14 @@ async function migrate() {
     `CREATE TABLE IF NOT EXISTS assets (id text PRIMARY KEY, user_id text NOT NULL REFERENCES users(id) ON DELETE CASCADE, mime text NOT NULL, data bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`
   ];
   for (const q of sql) await pool.query(q);
+  const extra = [
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS email text`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name text`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar text`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower ON users (lower(email)) WHERE email IS NOT NULL`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower ON users (lower(username))`
+  ];
+  for (const q of extra) { try { await pool.query(q); } catch (e) { console.warn('Migración:', e.message); } }
 }
 
 /* ---------- sesiones ---------- */
@@ -68,37 +76,76 @@ app.disable('x-powered-by');
 app.set('trust proxy', 1);
 app.use((req, res, next) => { res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Referrer-Policy', 'same-origin'); next(); });
 app.use('/api', express.json({ limit: '30mb' }));
+/* errores de rutas async → manejador de errores */
+for (const m of ['get', 'post', 'put', 'patch', 'delete']) {
+  const orig = app[m].bind(app);
+  app[m] = (p, ...hs) => orig(p, ...hs.map(h => (typeof h === 'function' && h.length < 4) ? (req, res, next) => { try { const r = h(req, res, next); if (r && typeof r.catch === 'function') r.catch(next); } catch (e) { next(e); } } : h));
+}
 
 app.get('/healthz', (req, res) => res.send('ok'));
 
 /* cuentas */
+const USER_RE = /^[\p{L}\p{N}_.\-]{3,30}$/u;
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+const publicUser = (u) => u && ({ id: u.id, username: u.username, email: u.email || '', displayName: u.display_name || '', avatarUrl: u.avatar || '' });
+async function loadUser(id) { const r = await pool.query('SELECT id, username, email, display_name, avatar FROM users WHERE id=$1', [id]); return r.rows[0] || null; }
+function dupMsg(e) { const c = String(e.constraint || e.detail || ''); return /email/.test(c) ? 'Ese correo ya está registrado.' : 'Ese nombre de usuario ya está en uso.'; }
+
 app.post('/api/register', async (req, res) => {
   const username = String(req.body.username || '').trim(); const password = String(req.body.password || '');
-  if (!/^[\p{L}\p{N}_.\- ]{3,30}$/u.test(username)) return res.status(400).json({ error: 'El nombre debe tener entre 3 y 30 letras o números.' });
+  const email = String(req.body.email || '').trim().toLowerCase(); const displayName = String(req.body.displayName || '').trim().slice(0, 60);
+  if (!USER_RE.test(username)) return res.status(400).json({ error: 'El nombre de usuario debe tener entre 3 y 30 letras, números, puntos, guiones o guiones bajos, sin espacios.' });
+  if (email && !EMAIL_RE.test(email)) return res.status(400).json({ error: 'El correo no parece válido.' });
   if (password.length < 6) return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
   if (!limit('reg:' + req.ip, 10, 3600e3)) return res.status(429).json({ error: 'Demasiados intentos. Prueba más tarde.' });
   const id = newId();
-  try { await pool.query('INSERT INTO users (id, username, pass) VALUES ($1,$2,$3)', [id, username, hashPass(password)]); }
-  catch (e) { if (e.code === '23505') return res.status(409).json({ error: 'Ese nombre ya está en uso.' }); throw e; }
-  setSession(res, id); res.json({ id, username });
+  try { await pool.query('INSERT INTO users (id, username, pass, email, display_name) VALUES ($1,$2,$3,$4,$5)', [id, username, hashPass(password), email || null, displayName || null]); }
+  catch (e) { if (e.code === '23505') return res.status(409).json({ error: dupMsg(e) }); throw e; }
+  setSession(res, id); res.json(publicUser(await loadUser(id)));
 });
 app.post('/api/login', async (req, res) => {
-  const username = String(req.body.username || '').trim(); const password = String(req.body.password || '');
+  const login = String(req.body.username || '').trim(); const password = String(req.body.password || '');
   if (!limit('login:' + req.ip, 20, 600e3)) return res.status(429).json({ error: 'Demasiados intentos. Espera unos minutos.' });
-  const r = await pool.query('SELECT id, username, pass FROM users WHERE lower(username)=lower($1)', [username]);
-  if (!r.rows[0] || !checkPass(password, r.rows[0].pass)) return res.status(401).json({ error: 'Nombre o contraseña incorrectos.' });
-  setSession(res, r.rows[0].id); res.json({ id: r.rows[0].id, username: r.rows[0].username });
+  const r = await pool.query('SELECT id, pass FROM users WHERE lower(username)=lower($1) OR lower(email)=lower($1) LIMIT 1', [login]);
+  if (!r.rows[0] || !checkPass(password, r.rows[0].pass)) return res.status(401).json({ error: 'Usuario, correo o contraseña incorrectos.' });
+  setSession(res, r.rows[0].id); res.json(publicUser(await loadUser(r.rows[0].id)));
 });
 app.post('/api/logout', (req, res) => { setSession(res, null); res.json({ ok: true }); });
 app.get('/api/me', async (req, res) => {
   const uid = readToken(cookies(req)[COOKIE]); if (!uid) return res.json({ user: null, ai: AI_READY });
-  const r = await pool.query('SELECT id, username FROM users WHERE id=$1', [uid]);
-  res.json({ user: r.rows[0] || null, ai: AI_READY });
+  res.json({ user: publicUser(await loadUser(uid)), ai: AI_READY });
+});
+app.patch('/api/account', auth, async (req, res) => {
+  const b = req.body || {}; const sets = []; const vals = [];
+  if (b.username !== undefined) { const v = String(b.username).trim(); if (!USER_RE.test(v)) return res.status(400).json({ error: 'El nombre de usuario debe tener entre 3 y 30 letras, números, puntos, guiones o guiones bajos, sin espacios.' }); vals.push(v); sets.push('username=$' + vals.length); }
+  if (b.email !== undefined) { const v = String(b.email).trim().toLowerCase(); if (v && !EMAIL_RE.test(v)) return res.status(400).json({ error: 'El correo no parece válido.' }); vals.push(v || null); sets.push('email=$' + vals.length); }
+  if (b.displayName !== undefined) { const v = String(b.displayName).trim().slice(0, 60); vals.push(v || null); sets.push('display_name=$' + vals.length); }
+  if (b.avatar !== undefined) { const v = String(b.avatar || ''); if (v && !/^\/a\/[A-Za-z0-9_\-]{8,40}$/.test(v)) return res.status(400).json({ error: 'Foto no válida.' }); vals.push(v || null); sets.push('avatar=$' + vals.length); }
+  if (!sets.length) return res.json(publicUser(await loadUser(req.uid)));
+  vals.push(req.uid);
+  try { await pool.query('UPDATE users SET ' + sets.join(', ') + ' WHERE id=$' + vals.length, vals); }
+  catch (e) { if (e.code === '23505') return res.status(409).json({ error: dupMsg(e) }); throw e; }
+  res.json(publicUser(await loadUser(req.uid)));
+});
+app.post('/api/account/password', auth, async (req, res) => {
+  const cur = String(req.body.current || ''); const next = String(req.body.password || '');
+  if (!limit('pw:' + req.uid, 10, 600e3)) return res.status(429).json({ error: 'Demasiados intentos. Espera unos minutos.' });
+  if (next.length < 6) return res.status(400).json({ error: 'La contraseña nueva debe tener al menos 6 caracteres.' });
+  const r = await pool.query('SELECT pass FROM users WHERE id=$1', [req.uid]);
+  if (!r.rows[0] || !checkPass(cur, r.rows[0].pass)) return res.status(401).json({ error: 'La contraseña actual no es correcta.' });
+  await pool.query('UPDATE users SET pass=$1 WHERE id=$2', [hashPass(next), req.uid]);
+  res.json({ ok: true });
+});
+app.post('/api/account/delete', auth, async (req, res) => {
+  const r = await pool.query('SELECT pass FROM users WHERE id=$1', [req.uid]);
+  if (!r.rows[0] || !checkPass(String(req.body.password || ''), r.rows[0].pass)) return res.status(401).json({ error: 'La contraseña no es correcta.' });
+  await pool.query('DELETE FROM users WHERE id=$1', [req.uid]);
+  setSession(res, null); res.json({ ok: true });
 });
 app.get('/api/profiles', auth, async (req, res) => {
   const ids = String(req.query.ids || '').split(',').filter(Boolean).slice(0, 200);
-  const r = ids.length ? await pool.query('SELECT id, username FROM users WHERE id = ANY($1)', [ids]) : { rows: [] };
-  const out = {}; r.rows.forEach(u => { out[u.id] = { id: u.id, name: u.username }; }); res.json(out);
+  const r = ids.length ? await pool.query('SELECT id, username, display_name, avatar FROM users WHERE id = ANY($1)', [ids]) : { rows: [] };
+  const out = {}; r.rows.forEach(u => { out[u.id] = { id: u.id, name: u.display_name || u.username, username: u.username, avatarUrl: u.avatar || '' }; }); res.json(out);
 });
 
 /* documentos privados */
@@ -240,9 +287,10 @@ app.post('/api/ai', auth, async (req, res) => {
 });
 
 /* estáticos */
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/sw.js', (req, res) => { res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Service-Worker-Allowed', '/'); res.sendFile(path.join(__dirname, 'public', 'sw.js')); });
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h', setHeaders: (res, file) => { if (/\.(html|webmanifest)$/.test(file)) res.setHeader('Cache-Control', 'no-cache'); } }));
+app.get('*', (req, res) => { res.setHeader('Cache-Control', 'no-cache'); res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 
-app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: 'Error del servidor' }); });
+app.use((err, req, res, next) => { console.error(err); if (res.headersSent) return res.end(); res.status(err.status || 500).json({ error: err.status === 413 ? 'Archivo demasiado grande.' : 'Error del servidor. Inténtalo de nuevo.' }); });
 
 migrate().then(() => app.listen(PORT, () => console.log('Mnema escuchando en ' + PORT))).catch(e => { console.error('No se pudo preparar la base de datos', e); process.exit(1); });

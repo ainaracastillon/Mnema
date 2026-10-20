@@ -1,11 +1,25 @@
 {
+  "id": "/",
   "name": "Mnema",
   "short_name": "Mnema",
   "description": "Estudia con tu propio temario: resúmenes, mapas mentales, pódcast, tarjetas, tests y tutor.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
   "background_color": "#F4F6FC",
   "theme_color": "#1F2C86",
   "lang": "es",
-  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Repasar tarjetas", "url": "/?tab=tarjetas", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Hacer un test", "url": "/?tab=tests", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
 }
