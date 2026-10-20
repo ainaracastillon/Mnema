@@ -11,6 +11,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toSt
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 const GROQ_MODEL_QUICK = process.env.GROQ_MODEL_QUICK || 'llama-3.1-8b-instant';
+const GROQ_VISION_MODEL = process.env.GROQ_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
 const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || '';
 const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || '';
 const CF_MODEL = process.env.CLOUDFLARE_MODEL || '@cf/meta/llama-4-scout-17b-16e-instruct';
@@ -163,10 +164,10 @@ app.get('/a/:id', async (req, res) => {
 /* IA (Groq + Cloudflare) */
 const SYSTEM_PROMPT = 'Eres el asistente de estudio de la app Mnema. Responde siempre en español de España, con claridad. Sigue exactamente el formato que se te pida.';
 function providersFor(tier, hasImages) {
-  const groq = HAS_GROQ ? { name: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: GROQ_API_KEY, model: tier === 'quick' ? GROQ_MODEL_QUICK : GROQ_MODEL, maxTokens: 8000, maxChars: 380000 } : null;
+  const groq = HAS_GROQ ? { name: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: GROQ_API_KEY, model: hasImages ? GROQ_VISION_MODEL : tier === 'quick' ? GROQ_MODEL_QUICK : GROQ_MODEL, maxTokens: 8000, maxChars: 380000 } : null;
   const cf = HAS_CF ? { name: 'cloudflare', url: `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`, key: CF_API_TOKEN, model: CF_MODEL, maxTokens: 4096, maxChars: 300000 } : null;
   // Los modelos de Groq no leen imágenes: las fotos van a Cloudflare (Llama 4 Scout, con visión)
-  const order = hasImages ? [cf] : [groq, cf];
+  const order = [groq, cf];
   return order.filter(Boolean);
 }
 function fitMessages(msgs, maxChars) {
