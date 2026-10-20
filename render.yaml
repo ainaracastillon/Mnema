@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: mnema
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm ci --omit=dev || npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ANTHROPIC_API_KEY
+        sync: false

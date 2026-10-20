@@ -1,0 +1,11 @@
+{
+  "name": "Mnema",
+  "short_name": "Mnema",
+  "description": "Estudia con tu propio temario: resúmenes, mapas mentales, pódcast, tarjetas, tests y tutor.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F6FC",
+  "theme_color": "#1F2C86",
+  "lang": "es",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
