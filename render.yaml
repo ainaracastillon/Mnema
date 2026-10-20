@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mnema
+    name: mnema-study
     runtime: node
     region: frankfurt
     plan: free

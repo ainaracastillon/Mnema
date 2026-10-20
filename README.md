@@ -32,3 +32,5 @@ node --env-file=.env server.js
 ## Despliegue en Render
 
 El archivo `render.yaml` describe el servicio. Build: `npm install`, start: `npm start`, comprobación de salud en `/healthz`.
+
+En producción: https://mnema-study.onrender.com
