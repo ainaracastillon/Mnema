@@ -532,6 +532,16 @@ h3{font-size:17px}
 .reload-btn.busy svg{animation:sp .8s linear infinite}
 .reload-btn:disabled{cursor:default;opacity:.8}
 @media (prefers-reduced-motion: reduce){.reload-btn.busy svg{animation-duration:2.4s}}
+
+/* Estructura vacía */
+.struct-empty{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:24px;align-items:center;background:var(--surface);border:1px dashed var(--line);border-radius:22px;padding:24px}
+@media (max-width:700px){.struct-empty{grid-template-columns:minmax(0,1fr);padding:18px}}
+.struct-demo{display:flex;flex-direction:column;gap:8px;align-items:center}
+.sd-subj{background:var(--btn-bg);color:var(--btn-ink);border-radius:12px;padding:8px 14px;font-weight:700;font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sd-row{display:flex;gap:10px}
+.sd-block{background:var(--surface-2);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:100px}
+.sd-block b{font-size:13px}
+.sd-block span{font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--ink-2)}
 </style>
 
 <div class="shell">
@@ -575,6 +585,7 @@ h3{font-size:17px}
 </div>
 <input type="file" id="fileIn" multiple accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
 <input type="file" id="replaceIn" accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
+<input type="file" id="scopedIn" multiple accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
 <div id="modal" class="modal" hidden><div class="box" id="modalBox" role="dialog" aria-modal="true"></div></div>
 <div id="toast" class="toast" role="status" hidden></div>
 
@@ -790,8 +801,15 @@ function chunksOf(text,size=2200){
   if(buf)parts.push(buf);return parts;
 }
 function contextFor(subj,topic,cap=140000){
-  const mats=materialsOf(subj.id);
+  const mats=subj.__mats||materialsOf(subj.id);
   if(!mats.length)return subj.topics.map(t=>'## '+t.title+'\n'+(t.summary||'')+'\n'+subj.cards.filter(c=>c.topicId===t.id&&c.type!=='img').map(c=>'- '+c.q+' → '+c.a).join('\n')).join('\n\n').slice(0,cap);
+  if(topic&&topic.id){
+    const own=mats.filter(m=>m.topicId===topic.id),blk=mats.filter(m=>topic.blockId&&m.blockId===topic.blockId&&!m.topicId);
+    if(own.length||blk.length){const first=own.concat(blk).map(m=>'### '+m.name+'\n'+m.text).join('\n\n');
+      if(first.length>=cap*0.5)return first.slice(0,cap);
+      const rest=mats.filter(m=>!own.includes(m)&&!blk.includes(m)&&!m.topicId);
+      return (first+(rest.length?'\n\n'+contextFor(Object.assign({},subj,{__mats:rest}),Object.assign({},topic,{id:null}),cap-first.length):'')).slice(0,cap)}
+  }
   let full=mats.map(m=>'### '+m.name+'\n'+m.text).join('\n\n');
   if(full.length<=cap||!topic)return full.slice(0,cap);
   const words=new Set(norm([topic.title].concat(topic.keyTerms||[]).join(' ')).split(/[^a-z0-9ñ]+/).filter(w=>w.length>3));
@@ -993,7 +1011,7 @@ function renderTemario(s){
   const groups=groupMats(mats);
   const matsHtml=mats.length?'<div class="panel" id="matsPanel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3>Archivos del temario</h3><span class="faint num" style="font-size:13px">'+groups.length+' archivo'+(groups.length===1?'':'s')+' · ~'+Math.max(1,Math.round(total/2400))+' págs.</span></div>'+
     groups.map(g=>{const hl=g.parts.reduce((n,m)=>n+(m.hl||[]).length,0);const len=g.parts.reduce((n,m)=>n+m.text.length,0);const open=g.parts.some(m=>m.id===V.readMat);
-      return '<div class="mat" style="flex-wrap:wrap"><span class="chip">'+esc(kindOf(g.base))+'</span><span class="n" title="'+esc(g.base)+'" style="min-width:120px">'+esc(g.base)+'</span><span class="faint num" style="font-size:13px">'+Math.max(1,Math.round(len/2400))+' p.</span>'+(hl?'<span class="chip spark">'+hl+' subrayados</span>':'')+
+      return '<div class="mat" style="flex-wrap:wrap"><span class="chip">'+esc(kindOf(g.base))+'</span><span class="n" title="'+esc(g.base)+'" style="min-width:120px">'+esc(g.base)+(matTag(s,g.parts[0])?' <span class="chip spark" style="margin-left:6px">'+esc(matTag(s,g.parts[0]))+'</span>':'')+'</span><span class="faint num" style="font-size:13px">'+Math.max(1,Math.round(len/2400))+' p.</span>'+(hl?'<span class="chip spark">'+hl+' subrayados</span>':'')+
       '<div class="row" style="gap:6px"><button class="btn small '+(open?'':'soft')+'" type="button" data-act="readMat" data-id="'+esc(open?V.readMat:g.parts[0].id)+'">'+(open?'Cerrar':'Leer y subrayar')+'</button>'+
       (s.example?'':'<button class="btn small ghost" type="button" data-act="renameGroup" data-g="'+esc(g.key)+'">Renombrar</button><button class="btn small ghost" type="button" data-act="replaceGroup" data-g="'+esc(g.key)+'">Reemplazar</button><button class="btn small danger" type="button" data-act="delGroup" data-g="'+esc(g.key)+'" aria-label="Quitar '+esc(g.base)+'">Quitar</button>')+'</div></div>'}).join('')+
     (total>140000?'<p class="faint" style="font-size:13px;margin:10px 0 0">Tu temario es largo: para cada tema Mnema elige automáticamente las partes que le corresponden.</p>':'')+'</div>':'';
@@ -1001,9 +1019,9 @@ function renderTemario(s){
   const upload=s.example?'':'<div class="drop" id="drop"><h3>Sube tu temario</h3><p class="muted" style="margin:0">PDF, Word (.docx), texto o fotos de tus apuntes. Arrástralos aquí o elige los archivos.</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="pickFiles">Elegir archivos</button><button class="btn ghost" type="button" data-act="pasteText">Pegar texto</button></div></div>';
   const statusHtml=st?'<div class="status'+(st.err?' err':'')+'" role="status">'+(st.err?'':'<span class="spin"></span>')+esc(st.msg)+'</div>':'';
   let topicsHtml='';
-  if(mats.length||s.topics.length){
+  if(mats.length||s.topics.length||!s.example){
     const analyzeBtn=!mats.length?'':busyBtn('analyze',s.topics.length?'Volver a analizar':'Analizar temario','Analizando…','analyze',s.topics.length?'ghost':'');
-    topicsHtml='<div class="stack"><div class="row" style="justify-content:space-between"><div><h2 class="sec">Bloques y temas</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(s.topics.length?(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s'):'Mnema leerá tu temario y lo organizará en bloques y temas con sus conceptos clave.')+'</p></div><div class="row">'+(s.example?'':'<button class="btn small ghost" type="button" data-act="newBlock">+ Bloque</button><button class="btn small ghost" type="button" data-act="newTopic">+ Tema</button>'+analyzeBtn)+'</div></div>'+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero. Puedes subir también tu propio temario.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
+    topicsHtml='<div class="stack"><div class="row" style="justify-content:space-between"><div><h2 class="sec">Bloques y temas</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(s.topics.length||blocksOf(s).length?(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s'):'La asignatura se divide en bloques, y cada bloque en temas.')+'</p></div><div class="row">'+(s.example?'':'<button class="btn small ghost" type="button" data-act="newBlock">+ Bloque</button><button class="btn small ghost" type="button" data-act="newTopic">+ Tema</button>'+analyzeBtn)+'</div></div>'+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero. Puedes subir también tu propio temario.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
     renderBlocks(s)+'</div>';
   }
   const rm=V.readMat&&mats.find(m=>m.id===V.readMat);
@@ -1052,7 +1070,7 @@ function topicHtml(s,t,i){
     busyBtn('cards_'+t.id,'Crear tarjetas'+(nCards?' ('+nCards+')':''),'Creando…','genCards" data-id="'+t.id,'ghost')+
     '<button class="btn small ghost" type="button" data-act="testTopic" data-id="'+t.id+'">Test</button>'+
     '<button class="btn small ghost" type="button" data-act="tutorTopic" data-id="'+t.id+'">Preguntar al tutor</button>'+
-    (s.example?'':'<button class="btn small ghost" type="button" data-act="editTopic" data-id="'+t.id+'">Editar</button><button class="btn small danger" type="button" data-act="delTopic" data-id="'+t.id+'" aria-label="Eliminar tema">Eliminar</button>')+'</div>'+body+'</div>';
+    (s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">Subir archivos'+(tmats(s,t.id)?' ('+tmats(s,t.id)+')':'')+'</button><button class="btn small ghost" type="button" data-act="editTopic" data-id="'+t.id+'">Editar</button><button class="btn small danger" type="button" data-act="delTopic" data-id="'+t.id+'" aria-label="Eliminar tema">Eliminar</button>')+'</div>'+body+'</div>';
 }
 
 /* lector con subrayado */
@@ -1114,6 +1132,7 @@ async function handleFiles(files,opts){
   opts=opts||{};
   const s=cur();if(!s||s.example){toast('Crea primero tu asignatura.');return}
   const oldGroup=opts.replace?groupParts(s,opts.replace):null;
+  const tag=oldGroup&&oldGroup[0]?{topicId:oldGroup[0].topicId||null,blockId:oldGroup[0].blockId||null}:{topicId:opts.topicId||null,blockId:opts.blockId||null};
   files=Array.from(files||[]);if(!files.length)return;
   const imgs=files.filter(f=>f.type.startsWith('image/'));
   const docs=files.filter(f=>!f.type.startsWith('image/'));
@@ -1124,16 +1143,17 @@ async function handleFiles(files,opts){
       let text=await extractFile(f);
       text=cleanText(text);
       if(!text||text.length<30)throw new Error('no se encontró texto en '+f.name);
-      addMaterial(s,f.name,text);added++;
+      addMaterial(s,f.name,text,tag);added++;
     }catch(e){console.warn(e);setStatus('No se pudo leer '+f.name+': '+(e.message||e.code||'formato no reconocido')+'.',true);await pause(2500)}
   }
   if(imgs.length){
-    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Transcribiendo fotos con IA… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text));added++}}
+    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Transcribiendo fotos con IA… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text),tag);added++}}
     catch(e){setStatus(errMsg(e),true);await pause(3000)}
   }
   if(added&&oldGroup&&oldGroup.length){oldGroup.forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id);if(V.readMat===m.id)V.readMat=null});s.materialsChanged=true;saveSubject(s)}
   V.status=null;render();
-  if(added){toast(oldGroup?'Archivo reemplazado.':added===1?'Archivo añadido.':added+' archivos añadidos.');if(!s.topics.length)analyze()}
+  if(added){const where=tag.topicId?(s.topics.find(x=>x.id===tag.topicId)||{}).title:tag.blockId?(blocksOf(s).find(x=>x.id===tag.blockId)||{}).title:'';
+    toast(oldGroup?'Archivo reemplazado.':(added===1?'Archivo añadido':added+' archivos añadidos')+(where?' a «'+where+'».':'.'));if(!s.topics.length&&!tag.topicId&&!tag.blockId)analyze()}
 }
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 function setStatus(msg,err){V.status={msg,err};if(V.tab==='temario')render()}
@@ -1175,11 +1195,11 @@ async function imagesToText(blobs,onProg){
   }
   return out;
 }
-function addMaterial(s,name,text){
+function addMaterial(s,name,text,tag){tag=tag||{};
   const MAX=100000;const parts=[];for(let i=0;i<text.length;i+=MAX)parts.push(text.slice(i,i+MAX));
   const gid=rid();
-  parts.forEach((p,i)=>{const m={id:rid(),subjectId:s.id,group:gid,base:name,part:i+1,parts:parts.length,name:parts.length>1?name+' ('+(i+1)+'/'+parts.length+')':name,text:p,createdAt:Date.now()+i};S.materials[m.id]=m;Store.save('m',m)});
-  if(s.topics.length){s.materialsChanged=true;saveSubject(s)}
+  parts.forEach((p,i)=>{const m={id:rid(),subjectId:s.id,group:gid,topicId:tag.topicId||null,blockId:tag.blockId||null,base:name,part:i+1,parts:parts.length,name:parts.length>1?name+' ('+(i+1)+'/'+parts.length+')':name,text:p,createdAt:Date.now()+i};S.materials[m.id]=m;Store.save('m',m)});
+  if(s.topics.length&&!tag.topicId&&!tag.blockId){s.materialsChanged=true;saveSubject(s)}
 }
 function groupMats(mats){
   const map=new Map();
@@ -2270,6 +2290,8 @@ Object.assign(ACT,{
 });
 /* ---------- Bloques: asignatura › bloques › temas ---------- */
 function blocksOf(s){s.blocks=s.blocks||[];return s.blocks}
+function tmats(s,tid){return groupMats(materialsOf(s.id).filter(m=>m.topicId===tid)).length}
+function matTag(s,m){if(m.topicId){const t=s.topics.find(x=>x.id===m.topicId);return t?'Tema: '+t.title:''}if(m.blockId){const b=blocksOf(s).find(x=>x.id===m.blockId);return b?'Bloque: '+b.title:''}return ''}
 function blockOf(s,t){return t&&t.blockId?blocksOf(s).find(b=>b.id===t.blockId)||null:null}
 function topicsIn(s,bid){return s.topics.filter(t=>bid?t.blockId===bid:!blockOf(s,t))}
 function blockMastery(s,bid){const ts=topicsIn(s,bid);return ts.length?ts.reduce((n,t)=>n+topicMastery(s,t.id),0)/ts.length:0}
@@ -2282,6 +2304,7 @@ function topicOptions(s,sel){
 function blockSelect(s,sel,id){return '<label class="lbl" for="'+(id||'mBlock')+'">Bloque<select id="'+(id||'mBlock')+'"><option value="">Sin bloque</option>'+blocksOf(s).map(b=>'<option value="'+b.id+'"'+(sel===b.id?' selected':'')+'>'+esc(b.title)+'</option>').join('')+'</select></label>'}
 function renderBlocks(s){
   const bs=blocksOf(s);let n=0;const collapsed=S.meta.bcollapsed||{};
+  if(!bs.length&&!s.topics.length)return '<div class="struct-empty"><div class="struct-demo" aria-hidden="true"><div class="sd-subj">'+esc(s.name)+'</div><div class="sd-row"><div class="sd-block"><b>Bloque I</b><span>Tema 1</span><span>Tema 2</span></div><div class="sd-block"><b>Bloque II</b><span>Tema 3</span><span>Tema 4</span></div></div></div><div class="stack" style="gap:12px"><h3>Organiza tu asignatura</h3><p class="muted" style="margin:0">Divide la asignatura en <b>bloques</b> y cada bloque en <b>temas</b>. Hay dos formas:</p><ol class="man-steps" style="--c:var(--spark)"><li><span><b>A mano:</b> crea los bloques y sus temas, y sube los archivos de cada uno.</span></li><li><span><b>Automática:</b> sube todo el temario arriba y pulsa <b>Analizar temario</b>. Mnema lo organiza por ti.</span></li></ol><div class="row"><button class="btn" type="button" data-act="newBlock">+ Crear el primer bloque</button><button class="btn ghost" type="button" data-act="newTopic">+ Tema sin bloque</button></div></div></div>';
   const topicList=ts=>ts.map(t=>topicHtml(s,t,n++)).join('');
   if(!bs.length)return topicList(s.topics)+(s.example||!s.topics.length?'':'<div class="banner"><span class="chip spark">Consejo</span><span class="t">Agrupa tus temas en bloques (por ejemplo, «Bloque I · Historia antigua») para estudiar y examinarte por partes.</span><button class="btn small" type="button" data-act="newBlock">+ Crear bloque</button></div>');
   const blockHtml=(b,ts,idx)=>{
@@ -2290,7 +2313,7 @@ function renderBlocks(s){
       '<span class="bnum">'+(b?'B'+(idx+1):'—')+'</span><span class="btitle"><b>'+esc(b?b.title:'Sin bloque')+'</b><small>'+ts.length+' tema'+(ts.length===1?'':'s')+(b&&ts.length?' · dominio '+pct(m)+' %':'')+'</small></span>'+
       '<svg class="chev'+(closed?'':' open')+'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>'+
       (b&&ts.length?'<span class="bbar">'+mbar(m)+'</span>':'')+
-      (b&&!s.example?'<div class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="newTopic" data-bid="'+b.id+'">+ Tema</button><button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button><button class="btn small ghost" type="button" data-act="renameBlock" data-bid="'+b.id+'">Renombrar</button><button class="btn small danger" type="button" data-act="delBlock" data-bid="'+b.id+'">Eliminar</button></div>':(b?'<button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button>':''))+'</div>';
+      (b&&!s.example?'<div class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="newTopic" data-bid="'+b.id+'">+ Tema</button><button class="btn small ghost" type="button" data-act="uploadTo" data-bid="'+b.id+'">Subir archivos</button><button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button><button class="btn small ghost" type="button" data-act="renameBlock" data-bid="'+b.id+'">Renombrar</button><button class="btn small danger" type="button" data-act="delBlock" data-bid="'+b.id+'">Eliminar</button></div>':(b?'<button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button>':''))+'</div>';
     if(closed){n+=ts.length;return '<section class="block">'+head+'</section>'}
     return '<section class="block">'+head+'<div class="stack" style="gap:12px">'+(ts.length?topicList(ts):'<p class="muted" style="margin:0;padding:4px 2px">Este bloque aún no tiene temas. Añade uno o mueve un tema existente desde «Editar».</p>')+'</div></section>';
   };
@@ -2329,6 +2352,7 @@ Object.assign(ACT,{
         if(all){const ids=new Set(ts.map(t=>t.id));s.topics=s.topics.filter(t=>!ids.has(t.id));s.cards=s.cards.filter(c=>!ids.has(c.topicId))}else ts.forEach(t=>{t.blockId=null});
         s.blocks=blocksOf(s).filter(x=>x.id!==bl.id);sortTopics(s);saveSubject(s);render();toast('Bloque eliminado.')}closeModal()}})},
   toggleBlock:b=>{const s=cur();S.meta.bcollapsed=S.meta.bcollapsed||{};const k=s.id+':'+b.dataset.bid;if(S.meta.bcollapsed[k])delete S.meta.bcollapsed[k];else S.meta.bcollapsed[k]=true;saveMeta();render()},
+  uploadTo:b=>{V.uploadTarget={topicId:b.dataset.tid||null,blockId:b.dataset.bid||null};$('#scopedIn').click()},
   newTopic:b=>{const s=cur();if(s&&!s.example)topicModal(s,null,b&&b.dataset.bid)},
   editTopic:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(t)topicModal(s,t)},
   testBlock:b=>{const s=cur();const sc=scopeOf(s);sc.mode='block';sc.block=b.dataset.bid;V.testCfg.mode='practica';V.test=null;V.tab='tests';render();window.scrollTo(0,0)}
@@ -2347,6 +2371,7 @@ document.addEventListener('change',e=>{
   if((el.id==='subjSel'||el.id==='subjSel2')&&el.value==='__new'){render();ACT.newSubject();return}
   if(el.id==='subjSel'||el.id==='subjSel2'){S.meta.activeId=el.value;V.review=null;V.test=null;V.openTopic=null;saveMeta();render();return}
   if(el.id==='fileIn'){handleFiles(el.files);el.value='';return}
+  if(el.id==='scopedIn'){const t=V.uploadTarget||{};V.uploadTarget=null;handleFiles(el.files,t);el.value='';return}
   if(el.id==='replaceIn'){const g=V.replaceGroup;V.replaceGroup=null;handleFiles(el.files,{replace:g});el.value='';return}
   if(!s)return;
   if(el.id==='examDate'){if(s.example){EXAMPLE.examDate=el.value||EXAMPLE.examDate}else{s.examDate=el.value||null;saveSubject(s)}render()}
