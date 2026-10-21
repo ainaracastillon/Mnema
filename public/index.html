@@ -82,7 +82,7 @@ h3{font-size:16px;font-weight:700}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
 .panel.flat{background:var(--surface-2);border-color:transparent}
 
-select,input[type=text],input[type=date],input[type=number],textarea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:40px;max-width:100%}
+select,input[type=text],input[type=date],input[type=number],input[type=email],input[type=password],input[type=search],textarea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:40px;max-width:100%}
 textarea{width:100%;resize:vertical;min-height:90px;line-height:1.5}
 label.lbl{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2);font-weight:500}
 .btn{appearance:none;border:1px solid transparent;background:var(--btn-bg);color:var(--btn-ink);padding:9px 16px;border-radius:10px;font-weight:500;cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:8px;justify-content:center;text-decoration:none;white-space:nowrap}
@@ -1919,6 +1919,10 @@ const ACT={
 };
 function saveOpen(){const T=V.test;if(!T)return;const el=$('#openAns');if(el&&!el.disabled){T.ans[T.i]=Object.assign(T.ans[T.i]||{},{text:el.value})}}
 /* ---------- Mi cuenta ---------- */
+V.draft={};
+function dv(id,def){return Object.prototype.hasOwnProperty.call(V.draft,id)?V.draft[id]:def}
+document.addEventListener('input',e=>{const id=e.target&&e.target.id;if(['acName','acUser','acEmail','ctSubj','ctBody'].includes(id))V.draft[id]=e.target.value});
+document.addEventListener('change',e=>{const id=e.target&&e.target.id;if(id==='ctKind')V.draft[id]=e.target.value});
 const ACC=()=>window.mnemaAccount||null;
 function initials(u){const n=(u&&(u.displayName||u.username))||'';const p=n.trim().split(/\s+/);return((p[0]||'')[0]||'')+((p[1]||'')[0]||'')||'·'}
 function avatarInner(u){
@@ -2011,9 +2015,9 @@ function renderCuenta(s){
   const head='<div class="acct-head"><span class="avatar big" aria-hidden="true">'+avatarInner(u)+'</span><div style="min-width:0"><h2 class="sec" style="font-size:24px;overflow-wrap:anywhere">'+esc(u?(u.displayName||u.username):'Mi cuenta')+'</h2>'+(u?'<span class="muted" style="font-size:14px;overflow-wrap:anywhere">@'+esc(u.username)+(u.email?' · '+esc(u.email):'')+'</span>':'')+'</div></div>';
   const perfil=!A?'':'<section class="panel stack" id="ac-perfil"><h3>Perfil</h3>'+
     '<div class="row"><input type="file" id="acPhoto" accept="image/*" class="sr"><label for="acPhoto" class="btn small soft">'+(u&&u.avatarUrl?'Cambiar foto':'Subir foto')+'</label>'+(u&&u.avatarUrl?'<button class="btn small ghost" type="button" data-act="removePhoto">Quitar foto</button>':'')+(V.busy.photo?'<span class="faint" style="font-size:13px"><span class="spin"></span> Subiendo…</span>':'')+'</div>'+
-    '<div class="form2"><label class="lbl" for="acName">Nombre de perfil<input type="text" id="acName" maxlength="60" value="'+esc(u&&u.displayName||'')+'" placeholder="Cómo te verán tus compañeros"></label>'+
-    '<label class="lbl" for="acUser">Nombre de usuario<input type="text" id="acUser" maxlength="30" autocomplete="username" value="'+esc(u&&u.username||'')+'"></label>'+
-    '<label class="lbl" for="acEmail">Correo<input type="email" id="acEmail" autocomplete="email" value="'+esc(u&&u.email||'')+'" placeholder="tu@correo.com"></label></div>'+
+    '<div class="form2"><label class="lbl" for="acName">Nombre de perfil<input type="text" id="acName" maxlength="60" value="'+esc(dv('acName',u&&u.displayName||''))+'" placeholder="Cómo te verán tus compañeros"></label>'+
+    '<label class="lbl" for="acUser">Nombre de usuario<input type="text" id="acUser" maxlength="30" autocomplete="username" value="'+esc(dv('acUser',u&&u.username||''))+'"></label>'+
+    '<label class="lbl" for="acEmail">Correo<input type="email" id="acEmail" autocomplete="email" value="'+esc(dv('acEmail',u&&u.email||''))+'" placeholder="tu@correo.com"></label></div>'+
     '<div class="row">'+busyBtn('profile','Guardar perfil','Guardando…','saveProfile')+'</div></section>'+
     '<section class="panel stack" id="ac-seg"><h3>Contraseña</h3><div class="form2"><label class="lbl" for="acCur">Contraseña actual<input type="password" id="acCur" autocomplete="current-password"></label><label class="lbl" for="acNew">Nueva contraseña<input type="password" id="acNew" autocomplete="new-password" minlength="6"></label><label class="lbl" for="acNew2">Repite la nueva<input type="password" id="acNew2" autocomplete="new-password" minlength="6"></label></div><div class="row">'+busyBtn('pw','Cambiar contraseña','Cambiando…','changePw')+'</div></section>';
   const asig='<section class="panel stack" id="ac-asig"><div><h3>Asignaturas y carpetas</h3><p class="muted" style="margin:4px 0 0">Crea, edita, agrupa en carpetas y elimina tus asignaturas desde su página.</p></div><div class="row"><button class="btn" type="button" data-act="go" data-tab="temario" data-list="1">Ir a Asignaturas</button></div><label class="check" for="showExample" style="align-self:flex-start"><input type="checkbox" id="showExample"'+(S.meta.hideExample?'':' checked')+'>Mostrar la asignatura de ejemplo</label></section>';
@@ -2029,7 +2033,7 @@ function renderCuenta(s){
   const inst=!IN?'':'<section class="panel stack" id="ac-app"><h3>Instalar la app</h3>'+(IN.installed()?'<p class="muted" style="margin:0">Ya estás usando Mnema como aplicación en este dispositivo.</p>':'<p class="muted" style="margin:0">Instala Mnema en este '+(IN.platform==='desktop'?'ordenador':'móvil')+' para abrirla desde su icono, en su propia ventana, como cualquier otra aplicación.</p>'+(IN.available()?'<div class="row"><button class="btn" type="button" data-act="installApp">Instalar Mnema</button></div>':'<p style="margin:0">'+esc(IN.howTo())+'</p>'))+'</section>';
   const manual=renderManual();
   const sesion=!A?'':'<section class="panel stack danger-zone" id="ac-sesion"><h3>Sesión</h3><div class="row"><button class="btn ghost" type="button" data-act="logout">Cerrar sesión</button><button class="btn danger" type="button" data-act="delAccount">Eliminar mi cuenta</button></div><p class="faint" style="margin:0;font-size:13px">Eliminar la cuenta borra para siempre tu temario, tarjetas, progreso y los grupos que hayas creado.</p></section>';
-  const ayuda=!A?'':'<section class="panel stack" id="ac-ayuda"><div><h3>Ayuda y contacto</h3><p class="muted" style="margin:4px 0 0">¿Algo no funciona, tienes una duda o una idea para mejorar Mnema? Escríbenos y te responderemos a tu correo.</p></div><div class="form2"><label class="lbl" for="ctKind">Tipo<select id="ctKind"><option value="consulta">Duda o consulta</option><option value="sugerencia">Sugerencia</option><option value="error">Algo no funciona</option></select></label><label class="lbl" for="ctSubj">Asunto<input type="text" id="ctSubj" maxlength="140"></label></div><label class="lbl" for="ctBody">Mensaje<textarea id="ctBody" rows="5" maxlength="5000"></textarea></label><div class="row">'+busyBtn('contact','Enviar mensaje','Enviando…','sendContact')+'</div></section>';
+  const ayuda=!A?'':'<section class="panel stack" id="ac-ayuda"><div><h3>Ayuda y contacto</h3><p class="muted" style="margin:4px 0 0">¿Algo no funciona, tienes una duda o una idea para mejorar Mnema? Escríbenos y te responderemos a tu correo.</p></div><div class="form2"><label class="lbl" for="ctKind">Tipo<select id="ctKind">'+[['consulta','Duda o consulta'],['sugerencia','Sugerencia'],['error','Algo no funciona']].map(([v,l])=>'<option value="'+v+'"'+(dv('ctKind','consulta')===v?' selected':'')+'>'+l+'</option>').join('')+'</select></label><label class="lbl" for="ctSubj">Asunto<input type="text" id="ctSubj" maxlength="140" value="'+esc(dv('ctSubj',''))+'"></label></div><label class="lbl" for="ctBody">Mensaje<textarea id="ctBody" rows="5" maxlength="5000">'+esc(dv('ctBody',''))+'</textarea></label><div class="row">'+busyBtn('contact','Enviar mensaje','Enviando…','sendContact')+'</div></section>';
   const SEC={perfil,seguridad:'',asignaturas:asig,preferencias:pref,app:inst,manual,ayuda,sesion};
   let body=SEC[V.acctTab];
   if(V.acctTab==='seguridad'){const m=perfil.indexOf('<section class="panel stack" id="ac-seg">');body=m>=0?perfil.slice(m):''}
@@ -2040,7 +2044,10 @@ async function accountDo(key,fn,ok){
   await withBusy(key,async()=>{try{await fn();if(ok)toast(ok)}catch(e){toast((e&&(e.message||e.error))||'No se pudo guardar.')}});
 }
 Object.assign(ACT,{
-  saveProfile:()=>accountDo('profile',async()=>{V.me=await ACC().update({displayName:$('#acName').value,username:$('#acUser').value,email:$('#acEmail').value})},'Perfil guardado.'),
+  saveProfile:()=>{const f={displayName:$('#acName').value.trim(),username:$('#acUser').value.trim(),email:$('#acEmail').value.trim()};
+    if(!f.email){toast('Escribe tu correo.');$('#acEmail').focus();return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)){toast('El correo no parece válido. Revisa que tenga @ y un dominio, por ejemplo nombre@gmail.com.');$('#acEmail').focus();return}
+    accountDo('profile',async()=>{V.me=await ACC().update(f);V.draft={}},'Perfil guardado.')},
   removePhoto:()=>accountDo('photo',async()=>{V.me=await ACC().update({avatar:''})},'Foto quitada.'),
   changePw:()=>{const a=$('#acCur').value,b=$('#acNew').value,c=$('#acNew2').value;
     if(b.length<6){toast('La contraseña nueva debe tener al menos 6 caracteres.');return}
@@ -2053,8 +2060,8 @@ Object.assign(ACT,{
   reloadApp:()=>reloadApp(),
   acctTab:b=>{V.acctTab=b.dataset.v;if(b.dataset.v==='manual')V.manSec=null;render()},
   manOpen:b=>{V.manSec=b.dataset.v||null;render();const m=$('#main');m&&window.scrollTo(0,0)},
-  sendContact:()=>{const body=$('#ctBody').value.trim();if(body.length<5){toast('Escribe tu mensaje.');return}
-    accountDo('contact',async()=>{await ACC().contact($('#ctKind').value,$('#ctSubj').value,body);$('#ctBody').value='';$('#ctSubj').value=''},'Mensaje enviado. ¡Gracias!')},
+  sendContact:()=>{const body=$('#ctBody').value.trim();const kind=$('#ctKind').value;const subj=$('#ctSubj').value;if(body.length<5){toast('Escribe tu mensaje.');return}
+    accountDo('contact',async()=>{await ACC().contact(kind,subj,body);['ctKind','ctSubj','ctBody'].forEach(k=>delete V.draft[k])},'Mensaje enviado. ¡Gracias!')},
   installApp:async()=>{const IN=window.mnemaInstall;if(!IN)return;const ok=await IN.prompt();if(ok)toast('Mnema se ha instalado.');render()}
 });
 function onAccountChange(el){
