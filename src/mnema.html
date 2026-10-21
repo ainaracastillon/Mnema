@@ -2802,7 +2802,7 @@ function b64(buf){let s='';const a=new Uint8Array(buf);for(let i=0;i<a.length;i+
 function serifFont(pm){
   if(pm.vfs&&pm.vfs['LiberationSerif-Regular.ttf'])return Promise.resolve('Serif');
   if(!serifP){const vs=['Regular','Bold','Italic','BoldItalic'];
-    serifP=Promise.all(vs.map(v=>fetch('/fonts/LiberationSerif-'+v+'.ttf').then(r=>{if(!r.ok)throw new Error('font');return r.arrayBuffer()}))).then(bufs=>{
+    serifP=Promise.all(vs.map(v=>fetch('/fonts/LiberationSerif-'+v+'.ttf').then(r=>{if(!r.ok)throw new Error('font');return r.arrayBuffer()}).then(buf=>{const h=new Uint8Array(buf,0,4);if(!(h[0]===0&&h[1]===1&&h[2]===0&&h[3]===0))throw new Error('font');return buf}))).then(bufs=>{
       vs.forEach((v,i)=>{pm.vfs['LiberationSerif-'+v+'.ttf']=b64(bufs[i])});
       pm.fonts=Object.assign({Roboto:{normal:'Roboto-Regular.ttf',bold:'Roboto-Medium.ttf',italics:'Roboto-Italic.ttf',bolditalics:'Roboto-MediumItalic.ttf'}},pm.fonts||{},{Serif:{normal:'LiberationSerif-Regular.ttf',bold:'LiberationSerif-Bold.ttf',italics:'LiberationSerif-Italic.ttf',bolditalics:'LiberationSerif-BoldItalic.ttf'}});
       return 'Serif'}).catch(()=>{serifP=null;return 'Roboto'})}
