@@ -24,8 +24,10 @@ if (!process.env.SESSION_SECRET) console.warn('Aviso: SESSION_SECRET no está de
 
 const pool = new Pool({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false }, max: 5 });
 
-// Superadministradora: la única que puede nombrar o quitar administradores y eliminar cuentas.
-const SUPERADMIN_USERNAME = (process.env.SUPERADMIN_USERNAME || 'ainaracastillon').trim().toLowerCase();
+// Superadministradora: solo Ainara. Se reconoce por el identificador fijo de su cuenta, no por el nombre,
+// así que nadie más puede llegar a serlo aunque se registre con un nombre parecido.
+// Es la única que puede nombrar o quitar administradores y eliminar cuentas.
+const SUPERADMIN_ID = (process.env.SUPERADMIN_ID || 'gQOHNACJwGC9Au-v').trim();
 
 async function migrate() {
   const sql = [
@@ -54,9 +56,9 @@ async function migrate() {
     `CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower ON users (lower(username))`
   ];
   for (const q of extra) { try { await pool.query(q); } catch (e) { console.warn('Migración:', e.message); } }
-  // Solo hay una superadministradora: la del nombre de usuario configurado.
-  await pool.query("UPDATE users SET role='admin' WHERE role='superadmin' AND lower(username)<>$1", [SUPERADMIN_USERNAME]);
-  await pool.query("UPDATE users SET role='superadmin', suspended_at=NULL, suspend_reason=NULL, delete_suggested_at=NULL WHERE lower(username)=$1", [SUPERADMIN_USERNAME]);
+  // Solo hay una superadministradora: la cuenta con el identificador configurado.
+  await pool.query("UPDATE users SET role='user' WHERE role='superadmin' AND id<>$1", [SUPERADMIN_ID]);
+  await pool.query("UPDATE users SET role='superadmin', suspended_at=NULL, suspend_reason=NULL, delete_suggested_at=NULL WHERE id=$1", [SUPERADMIN_ID]);
 }
 
 /* ---------- sesiones ---------- */
@@ -125,8 +127,9 @@ app.get('/healthz', (req, res) => res.send('ok'));
 /* ---------- cuentas ---------- */
 const USER_RE = /^[\p{L}\p{N}_.\-]{3,30}$/u;
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
-const isAdmin = (u) => !!u && (u.role === 'admin' || u.role === 'superadmin');
-const publicUser = (u) => u && ({ id: u.id, username: u.username, email: u.email || '', displayName: u.display_name || '', avatarUrl: u.avatar || '', role: u.role || 'user', isAdmin: isAdmin(u), isSuperadmin: u.role === 'superadmin' });
+const isSuper = (u) => !!u && u.id === SUPERADMIN_ID && u.role === 'superadmin';
+const isAdmin = (u) => !!u && (u.role === 'admin' || isSuper(u));
+const publicUser = (u) => u && ({ id: u.id, username: u.username, email: u.email || '', displayName: u.display_name || '', avatarUrl: u.avatar || '', role: isSuper(u) ? 'superadmin' : u.role === 'admin' ? 'admin' : 'user', isAdmin: isAdmin(u), isSuperadmin: isSuper(u) });
 function dupMsg(e) { const c = String(e.constraint || e.detail || ''); return /email/.test(c) ? 'Ese correo ya está registrado.' : 'Ese nombre de usuario ya está en uso.'; }
 const USER_HELP = 'El nombre de usuario debe tener entre 3 y 30 letras, números, puntos, guiones o guiones bajos, sin espacios.';
 
@@ -138,7 +141,7 @@ app.post('/api/register', async (req, res) => {
   if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'El correo no parece válido.' });
   if (password.length < 6) return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
   if (!limit('reg:' + req.ip, 10, 3600e3)) return res.status(429).json({ error: 'Demasiados intentos. Prueba más tarde.' });
-  const id = newId(); const role = username.toLowerCase() === SUPERADMIN_USERNAME ? 'superadmin' : 'user';
+  const id = newId(); const role = 'user';
   try { await pool.query('INSERT INTO users (id, username, pass, email, display_name, role, last_seen_at) VALUES ($1,$2,$3,$4,$5,$6,now())', [id, username, hashPass(password), email, displayName || null, role]); }
   catch (e) { if (e.code === '23505') return res.status(409).json({ error: dupMsg(e) }); throw e; }
   const u = await loadUser(id); setSession(res, u); res.json(publicUser(u));
@@ -163,9 +166,8 @@ app.patch('/api/account', auth, async (req, res) => {
   const b = req.body || {}; const sets = []; const vals = [];
   if (b.username !== undefined) {
     const v = String(b.username).trim();
-    if (req.user.role === 'superadmin' && v.toLowerCase() !== req.user.username.toLowerCase()) return res.status(400).json({ error: 'El nombre de usuario de la superadministradora está fijado y no se puede cambiar.' });
+    if (isSuper(req.user) && v.toLowerCase() !== req.user.username.toLowerCase()) return res.status(400).json({ error: 'El nombre de usuario de la superadministradora está fijado y no se puede cambiar.' });
     if (!USER_RE.test(v)) return res.status(400).json({ error: USER_HELP });
-    if (v.toLowerCase() === SUPERADMIN_USERNAME && req.user.role !== 'superadmin') return res.status(409).json({ error: 'Ese nombre de usuario ya está en uso.' });
     vals.push(v); sets.push('username=$' + vals.length);
   }
   if (b.email !== undefined) { const v = String(b.email).trim().toLowerCase(); if (!v) return res.status(400).json({ error: 'El correo es obligatorio.' }); if (!EMAIL_RE.test(v)) return res.status(400).json({ error: 'El correo no parece válido.' }); vals.push(v); sets.push('email=$' + vals.length); }
@@ -190,7 +192,7 @@ app.post('/api/account/password', auth, async (req, res) => {
   res.json({ ok: true });
 });
 app.post('/api/account/delete', auth, async (req, res) => {
-  if (req.user.role === 'superadmin') return res.status(403).json({ error: 'La cuenta de la superadministradora no se puede eliminar desde la app.' });
+  if (isSuper(req.user)) return res.status(403).json({ error: 'La cuenta de la superadministradora no se puede eliminar desde la app.' });
   const r = await pool.query('SELECT pass FROM users WHERE id=$1', [req.uid]);
   if (!r.rows[0] || !checkPass(String(req.body.password || ''), r.rows[0].pass)) return res.status(401).json({ error: 'La contraseña no es correcta.' });
   await pool.query('DELETE FROM users WHERE id=$1', [req.uid]); forget(req.uid);
@@ -212,7 +214,7 @@ app.post('/api/messages', auth, async (req, res) => {
 
 /* ---------- panel de administración ---------- */
 function requireAdmin(req) { if (!isAdmin(req.user)) throw new HttpError(403, 'Solo para administración.'); return req.user; }
-function requireSuper(req) { if (req.user.role !== 'superadmin') throw new HttpError(403, 'Solo la superadministradora puede hacer esto.'); return req.user; }
+function requireSuper(req) { if (!isSuper(req.user)) throw new HttpError(403, 'Solo la superadministradora puede hacer esto.'); return req.user; }
 const label = (t) => `${t.display_name || t.username} (@${t.username})`;
 async function logAdmin(admin, action, t, detail) {
   await pool.query('INSERT INTO admin_log (admin_id, admin_name, action, target_id, target_label, detail) VALUES ($1,$2,$3,$4,$5,$6)', [admin.id, admin.display_name || admin.username, action, t ? t.id : null, t ? label(t) : '', detail || '']);
@@ -220,8 +222,8 @@ async function logAdmin(admin, action, t, detail) {
 async function targetUser(admin, id) {
   const t = await loadUser(id); if (!t) throw new HttpError(404, 'Esa cuenta ya no existe.');
   if (t.id === admin.id) throw new HttpError(400, 'No puedes hacer esto con tu propia cuenta desde el panel. Usa «Mi cuenta».');
-  if (t.role === 'superadmin') throw new HttpError(403, 'La cuenta de la superadministradora está protegida.');
-  if (t.role === 'admin' && admin.role !== 'superadmin') throw new HttpError(403, 'Solo la superadministradora puede actuar sobre otros administradores.');
+  if (t.id === SUPERADMIN_ID || t.role === 'superadmin') throw new HttpError(403, 'La cuenta de la superadministradora está protegida.');
+  if (t.role === 'admin' && !isSuper(admin)) throw new HttpError(403, 'Solo la superadministradora puede actuar sobre otros administradores.');
   return t;
 }
 const adminRow = (u) => ({ id: u.id, username: u.username, displayName: u.display_name || '', email: u.email || '', avatarUrl: u.avatar || '', role: u.role, createdAt: u.created_at, lastSeenAt: u.last_seen_at, suspendedAt: u.suspended_at, suspendReason: u.suspend_reason || '', deleteSuggestedAt: u.delete_suggested_at, deleteSuggestedBy: u.delete_suggested_by || '', deleteSuggestedReason: u.delete_suggested_reason || '', subjects: Number(u.subjects || 0) });
@@ -305,7 +307,7 @@ app.post('/api/admin/users/:id/suggest-delete', auth, async (req, res) => {
 app.delete('/api/admin/users/:id/suggest-delete', auth, async (req, res) => {
   const admin = requireAdmin(req); const t = await targetUser(admin, req.params.id);
   await pool.query('UPDATE users SET delete_suggested_at=NULL, delete_suggested_by=NULL, delete_suggested_reason=NULL WHERE id=$1', [t.id]);
-  forget(t.id); await logAdmin(admin, admin.role === 'superadmin' ? 'Descartar sugerencia de eliminación' : 'Retirar sugerencia de eliminación', t); res.json({ ok: true });
+  forget(t.id); await logAdmin(admin, isSuper(admin) ? 'Descartar sugerencia de eliminación' : 'Retirar sugerencia de eliminación', t); res.json({ ok: true });
 });
 app.post('/api/admin/users/:id/logout', auth, async (req, res) => {
   const admin = requireAdmin(req); const t = await targetUser(admin, req.params.id);
