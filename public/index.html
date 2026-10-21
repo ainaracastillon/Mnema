@@ -570,6 +570,16 @@ h3{font-size:17px}
 @media (max-width:560px){.nrow{grid-template-columns:36px minmax(0,1fr)}.nrow > .row{grid-column:2}}
 .notes-doc .md{max-width:72ch;font-size:15.5px;line-height:1.65}
 .notes-doc h4{font-size:17px;margin-top:22px}
+
+/* Volver atrás */
+.navrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:-8px}
+.navrow:empty{display:none}
+.backbtn{appearance:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:7px 14px 7px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:14.5px;min-height:40px}
+.backbtn:hover{border-color:var(--spark);color:var(--spark-ink)}
+.navrow .crumb{margin:0}
+.crumb > span:last-child{color:var(--ink-2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40ch}
+.mback{appearance:none;border:0;background:rgba(255,255,255,.14);color:#fff;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;flex-shrink:0;padding:0}
+.mback:not([hidden]) + .side-brand{display:none}
 </style>
 
 <div class="shell">
@@ -594,6 +604,7 @@ h3{font-size:17px}
   </head>
 <body>
 <header class="mtop">
+    <button class="mback" type="button" data-act="goBack" aria-label="Atrás" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
     <div class="side-brand"><svg width="30" height="30" viewBox="0 0 84 84" aria-hidden="true"><polyline points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="14" cy="66" r="7.5" fill="currentColor"/><circle cx="14" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="66" r="7.5" fill="currentColor"/><circle cx="42" cy="50" r="11" fill="#7FA4FF"/></svg><span class="word">mnema</span></div>
     <label for="subjSel2" class="sr">Asignatura</label><select id="subjSel2" class="subj-sel"></select>
     <button class="tab admin-link mini" data-tab="admin" type="button" hidden aria-label="Administración"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></button>
@@ -972,10 +983,42 @@ const PAGE={
 function greeting(){const h=new Date().getHours();const n=V.me&&(V.me.displayName||V.me.username)||'';const first=n.split(/\s+/)[0];return (h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+(first?', '+first:'')}
 function pageHead(s){const f=PAGE[V.tab];if(!f)return '';const [t,sub,eb]=f(s||{name:''});
   const detail=V.tab==='temario'&&V.subjView==='detail'&&s&&s.id;
-  const crumb=detail?'<nav class="crumb" aria-label="Ruta"><button type="button" data-act="backToList">‹ Asignaturas</button>'+(folderOf(s)?'<span aria-hidden="true">/</span><span>'+esc(folderOf(s).name)+'</span>':'')+'</nav>':'';
+  const crumb='<div class="navrow">'+backBtn()+(detail?'<nav class="crumb" aria-label="Ruta"><button type="button" data-act="backToList">Asignaturas</button>'+(folderOf(s)?'<span aria-hidden="true">/</span><span>'+esc(folderOf(s).name)+'</span>':'')+'<span aria-hidden="true">/</span><span>'+esc(s.name)+'</span></nav>':'')+'</div>';
   const acts=detail&&!s.example?'<div class="row"><button class="btn ghost small" type="button" data-act="editSubject" data-sid="'+esc(s.id)+'">Editar asignatura</button><button class="btn ghost small" type="button" data-act="share" data-sid="'+esc(s.id)+'">'+(s.shareCode?'Grupo '+esc(s.shareCode):'Compartir')+'</button></div>':'';
   return crumb+'<header class="phead"'+(detail?' style="--c:'+subjColor(s)+'"':'')+'><div class="'+(detail?'phead-subj':'')+'">'+(detail?'<span class="sicon big" aria-hidden="true">'+esc(subjInitials(s.name))+'</span>':'')+'<div>'+(eb?'<span class="eyebrow">'+esc(eb)+'</span>':'')+'<h1>'+esc(t)+'</h1><p>'+esc(sub)+'</p></div></div>'+acts+'</header>'}
+/* ---------- navegación: volver atrás ---------- */
+const IN_FRAME=(()=>{try{return window.top!==window}catch(e){return true}})();
+V.navStack=[];let navLast=null,navLastPlace=null,ignorePop=0;
+function placeKey(){
+  const isAdm=V.me&&V.me.isAdmin&&window.mnemaAdmin;const tab=V.tab==='admin'&&!isAdm?'hoy':V.tab;const s=cur();
+  const parts=[tab,s&&s.id];
+  if(tab==='temario')parts.push(V.subjView==='detail'&&s?'detail':'list');
+  if(tab==='cuenta')parts.push(V.acctTab||'',V.acctTab==='manual'?(V.manSec||''):'');
+  if(tab==='admin')parts.push(V.adm&&V.adm.tab||'');
+  return parts.join('|');
+}
+function navTrack(){
+  if(V._noNav){navLast=placeKey();navLastPlace=placeSnapshot();return}
+  const k=placeKey();
+  if(navLast!==null&&k!==navLast&&navLastPlace){
+    navLastPlace.y=window.scrollY||0;V.navStack.push(navLastPlace);if(V.navStack.length>60)V.navStack.shift();
+    if(!IN_FRAME){try{history.pushState({mnema:1},'')}catch(e){}}
+  }
+  navLast=k;navLastPlace=placeSnapshot();
+}
+function goBack(fromPop){
+  if(!$('#modal').hidden){closeModal();if(fromPop&&!IN_FRAME){try{history.pushState({mnema:1},'')}catch(e){}}return}
+  const p=V.navStack.pop();
+  if(!p){if(V.tab!=='hoy'){V._noNav=true;V.tab='hoy';render();V._noNav=false;window.scrollTo(0,0)}return}
+  podHalt&&V.pod&&(V.pod=null,podHalt());
+  V._noNav=true;applyRestore(p);V.test=V.test&&V.tab==='tests'?V.test:null;render();V._noNav=false;restoreScroll(p);if(!p.y)window.scrollTo(0,0);
+  if(!fromPop&&!IN_FRAME){ignorePop++;try{history.back()}catch(e){ignorePop--}}
+}
+window.addEventListener('popstate',()=>{if(ignorePop>0){ignorePop--;return}goBack(true)});
+function backBtn(){return V.navStack.length?'<button class="backbtn" type="button" data-act="goBack"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Atrás</button>':''}
 function render(){
+  navTrack();
+  document.querySelectorAll('.mback').forEach(b=>{b.hidden=!V.navStack.length});
   const list=allSubjects();const s=cur();
   const opts=(list.length?list.map(x=>'<option value="'+esc(x.id)+'"'+(s&&x.id===s.id?' selected':'')+'>'+(x.example?'Ejemplo · ':'')+esc(x.name)+'</option>').join(''):'<option value="">Sin asignaturas</option>')+'<option value="__new">＋ Nueva asignatura…</option>';
   ['#subjSel','#subjSel2'].forEach(id=>{const el=$(id);if(el)el.innerHTML=opts});
@@ -2153,6 +2196,7 @@ Object.assign(ACT,{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();a.disabled=true;try{await ACC().remove($('#mPw').value)}catch(err){a.disabled=false;toast(err.message||'No se pudo eliminar.')}}}),
   theme:b=>{applyTheme(b.dataset.v);saveMeta();render()},
   reloadApp:()=>reloadApp(),
+  goBack:()=>goBack(false),
   acctTab:b=>{V.acctTab=b.dataset.v;if(b.dataset.v==='manual')V.manSec=null;render()},
   manOpen:b=>{V.manSec=b.dataset.v||null;render();const m=$('#main');m&&window.scrollTo(0,0)},
   sendContact:()=>{const body=$('#ctBody').value.trim();const kind=$('#ctKind').value;const subj=$('#ctSubj').value;if(body.length<5){toast('Escribe tu mensaje.');return}
@@ -2578,9 +2622,11 @@ function placeSnapshot(){
   return {t:Date.now(),tab:V.tab,subj:s&&s.id,subjView:V.subjView,openTopic:V.openTopic,topicView:V.topicView,readMat:V.readMat,cardView:V.cardView,acctTab:V.acctTab,manSec:V.manSec,manQ:V.manQ,
     adm:V.adm?{tab:V.adm.tab,filter:V.adm.filter,q:V.adm.q,msg:V.adm.msg}:null,scopes:V.scopes||null,testCfg:V.testCfg,tutorMode:V.tutorMode,y:window.scrollY||0};
 }
+function placeSnapshotWithNav(){const p=placeSnapshot();p.nav=V.navStack.slice(-30);return p
+}
 async function reloadApp(){
   document.querySelectorAll('.reload-btn').forEach(b=>{b.disabled=true;b.classList.add('busy')});
-  try{sessionStorage.setItem(RESTORE_KEY,JSON.stringify(placeSnapshot()))}catch(e){}
+  try{sessionStorage.setItem(RESTORE_KEY,JSON.stringify(placeSnapshotWithNav()))}catch(e){}
   try{await Promise.race([Store.flush(),pause(4000)])}catch(e){}
   try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.update().catch(()=>{})))}}catch(e){}
   try{if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}
@@ -2604,10 +2650,12 @@ V.podRate=S.meta.podRate||1;setPomo('foco');
 try{const qt=new URLSearchParams(location.search).get('tab');if(qt==='asignaturas')V.tab='temario';else if(['hoy','temario','tarjetas','tests','tutor','progreso','cuenta'].includes(qt))V.tab=qt}catch(e){}
 document.addEventListener('mnema-install-change',()=>{if(V.tab==='cuenta')render()});
 const RESTORE=readRestore();
+V._noNav=true;
 applyRestore(RESTORE);
+if(RESTORE&&Array.isArray(RESTORE.nav))V.navStack=RESTORE.nav;
 render();
 const meReady=window.mnemaAccount?window.mnemaAccount.get().then(u=>{V.me=u||null}).catch(()=>{}):Promise.resolve();
-Promise.all([Store.init(),meReady]).then(()=>{if(S.meta.theme)applyTheme(S.meta.theme,true);applyRestore(RESTORE);render();restoreScroll(RESTORE)});
+Promise.all([Store.init(),meReady]).then(()=>{if(S.meta.theme)applyTheme(S.meta.theme,true);applyRestore(RESTORE);render();V._noNav=false;restoreScroll(RESTORE)}).catch(()=>{V._noNav=false});
 })();
 </script>
 
