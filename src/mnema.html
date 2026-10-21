@@ -491,6 +491,24 @@ h3{font-size:17px}
 .man-item p{margin:0;color:var(--ink-2);font-size:14.5px}
 .man-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 @media (max-width:560px){.man-hero,.man-art{padding:20px;border-radius:20px}}
+
+/* Bloques dentro de una asignatura */
+.block{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:22px;background:var(--surface-2)}
+.bhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bhead-t{appearance:none;border:0;background:none;font:inherit;color:var(--ink);display:flex;align-items:center;gap:12px;cursor:pointer;padding:2px;text-align:left;flex:1;min-width:200px}
+.bnum{width:40px;height:40px;border-radius:12px;background:var(--btn-bg);color:var(--btn-ink);display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:14px;flex-shrink:0}
+.btitle{display:flex;flex-direction:column;min-width:0}
+.btitle b{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+.btitle small{color:var(--ink-3);font-size:13px}
+.bhead-t .chev{color:var(--ink-3);transition:transform .15s;flex-shrink:0}
+.bhead-t .chev.open{transform:rotate(90deg)}
+.bbar{width:120px;display:flex}
+.bbar .bar{flex:1}
+@media (max-width:640px){.bbar{display:none}.block{padding:12px;border-radius:18px}}
+.block .topic{background:var(--surface)}
+.scgrp{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:var(--surface-2)}
+.bcheck{background:transparent!important;border:0!important;padding:2px 0!important}
+.wrapseg{flex-wrap:wrap}
 </style>
 
 <div class="shell">
@@ -576,14 +594,15 @@ function exampleSubject(){
   const mk=(id,topicId,q,a,src,interval,reps)=>({id,topicId,q,a,src,ease:2.5,interval,reps,lapses:0,due:interval?addDays(due,interval-2):due});
   return {
     id:'ejemplo',example:true,name:'Biología · La célula',examDate:addDays(today(),12),createdAt:Date.now(),
+    blocks:[{id:'eb1',title:'Bloque I · La célula como unidad de vida'},{id:'eb2',title:'Bloque II · Organización celular'}],
     topics:[
-      {id:t1,title:'La teoría celular',keyTerms:['Hooke','Schleiden y Schwann','Virchow','unidad estructural'],read:true,
+      {id:t1,blockId:'eb1',title:'La teoría celular',keyTerms:['Hooke','Schleiden y Schwann','Virchow','unidad estructural'],read:true,
        podcast:[{voz:'A',texto:'Hola, soy Lucía. Hoy repasamos la teoría celular, la base de toda la biología.'},{voz:'B',texto:'Y yo soy Marcos. Lucía, ¿por dónde empezamos?'},{voz:'A',texto:'Por sus tres ideas. Una: todos los seres vivos están formados por una o más células. Dos: la célula es la unidad estructural y funcional. Y tres: toda célula viene de otra célula.'},{voz:'B',texto:'Vale, ¿y quién vio la primera célula?'},{voz:'A',texto:'Robert Hooke, en 1665, mirando una lámina de corcho. Vio celdillas y las llamó células.'},{voz:'B',texto:'Luego llegaron Schleiden y Schwann, en 1838 y 1839, que dijeron que plantas y animales están hechos de células.'},{voz:'A',texto:'Exacto. Y en 1855 Virchow cerró el círculo con la frase en latín omnis cellula e cellula: toda célula procede de otra célula.'},{voz:'B',texto:'Truco para el examen: Hooke pone el nombre, Schleiden y Schwann lo extienden a plantas y animales, y Virchow explica de dónde salen.'},{voz:'A',texto:'Perfecto. Con eso tienes el tema uno. ¡Nos escuchamos en el siguiente!'}],
        summary:`La ==teoría celular== es la base de la biología moderna: explica de qué están hechos los seres vivos y de dónde salen sus células.\n## Postulados\n- Todos los seres vivos están formados por una o más ==células==.\n- La célula es la ==unidad estructural y funcional== de los seres vivos.\n- Toda célula procede de otra célula preexistente.\n## Quién la construyó\n- **Robert Hooke** (1665) observó celdillas en el corcho y las llamó células.\n- **==Schleiden== y ==Schwann==** (1838-1839): plantas y animales están formados por células.\n- **==Virchow==** (1855): "omnis cellula e cellula".\n## Para el examen\n- Saber los tres postulados y asociar cada científico con su aportación y su fecha.`},
-      {id:t2,title:'Célula procariota y eucariota',keyTerms:['nucleoide','ribosomas 70S/80S','pared celular','cloroplastos'],read:false,summary:'',
+      {id:t2,blockId:'eb2',title:'Célula procariota y eucariota',keyTerms:['nucleoide','ribosomas 70S/80S','pared celular','cloroplastos'],read:false,summary:'',
        mindmap:{centro:'Tipos de célula',ramas:[{nombre:'Procariota',hijos:['Sin núcleo: ADN en el nucleoide','ADN circular','1-10 µm','Ribosomas 70S','Ejemplo: bacterias']},{nombre:'Eucariota',hijos:['Núcleo con envoltura','10-100 µm','Orgánulos membranosos','Ribosomas 80S']},{nombre:'Vegetal',hijos:['Pared de celulosa','Cloroplastos','Gran vacuola']},{nombre:'Animal',hijos:['Centriolos','Sin pared celular']}]},
        table:{titulo:'Procariota frente a eucariota',columnas:['Característica','Procariota','Eucariota'],filas:[['Núcleo','No (nucleoide)','Sí, con envoltura nuclear'],['Tamaño','1-10 µm','10-100 µm'],['Orgánulos membranosos','No','Sí'],['Ribosomas','70S','80S'],['Ejemplos','Bacterias','Animales, plantas, hongos, protoctistas']]}},
-      {id:t3,title:'Orgánulos celulares',keyTerms:['mitocondria','ATP','aparato de Golgi','lisosomas'],read:false,summary:''}
+      {id:t3,blockId:'eb2',title:'Orgánulos celulares',keyTerms:['mitocondria','ATP','aparato de Golgi','lisosomas'],read:false,summary:''}
     ],
     cards:[
       mk('c1',t1,'¿Qué tres principios recoge la teoría celular?','Los seres vivos están formados por células; la célula es la unidad estructural y funcional; toda célula procede de otra.','todos los seres vivos están formados por una o más células',6,2),
@@ -745,7 +764,8 @@ function contextFor(subj,topic,cap=140000){
   for(const x of chunks.slice().sort((a,b)=>b.sc-a.sc)){if(len+x.c.length>cap*0.6)break;pick.push(x);len+=x.c.length}
   return pick.sort((a,b)=>a.i-b.i).map(x=>x.c).join('\n\n[…]\n\n');
 }
-function topicLine(subj){return subj.topics.map((t,i)=>(i+1)+'. '+t.title).join('\n')}
+function topicLine(subj){const bs=subj.blocks||[];if(!bs.length)return subj.topics.map((t,i)=>(i+1)+'. '+t.title).join('\n');let n=0;const line=t=>'  '+(++n)+'. '+t.title;
+  return bs.map(b=>b.title+':\n'+subj.topics.filter(t=>t.blockId===b.id).map(line).join('\n')).join('\n')+(subj.topics.some(t=>!bs.some(b=>b.id===t.blockId))?'\nSin bloque:\n'+subj.topics.filter(t=>!bs.some(b=>b.id===t.blockId)).map(line).join('\n'):'')}
 
 /* ---------- lógica de estudio ---------- */
 function cardMastery(c){return c.reps>0?clamp(c.interval/21,0,1):0}
@@ -947,8 +967,8 @@ function renderTemario(s){
   let topicsHtml='';
   if(mats.length||s.topics.length){
     const analyzeBtn=!mats.length?'':busyBtn('analyze',s.topics.length?'Volver a analizar':'Analizar temario','Analizando…','analyze',s.topics.length?'ghost':'');
-    topicsHtml='<div class="stack"><div class="row" style="justify-content:space-between"><div><h2 class="sec">Temas</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(s.topics.length?s.topics.length+' temas detectados en tu temario':'Mnema leerá tu temario y lo dividirá en temas con sus conceptos clave.')+'</p></div>'+(s.example?'':analyzeBtn)+'</div>'+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero. Puedes subir también tu propio temario.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
-    s.topics.map((t,i)=>topicHtml(s,t,i)).join('')+'</div>';
+    topicsHtml='<div class="stack"><div class="row" style="justify-content:space-between"><div><h2 class="sec">Bloques y temas</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(s.topics.length?(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s'):'Mnema leerá tu temario y lo organizará en bloques y temas con sus conceptos clave.')+'</p></div><div class="row">'+(s.example?'':'<button class="btn small ghost" type="button" data-act="newBlock">+ Bloque</button><button class="btn small ghost" type="button" data-act="newTopic">+ Tema</button>'+analyzeBtn)+'</div></div>'+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero. Puedes subir también tu propio temario.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
+    renderBlocks(s)+'</div>';
   }
   const rm=V.readMat&&mats.find(m=>m.id===V.readMat);
   return '<div class="stack">'+exampleBanner(s)+upload+statusHtml+changed+matsHtml+(rm?readerPanel(rm):'')+topicsHtml+'</div>';
@@ -996,7 +1016,7 @@ function topicHtml(s,t,i){
     busyBtn('cards_'+t.id,'Crear tarjetas'+(nCards?' ('+nCards+')':''),'Creando…','genCards" data-id="'+t.id,'ghost')+
     '<button class="btn small ghost" type="button" data-act="testTopic" data-id="'+t.id+'">Test</button>'+
     '<button class="btn small ghost" type="button" data-act="tutorTopic" data-id="'+t.id+'">Preguntar al tutor</button>'+
-    (s.example?'':'<button class="btn small danger" type="button" data-act="delTopic" data-id="'+t.id+'" aria-label="Eliminar tema">Eliminar</button>')+'</div>'+body+'</div>';
+    (s.example?'':'<button class="btn small ghost" type="button" data-act="editTopic" data-id="'+t.id+'">Editar</button><button class="btn small danger" type="button" data-act="delTopic" data-id="'+t.id+'" aria-label="Eliminar tema">Eliminar</button>')+'</div>'+body+'</div>';
 }
 
 /* lector con subrayado */
@@ -1139,14 +1159,23 @@ async function analyze(){
   await withBusy('analyze',async()=>{
     const sm=await needSample();
     const ctx=contextFor(s,null,150000);
-    const r=await sm.json(SYS+'\n\n<temario>\n'+ctx+'\n</temario>\n\nDivide este temario en sus temas o bloques principales, en el orden en que aparecen (entre 3 y 15; si el temario ya numera sus temas, respeta esa división). Responde solo con JSON con esta forma: {"temas":[{"titulo":"Título corto del tema","conceptos":["concepto 1","concepto 2"]}]} con entre 4 y 8 conceptos clave por tema.',{modelTier:'default'});
-    const temas=(r&&r.temas)||[];
-    if(!temas.length)throw{message:'No se encontraron temas en el material.'};
-    const old=s.topics;
-    s.topics=temas.slice(0,15).map(t=>{const prev=old.find(o=>norm(o.title)===norm(t.titulo));return prev?Object.assign(prev,{keyTerms:t.conceptos||prev.keyTerms}):{id:rid(),title:String(t.titulo||'Tema'),keyTerms:(t.conceptos||[]).map(String).slice(0,8),summary:'',read:false}});
+    const r=await sm.json(SYS+'\n\n<temario>\n'+ctx+'\n</temario>\n\nOrganiza este temario en BLOQUES y, dentro de cada bloque, en TEMAS, en el orden en que aparecen. Si el temario ya tiene sus propios bloques, unidades o partes y sus temas numerados, respeta exactamente esa división y sus títulos. Si no los tiene, agrupa los temas en bloques lógicos (entre 1 y 6 bloques; entre 3 y 20 temas en total). Responde solo con JSON con esta forma: {"bloques":[{"titulo":"Título corto del bloque","temas":[{"titulo":"Título corto del tema","conceptos":["concepto 1","concepto 2"]}]}]} con entre 4 y 8 conceptos clave por tema.',{modelTier:'default'});
+    let bloques=(r&&Array.isArray(r.bloques)&&r.bloques)||[];
+    if(!bloques.length&&r&&Array.isArray(r.temas))bloques=[{titulo:'',temas:r.temas}];
+    bloques=bloques.filter(b=>b&&Array.isArray(b.temas)&&b.temas.length);
+    if(!bloques.length)throw{message:'No se encontraron temas en el material.'};
+    const old=s.topics;const oldBlocks=blocksOf(s);
+    const nb=[];const nt=[];
+    bloques.slice(0,8).forEach(b=>{
+      const title=String(b.titulo||'').trim();let blockId=null;
+      if(title&&bloques.length>1||title&&bloques.length===1&&oldBlocks.length){const prev=oldBlocks.find(o=>norm(o.title)===norm(title));const blk=prev||{id:rid(),title:title.slice(0,80)};nb.push(blk);blockId=blk.id}
+      b.temas.slice(0,20).forEach(t=>{if(nt.length>=30)return;const prev=old.find(o=>norm(o.title)===norm(t.titulo));
+        nt.push(prev?Object.assign(prev,{keyTerms:t.conceptos||prev.keyTerms,blockId}):{id:rid(),title:String(t.titulo||'Tema'),blockId,keyTerms:(t.conceptos||[]).map(String).slice(0,8),summary:'',read:false})});
+    });
+    s.blocks=nb;s.topics=nt;
     const ids=new Set(s.topics.map(t=>t.id));
     s.cards.forEach(c=>{if(!ids.has(c.topicId))c.topicId=s.topics[0].id});
-    s.materialsChanged=false;saveSubject(s);markActive();toast('Temario dividido en '+s.topics.length+' temas.');
+    s.materialsChanged=false;saveSubject(s);markActive();toast('Temario organizado en '+(s.blocks.length?s.blocks.length+' bloque'+(s.blocks.length===1?'':'s')+' y ':'')+s.topics.length+' temas.');
   });
 }
 async function summarize(tid){
@@ -1255,20 +1284,28 @@ function highlightPod(){
 try{window.speechSynthesis&&speechSynthesis.getVoices()}catch(e){}
 
 /* ----- alcance: qué temas entran ----- */
-function scopeOf(s){V.scopes=V.scopes||{};const sc=V.scopes[s.id]=V.scopes[s.id]||{mode:'all',one:null,ids:[]};if(!sc.one||!s.topics.some(t=>t.id===sc.one))sc.one=(s.topics[0]||{}).id||null;return sc}
-function scopeIds(s){const sc=scopeOf(s);if(sc.mode==='one')return sc.one?[sc.one]:null;if(sc.mode==='some'){const ids=sc.ids.filter(id=>s.topics.some(t=>t.id===id));return ids.length?ids:null}return null}
+function scopeOf(s){V.scopes=V.scopes||{};const sc=V.scopes[s.id]=V.scopes[s.id]||{mode:'all',one:null,ids:[],block:null};if(!sc.one||!s.topics.some(t=>t.id===sc.one))sc.one=(s.topics[0]||{}).id||null;const bs=blocksOf(s);if(!sc.block||!bs.some(b=>b.id===sc.block))sc.block=(bs[0]||{}).id||null;if(sc.mode==='block'&&!bs.length)sc.mode='all';return sc}
+function scopeIds(s){const sc=scopeOf(s);if(sc.mode==='block'){const ids=topicsIn(s,sc.block).map(t=>t.id);return ids.length?ids:null}if(sc.mode==='one')return sc.one?[sc.one]:null;if(sc.mode==='some'){const ids=sc.ids.filter(id=>s.topics.some(t=>t.id===id));return ids.length?ids:null}return null}
 function inScope(s,tid){const ids=scopeIds(s);return !ids||ids.includes(tid)}
 function scopeTopics(s){const ids=scopeIds(s);return ids?s.topics.filter(t=>ids.includes(t.id)):null}
-function scopeLabel(s){const ts=scopeTopics(s);return !ts?'Todo el temario':ts.length===1?ts[0].title:ts.length+' temas'}
+function scopeLabel(s){const sc=scopeOf(s);if(sc.mode==='block'){const b=blocksOf(s).find(x=>x.id===sc.block);if(b)return b.title}const ts=scopeTopics(s);return !ts?'Todo el temario':ts.length===1?ts[0].title:ts.length+' temas'}
 function scopeFocus(s){const ts=scopeTopics(s);if(!ts)return null;if(ts.length===1)return ts[0];return{title:ts.map(t=>t.title).join(', '),keyTerms:[].concat(...ts.map(t=>t.keyTerms||[]))}}
-function scopeText(s){const ts=scopeTopics(s);return !ts?'todo el temario, repartiendo entre los temas':ts.length===1?'el tema «'+ts[0].title+'»':'solo estos temas, repartiendo entre ellos: '+ts.map(t=>'«'+t.title+'»').join(', ')}
+function scopeText(s){const sc=scopeOf(s);if(sc.mode==='block'){const b=blocksOf(s).find(x=>x.id===sc.block);const ts=scopeTopics(s);if(b&&ts)return 'el bloque «'+b.title+'», repartiendo entre sus temas: '+ts.map(t=>'«'+t.title+'»').join(', ')}const ts=scopeTopics(s);return !ts?'todo el temario, repartiendo entre los temas':ts.length===1?'el tema «'+ts[0].title+'»':'solo estos temas, repartiendo entre ellos: '+ts.map(t=>'«'+t.title+'»').join(', ')}
 function scopePicker(s,label){
   if(!s.topics.length)return '';
-  const sc=scopeOf(s);
-  const seg='<div class="seg" role="group" aria-label="'+esc(label||'Qué entra')+'"><button type="button" data-act="scopeMode" data-m="all" aria-pressed="'+(sc.mode==='all')+'">Todo el temario</button><button type="button" data-act="scopeMode" data-m="one" aria-pressed="'+(sc.mode==='one')+'">Un tema</button><button type="button" data-act="scopeMode" data-m="some" aria-pressed="'+(sc.mode==='some')+'">Elegir temas</button></div>';
+  const sc=scopeOf(s);const bs=blocksOf(s);
+  const modes=[['all','Todo el temario']].concat(bs.length?[['block','Un bloque']]:[]).concat([['one','Un tema'],['some','Elegir temas']]);
+  const seg='<div class="seg wrapseg" role="group" aria-label="'+esc(label||'Qué entra')+'">'+modes.map(([k,l])=>'<button type="button" data-act="scopeMode" data-m="'+k+'" aria-pressed="'+(sc.mode===k)+'">'+l+'</button>').join('')+'</div>';
   let extra='';
-  if(sc.mode==='one')extra='<label class="sr" for="scopeOne">Tema</label><select id="scopeOne" style="max-width:100%">'+s.topics.map(t=>'<option value="'+t.id+'"'+(sc.one===t.id?' selected':'')+'>'+esc(t.title)+'</option>').join('')+'</select>';
-  if(sc.mode==='some')extra='<div class="checks">'+s.topics.map(t=>'<label class="check" for="sc_'+t.id+'"><input type="checkbox" id="sc_'+t.id+'" data-scope="'+t.id+'"'+(sc.ids.includes(t.id)?' checked':'')+'>'+esc(t.title)+'</label>').join('')+'</div>'+(sc.ids.length?'':'<span class="faint" style="font-size:13px">Marca los temas que quieras. Mientras no marques ninguno, entra todo el temario.</span>');
+  if(sc.mode==='block')extra='<label class="sr" for="scopeBlock">Bloque</label><select id="scopeBlock" style="max-width:100%">'+bs.map(b=>'<option value="'+b.id+'"'+(sc.block===b.id?' selected':'')+'>'+esc(b.title)+' ('+topicsIn(s,b.id).length+')</option>').join('')+'</select>';
+  if(sc.mode==='one')extra='<label class="sr" for="scopeOne">Tema</label><select id="scopeOne" style="max-width:100%">'+topicOptions(s,sc.one)+'</select>';
+  if(sc.mode==='some'){
+    const box=t=>'<label class="check" for="sc_'+t.id+'"><input type="checkbox" id="sc_'+t.id+'" data-scope="'+t.id+'"'+(sc.ids.includes(t.id)?' checked':'')+'>'+esc(t.title)+'</label>';
+    if(!bs.length)extra='<div class="checks">'+s.topics.map(box).join('')+'</div>';
+    else{const grp=(b,ts)=>{if(!ts.length)return '';const all=ts.every(t=>sc.ids.includes(t.id));return '<div class="scgrp"><label class="check bcheck" for="scb_'+(b?b.id:'none')+'"><input type="checkbox" id="scb_'+(b?b.id:'none')+'" data-scope-block="'+(b?b.id:'')+'"'+(all?' checked':'')+'><b>'+esc(b?b.title:'Sin bloque')+'</b></label><div class="checks">'+ts.map(box).join('')+'</div></div>'};
+      extra='<div class="stack" style="gap:10px">'+bs.map(b=>grp(b,topicsIn(s,b.id))).join('')+grp(null,topicsIn(s,null))+'</div>'}
+    if(!sc.ids.length)extra+='<span class="faint" style="font-size:13px">Marca los temas o bloques que quieras. Mientras no marques ninguno, entra todo el temario.</span>';
+  }
   return '<div class="stack" style="gap:8px"><span class="lbl">'+esc(label||'Qué entra')+'</span>'+seg+extra+'</div>';
 }
 function setScopeOne(s,tid){const sc=scopeOf(s);sc.mode='one';sc.one=tid}
@@ -1374,7 +1411,7 @@ function tapTile(i){
 /* tarjetas de imagen */
 function imgCardModal(){
   const s=cur();
-  const topicOpts=s.topics.map(t=>'<option value="'+t.id+'">'+esc(t.title)+'</option>').join('');
+  const topicOpts=topicOptions(s,null);
   const M={img:null,rects:[],drag:null};
   openModal('<h3>Tarjetas con imagen</h3><p class="muted" style="margin:0;font-size:14px">Sube un esquema, mapa o dibujo y marca las zonas que quieres memorizar. Mnema crea una tarjeta por zona y te la tapa al repasar.</p>'+
     '<input type="file" id="occFile" accept="image/*" class="sr"><label for="occFile" class="btn ghost" style="align-self:flex-start">Elegir imagen</label>'+
@@ -1440,7 +1477,7 @@ function startReview(all){
 }
 function cardModal(c,pre){
   const s=cur();pre=pre||{};
-  const topicOpts=s.topics.map(t=>'<option value="'+t.id+'"'+(c&&c.topicId===t.id?' selected':'')+'>'+esc(t.title)+'</option>').join('');
+  const topicOpts=topicOptions(s,c&&c.topicId);
   openModal('<h3>'+(c?'Editar tarjeta':'Nueva tarjeta')+'</h3>'+(s.topics.length?'<label class="lbl" for="mTopic">Tema<select id="mTopic">'+topicOpts+'</select></label>':'')+'<label class="lbl" for="mQ">Pregunta<textarea id="mQ" rows="3">'+esc(c?c.q:'')+'</textarea></label>'+(pre.a?'<button class="btn small soft" type="button" data-mact="suggest" style="align-self:flex-start">Sugerir pregunta con Claude</button>':'')+'<label class="lbl" for="mA">Respuesta<textarea id="mA" rows="3">'+esc(c?c.a:(pre.a||''))+'</textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="save">Guardar</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();
       if(a.dataset.mact==='suggest'){a.disabled=true;a.innerHTML='<span class="spin"></span>Pensando…';
@@ -1628,7 +1665,7 @@ function renderProgreso(s){
   const lf=dueCards(s).length;
   return '<div class="stack">'+exampleBanner(s)+
   '<div class="stats"><div class="stat"><div class="v">'+pct(m)+'%</div><div class="k">Dominio de la asignatura</div></div><div class="stat"><div class="v">'+streakNow()+'</div><div class="k">Días de racha</div></div><div class="stat"><div class="v">'+(as.length?pct(acc)+'%':'—')+'</div><div class="k">Aciertos en tests ('+as.length+')</div></div><div class="stat"><div class="v">'+lf+'</div><div class="k">Tarjetas para hoy</div></div></div>'+
-  '<div class="grid2"><div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3>Dominio por tema</h3><span class="faint" style="font-size:12.5px">De menos a más</span></div>'+(rows.length?rows.map(r=>'<div class="mrow"><span class="nm" title="'+esc(r.t.title)+'">'+esc(r.t.title)+'</span>'+mbar(r.m)+'<span class="num" style="text-align:right">'+pct(r.m)+'%</span></div>').join(''):'<p class="muted">Cuando analices tu temario verás aquí cada tema.</p>')+
+  (blocksOf(s).length?'<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3>Dominio por bloque</h3><span class="faint" style="font-size:12.5px">Media de sus temas</span></div>'+blocksOf(s).map(b=>{const bm=blockMastery(s,b.id);const n=topicsIn(s,b.id).length;return '<div class="mrow"><span class="nm" title="'+esc(b.title)+'"><b>'+esc(b.title)+'</b> <span class="faint" style="font-size:12.5px">· '+n+' tema'+(n===1?'':'s')+'</span></span>'+mbar(bm)+'<span class="num" style="text-align:right">'+pct(bm)+'%</span></div>'}).join('')+'</div>':'')+'<div class="grid2"><div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3>Dominio por tema</h3><span class="faint" style="font-size:12.5px">De menos a más</span></div>'+(rows.length?rows.map(r=>'<div class="mrow"><span class="nm" title="'+esc(r.t.title)+'">'+esc(r.t.title)+'</span>'+mbar(r.m)+'<span class="num" style="text-align:right">'+pct(r.m)+'%</span></div>').join(''):'<p class="muted">Cuando analices tu temario verás aquí cada tema.</p>')+
   '<p class="faint" style="font-size:12.5px;margin:10px 0 0">Combina cómo llevas las tarjetas (50 %), tus aciertos en tests (40 %) y si has leído el resumen (10 %).</p></div>'+
   '<div class="panel stack"><h3>Constancia</h3><div class="heat" role="img" aria-label="Actividad de los últimos 35 días">'+cells.join('')+'</div><p class="muted" style="margin:0;font-size:14px">Has estudiado '+studied+' de los últimos 35 días.</p>'+(rows.length?'<div class="stack" style="gap:6px"><span class="eyebrow">Para subir nota</span><p style="margin:0">Tu tema más flojo es <b>'+esc(rows[0].t.title)+'</b>. Un test de 10 preguntas y repasar sus tarjetas lo pondrá al día.</p><div class="row"><button class="btn small" type="button" data-act="testTopic" data-id="'+rows[0].t.id+'">Test de este tema</button></div></div>':'')+'</div></div>'+boardHtml(s)+'</div>';
 }
@@ -1638,7 +1675,8 @@ const CODE_CH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function newCode(){let c='';for(let i=0;i<6;i++)c+=CODE_CH[Math.floor(Math.random()*CODE_CH.length)];return c}
 function snapshotFor(s){
   const snap={code:s.shareCode,name:s.name,examDate:s.examDate||null,owner:Store.uid,updatedAt:Date.now(),
-    topics:s.topics.map(t=>({id:t.id,title:t.title,keyTerms:t.keyTerms||[],summary:t.summary||'',mindmap:t.mindmap||null,table:t.table||null,podcast:t.podcast||null})),
+    blocks:(s.blocks||[]).map(b=>({id:b.id,title:b.title})),
+    topics:s.topics.map(t=>({id:t.id,title:t.title,blockId:t.blockId||null,keyTerms:t.keyTerms||[],summary:t.summary||'',mindmap:t.mindmap||null,table:t.table||null,podcast:t.podcast||null})),
     cards:s.cards.filter(c=>c.type!=='img'||!String(c.img).startsWith('local:')).map(c=>{const o={id:c.orig||c.id,topicId:c.topicId,q:c.q,a:c.a,src:c.src||''};if(c.type==='img')Object.assign(o,{type:'img',img:c.img,rects:c.rects,ri:c.ri,mode:c.mode});return o})};
   const size=()=>JSON.stringify(snap).length;
   if(size()>240000)snap.topics.forEach(t=>t.podcast=null);
@@ -1668,6 +1706,7 @@ async function joinCode(raw){
   if(!d.exists)throw{message:'No hay ningún grupo con ese código. Revisa que esté bien escrito.'};
   const v=JSON.parse(JSON.stringify(d.data()));const day=today();
   const s={id:rid(),name:String(v.name||'Asignatura compartida'),examDate:v.examDate||null,createdAt:Date.now(),shareCode:code,joined:true,
+    blocks:(v.blocks||[]).map(b=>({id:b.id,title:b.title})),
     topics:(v.topics||[]).map(t=>Object.assign({read:false},t)),
     cards:(v.cards||[]).map(c=>Object.assign({},c,{id:rid(),orig:c.id,ease:2.5,interval:0,reps:0,lapses:0,due:day})),answers:[],tests:[]};
   S.subjects[s.id]=s;S.meta.activeId=s.id;saveSubject(s);saveMeta();
@@ -1677,7 +1716,8 @@ async function pullShare(s){
   needCloud();const d=await Store.db.doc('shared/'+s.shareCode).get();
   if(!d.exists)throw{message:'Este grupo ya no existe.'};
   const v=JSON.parse(JSON.stringify(d.data()));const day=today();let nT=0,nC=0;
-  (v.topics||[]).forEach(t=>{const mine=s.topics.find(x=>x.id===t.id);if(mine){['summary','mindmap','table','podcast','keyTerms','title'].forEach(k=>{if(t[k]&&!mine[k])mine[k]=t[k]})}else{s.topics.push(Object.assign({read:false},t));nT++}});
+  (v.blocks||[]).forEach(b=>{if(!blocksOf(s).some(x=>x.id===b.id))blocksOf(s).push({id:b.id,title:b.title})});
+  (v.topics||[]).forEach(t=>{const mine=s.topics.find(x=>x.id===t.id);if(mine&&t.blockId&&!mine.blockId)mine.blockId=t.blockId;if(mine){['summary','mindmap','table','podcast','keyTerms','title'].forEach(k=>{if(t[k]&&!mine[k])mine[k]=t[k]})}else{s.topics.push(Object.assign({read:false},t));nT++}});
   const have=new Set(s.cards.map(c=>c.orig||c.id));
   (v.cards||[]).forEach(c=>{if(!have.has(c.id)){s.cards.push(Object.assign({},c,{id:rid(),orig:c.id,ease:2.5,interval:0,reps:0,lapses:0,due:day}));nC++}});
   saveSubject(s);return{nT,nC};
@@ -1875,12 +1915,12 @@ const MI={
 };
 const MANUAL=[
  {id:'empezar',icon:'start',color:'#4A7DFF',title:'Primeros pasos',desc:'De cero a estudiar en cinco minutos.',
-  steps:['Ve a **Asignaturas** y pulsa **+ Nueva asignatura**. Ponle nombre, la fecha del examen y, si quieres, una carpeta y un color.','Dentro de la asignatura, **sube tu temario**: PDF, Word, texto o fotos de tus apuntes. También puedes pegar texto.','Pulsa **Analizar temario**. Mnema lo lee y lo divide en temas con sus conceptos clave.','Vuelve a **Hoy**: ahí tienes cada día lo que te toca estudiar.'],
+  steps:['Ve a **Asignaturas** y pulsa **+ Nueva asignatura**. Ponle nombre, la fecha del examen y, si quieres, una carpeta y un color.','Dentro de la asignatura, **sube tu temario**: PDF, Word, texto o fotos de tus apuntes. También puedes pegar texto.','Pulsa **Analizar temario**. Mnema lo lee y lo organiza en bloques y temas con sus conceptos clave.','Vuelve a **Hoy**: ahí tienes cada día lo que te toca estudiar.'],
   tip:'Empieza con un solo tema para probar. Luego sube el resto cuando quieras.'},
  {id:'hoy',icon:'hoy',color:'#0EA5B7',title:'Hoy: tu plan del día',desc:'Qué estudiar hoy y cómo vas.',
   items:[['Plan de hoy','Las tareas que más te ayudan ahora: repasar tarjetas, leer un resumen o hacer un test. Empieza por arriba.'],['Tu semana','Reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.'],['Racha y dominio','Los días seguidos que has estudiado y cuánto dominas la asignatura.'],['Pomodoro','Bloques de concentración y descanso. Cambia su duración en Mi cuenta › Preferencias.']]},
  {id:'asignaturas',icon:'folder',color:'#F08A24',title:'Asignaturas y carpetas',desc:'Organiza todo como en tu mochila.',
-  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Archivos del temario','Dentro de cada asignatura puedes añadir, renombrar, reemplazar o quitar archivos. Si cambias archivos, vuelve a analizar el temario.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
+  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Bloques y temas','Dentro de cada asignatura, Mnema organiza el temario en **bloques** y cada bloque en **temas**. Puedes crear bloques, añadir temas, renombrarlos, moverlos de bloque con «Editar» y hacer un **test del bloque**.'],['Archivos del temario','Dentro de cada asignatura puedes añadir, renombrar, reemplazar o quitar archivos. Si cambias archivos, vuelve a analizar el temario.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
  {id:'temas',icon:'book',color:'#8B5CF6',title:'Resúmenes, mapas, pódcast y tablas',desc:'Cuatro formas de entender cada tema.',
   items:[['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
   tip:'Todo sale solo de tu temario. Si algo no te convence, pulsa «Rehacer».'},
@@ -1889,15 +1929,15 @@ const MANUAL=[
   tip:'Lo que subrayas tiene prioridad cuando Mnema crea tus tarjetas.'},
  {id:'tarjetas',icon:'cards',color:'#17A673',title:'Tarjetas',desc:'Memoriza de verdad con repetición espaciada.',
   steps:['Crea tarjetas desde cada tema, o escríbelas tú.','Al repasar, piensa la respuesta, dale la vuelta y di qué tal la sabías: **Otra vez**, **Difícil**, **Bien** o **Fácil**.','Mnema calcula cuándo volver a preguntártela: justo antes de que se te olvide.'],
-  items:[['Escribir la respuesta','Actívalo para recordar de verdad: Mnema te dice cuánto coincide con la correcta.'],['Tarjetas con imagen','Sube un esquema o un mapa, marca zonas arrastrando y cada zona se convierte en una tarjeta tapada.'],['Qué entra','Elige todo el temario, un tema o varios temas a la vez.'],['Exportar a Anki','En la vista «Todas».']]},
+  items:[['Escribir la respuesta','Actívalo para recordar de verdad: Mnema te dice cuánto coincide con la correcta.'],['Tarjetas con imagen','Sube un esquema o un mapa, marca zonas arrastrando y cada zona se convierte en una tarjeta tapada.'],['Qué entra','Elige todo el temario, un bloque, un tema o varios temas a la vez.'],['Exportar a Anki','En la vista «Todas».']]},
  {id:'juegos',icon:'game',color:'#C9A227',title:'Juegos',desc:'Repasar también puede ser divertido.',
   items:[['Emparejar','Une cada pregunta con su respuesta lo más rápido que puedas. Cada fallo suma 2 segundos y se guarda tu récord.']],
   tip:'Si estudias en grupo, tu mejor tiempo aparece en la clasificación.'},
  {id:'tests',icon:'test',color:'#4A7DFF',title:'Tests y simulacros',desc:'Ponte a prueba antes del examen.',
-  steps:['Elige qué temas entran, cuántas preguntas y de qué tipo: tipo test, verdadero/falso, respuesta corta o desarrollo.','Elige **Práctica** (ves la corrección tras cada pregunta) o **Simulacro** (con reloj y sin ayudas, como el examen real).','Al terminar, convierte tus fallos en tarjetas o pulsa **Repasar mis fallos**.'],
+  steps:['Elige qué entra (todo, un bloque, un tema o varios), cuántas preguntas y de qué tipo: tipo test, verdadero/falso, respuesta corta o desarrollo.','Elige **Práctica** (ves la corrección tras cada pregunta) o **Simulacro** (con reloj y sin ayudas, como el examen real).','Al terminar, convierte tus fallos en tarjetas o pulsa **Repasar mis fallos**.'],
   tip:'Las respuestas abiertas se corrigen con nota y un comentario de qué te ha faltado.'},
  {id:'tutor',icon:'chat',color:'#0EA5B7',title:'Tutor',desc:'Un profe que se sabe tu temario.',
-  items:[['Explícame','Te explica lo que no entiendes, con ejemplos y comparaciones.'],['Pregúntame','Es él quien te hace preguntas para que razones tú, sin darte la respuesta.'],['Qué entra','Elige todo el temario, un tema o varios.']]},
+  items:[['Explícame','Te explica lo que no entiendes, con ejemplos y comparaciones.'],['Pregúntame','Es él quien te hace preguntas para que razones tú, sin darte la respuesta.'],['Qué entra','Elige todo el temario, un bloque, un tema o varios.']]},
  {id:'progreso',icon:'chart',color:'#8B5CF6',title:'Progreso',desc:'Sabe en qué punto estás.',
   items:[['Dominio por tema','Combina tus tarjetas (50 %), tus aciertos en tests (40 %) y si has leído el resumen (10 %).'],['Constancia','Un calendario con los días que has estudiado.'],['Para subir nota','Mnema te señala tu tema más flojo para que lo refuerces.']]},
  {id:'grupo',icon:'group',color:'#E0457B',title:'Estudiar en grupo',desc:'Comparte tus temas y competid.',
@@ -2184,6 +2224,71 @@ Object.assign(ACT,{
         S.meta.folders=folders().filter(x=>x.id!==f.id);saveMeta();render();toast('Carpeta eliminada.')}closeModal()}})},
   toggleFolder:b=>{S.meta.collapsed=S.meta.collapsed||{};const id=b.dataset.fid;if(S.meta.collapsed[id])delete S.meta.collapsed[id];else S.meta.collapsed[id]=true;saveMeta();render()}
 });
+/* ---------- Bloques: asignatura › bloques › temas ---------- */
+function blocksOf(s){s.blocks=s.blocks||[];return s.blocks}
+function blockOf(s,t){return t&&t.blockId?blocksOf(s).find(b=>b.id===t.blockId)||null:null}
+function topicsIn(s,bid){return s.topics.filter(t=>bid?t.blockId===bid:!blockOf(s,t))}
+function blockMastery(s,bid){const ts=topicsIn(s,bid);return ts.length?ts.reduce((n,t)=>n+topicMastery(s,t.id),0)/ts.length:0}
+function topicOptions(s,sel){
+  const bs=blocksOf(s);const opt=t=>'<option value="'+t.id+'"'+(sel===t.id?' selected':'')+'>'+esc(t.title)+'</option>';
+  if(!bs.length)return s.topics.map(opt).join('');
+  const loose=topicsIn(s,null);
+  return bs.map(b=>{const ts=topicsIn(s,b.id);return ts.length?'<optgroup label="'+esc(b.title)+'">'+ts.map(opt).join('')+'</optgroup>':''}).join('')+(loose.length?'<optgroup label="Sin bloque">'+loose.map(opt).join('')+'</optgroup>':'');
+}
+function blockSelect(s,sel,id){return '<label class="lbl" for="'+(id||'mBlock')+'">Bloque<select id="'+(id||'mBlock')+'"><option value="">Sin bloque</option>'+blocksOf(s).map(b=>'<option value="'+b.id+'"'+(sel===b.id?' selected':'')+'>'+esc(b.title)+'</option>').join('')+'</select></label>'}
+function renderBlocks(s){
+  const bs=blocksOf(s);let n=0;const collapsed=S.meta.bcollapsed||{};
+  const topicList=ts=>ts.map(t=>topicHtml(s,t,n++)).join('');
+  if(!bs.length)return topicList(s.topics)+(s.example||!s.topics.length?'':'<div class="banner"><span class="chip spark">Consejo</span><span class="t">Agrupa tus temas en bloques (por ejemplo, «Bloque I · Historia antigua») para estudiar y examinarte por partes.</span><button class="btn small" type="button" data-act="newBlock">+ Crear bloque</button></div>');
+  const blockHtml=(b,ts,idx)=>{
+    const id=b?b.id:'__none';const closed=!!collapsed[s.id+':'+id];const m=b?blockMastery(s,b.id):0;
+    const head='<div class="bhead"><button class="bhead-t" type="button" data-act="toggleBlock" data-bid="'+id+'" aria-expanded="'+(!closed)+'">'+
+      '<span class="bnum">'+(b?'B'+(idx+1):'—')+'</span><span class="btitle"><b>'+esc(b?b.title:'Sin bloque')+'</b><small>'+ts.length+' tema'+(ts.length===1?'':'s')+(b&&ts.length?' · dominio '+pct(m)+' %':'')+'</small></span>'+
+      '<svg class="chev'+(closed?'':' open')+'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>'+
+      (b&&ts.length?'<span class="bbar">'+mbar(m)+'</span>':'')+
+      (b&&!s.example?'<div class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="newTopic" data-bid="'+b.id+'">+ Tema</button><button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button><button class="btn small ghost" type="button" data-act="renameBlock" data-bid="'+b.id+'">Renombrar</button><button class="btn small danger" type="button" data-act="delBlock" data-bid="'+b.id+'">Eliminar</button></div>':(b?'<button class="btn small ghost" type="button" data-act="testBlock" data-bid="'+b.id+'">Test del bloque</button>':''))+'</div>';
+    if(closed){n+=ts.length;return '<section class="block">'+head+'</section>'}
+    return '<section class="block">'+head+'<div class="stack" style="gap:12px">'+(ts.length?topicList(ts):'<p class="muted" style="margin:0;padding:4px 2px">Este bloque aún no tiene temas. Añade uno o mueve un tema existente desde «Editar».</p>')+'</div></section>';
+  };
+  const loose=topicsIn(s,null);
+  return bs.map((b,i)=>blockHtml(b,topicsIn(s,b.id),i)).join('')+(loose.length?blockHtml(null,loose,0):'');
+}
+function blockModal(s,b){
+  openModal('<h3>'+(b?'Renombrar bloque':'Nuevo bloque')+'</h3><p class="muted" style="margin:0">Un bloque agrupa varios temas: una unidad, una parte del libro, un trimestre…</p><label class="lbl" for="mBName">Nombre del bloque<input type="text" id="mBName" maxlength="80" value="'+esc(b?b.title:'')+'" placeholder="Ej.: Bloque I · La Edad Media"></label>'+
+    (!b&&s.topics.length?'<div class="stack" style="gap:6px"><span class="lbl">Temas que entran (opcional)</span><div class="checks">'+s.topics.map(t=>'<label class="check" for="mbt_'+t.id+'"><input type="checkbox" id="mbt_'+t.id+'" data-bt="'+t.id+'">'+esc(t.title)+(blockOf(s,t)?' <span class="faint" style="font-size:12px">('+esc(blockOf(s,t).title)+')</span>':'')+'</label>').join('')+'</div></div>':'')+
+    '<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">'+(b?'Guardar':'Crear bloque')+'</button></div>',bx=>{
+    const go=()=>{const name=$('#mBName').value.trim();if(!name){toast('Escribe un nombre para el bloque.');return}
+      if(b)b.title=name.slice(0,80);else{const nb={id:rid(),title:name.slice(0,80)};blocksOf(s).push(nb);bx.querySelectorAll('[data-bt]:checked').forEach(c=>{const t=s.topics.find(x=>x.id===c.dataset.bt);if(t)t.blockId=nb.id})}
+      sortTopics(s);saveSubject(s);closeModal();render();toast(b?'Bloque renombrado.':'Bloque creado.')};
+    bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();go()};
+    $('#mBName').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+  });
+}
+function sortTopics(s){const order=new Map(blocksOf(s).map((b,i)=>[b.id,i]));const pos=new Map(s.topics.map((t,i)=>[t.id,i]));s.topics.sort((a,b)=>{const ba=blockOf(s,a)?order.get(a.blockId):1e6,bb=blockOf(s,b)?order.get(b.blockId):1e6;return ba-bb||pos.get(a.id)-pos.get(b.id)})}
+function topicModal(s,t,bid){
+  openModal('<h3>'+(t?'Editar tema':'Nuevo tema')+'</h3><label class="lbl" for="mTName">Título del tema<input type="text" id="mTName" maxlength="120" value="'+esc(t?t.title:'')+'" placeholder="Ej.: Tema 4 · La Reconquista"></label>'+blockSelect(s,t?t.blockId||'':bid||'')+
+    (!t?'<p class="faint" style="margin:0;font-size:13.5px">Mnema buscará en tu temario la parte que corresponde a este tema para hacer el resumen, las tarjetas y los tests.</p>':'')+
+    '<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">'+(t?'Guardar':'Añadir tema')+'</button></div>',bx=>{
+    const go=()=>{const title=$('#mTName').value.trim();if(!title){toast('Escribe el título del tema.');return}const blk=$('#mBlock').value||null;
+      if(t){t.title=title.slice(0,120);t.blockId=blk}else s.topics.push({id:rid(),title:title.slice(0,120),blockId:blk,keyTerms:[],summary:'',read:false});
+      sortTopics(s);saveSubject(s);closeModal();render();toast(t?'Tema guardado.':'Tema añadido.')};
+    bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();go()};
+    $('#mTName').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+  });
+}
+Object.assign(ACT,{
+  newBlock:()=>{const s=cur();if(s&&!s.example)blockModal(s,null)},
+  renameBlock:b=>{const s=cur();const bl=blocksOf(s).find(x=>x.id===b.dataset.bid);if(bl)blockModal(s,bl)},
+  delBlock:b=>{const s=cur();const bl=blocksOf(s).find(x=>x.id===b.dataset.bid);if(!bl)return;const ts=topicsIn(s,bl.id);
+    openModal('<h3>¿Eliminar el bloque «'+esc(bl.title)+'»?</h3><p class="muted" style="margin:0">'+(ts.length?'Tiene '+ts.length+' tema'+(ts.length===1?'':'s')+'. Elige qué hacer con '+(ts.length===1?'él':'ellos')+'.':'El bloque está vacío.')+'</p>'+(ts.length?'<label class="check" for="mKeepT" style="align-self:flex-start"><input type="radio" name="bdel" id="mKeepT" checked>Conservar los temas fuera de cualquier bloque</label><label class="check" for="mAllT" style="align-self:flex-start"><input type="radio" name="bdel" id="mAllT">Eliminar también los temas y sus tarjetas</label>':'')+'<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:var(--surface)" type="button" data-mact="ok">Eliminar bloque</button></div>',bx=>{
+      bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){const all=ts.length&&$('#mAllT').checked;
+        if(all){const ids=new Set(ts.map(t=>t.id));s.topics=s.topics.filter(t=>!ids.has(t.id));s.cards=s.cards.filter(c=>!ids.has(c.topicId))}else ts.forEach(t=>{t.blockId=null});
+        s.blocks=blocksOf(s).filter(x=>x.id!==bl.id);sortTopics(s);saveSubject(s);render();toast('Bloque eliminado.')}closeModal()}})},
+  toggleBlock:b=>{const s=cur();S.meta.bcollapsed=S.meta.bcollapsed||{};const k=s.id+':'+b.dataset.bid;if(S.meta.bcollapsed[k])delete S.meta.bcollapsed[k];else S.meta.bcollapsed[k]=true;saveMeta();render()},
+  newTopic:b=>{const s=cur();if(s&&!s.example)topicModal(s,null,b&&b.dataset.bid)},
+  editTopic:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(t)topicModal(s,t)},
+  testBlock:b=>{const s=cur();const sc=scopeOf(s);sc.mode='block';sc.block=b.dataset.bid;V.testCfg.mode='practica';V.test=null;V.tab='tests';render();window.scrollTo(0,0)}
+});
 document.addEventListener('click',e=>{
   const tab=e.target.closest('.tab');if(tab){V.tab=tab.dataset.tab;if(V.tab==='temario')V.subjView='list';render();window.scrollTo(0,0);return}
   const mk=e.target.closest('#reader mark');
@@ -2203,6 +2308,8 @@ document.addEventListener('change',e=>{
   if(el.id==='examDate'){if(s.example){EXAMPLE.examDate=el.value||EXAMPLE.examDate}else{s.examDate=el.value||null;saveSubject(s)}render()}
   else if(el.id==='subjName'&&!s.example){s.name=el.value.trim()||s.name;saveSubject(s);render()}
   else if(el.id==='scopeOne'){scopeOf(s).one=el.value;V.review=null;V.game=null;render()}
+  else if(el.id==='scopeBlock'){scopeOf(s).block=el.value;V.review=null;V.game=null;render()}
+  else if(el.dataset&&el.dataset.scopeBlock!==undefined){const sc=scopeOf(s);const ids=topicsIn(s,el.dataset.scopeBlock||null).map(t=>t.id);sc.ids=sc.ids.filter(x=>!ids.includes(x));if(el.checked)sc.ids.push(...ids);V.review=null;V.game=null;render()}
   else if(el.dataset&&el.dataset.scope){const sc=scopeOf(s);const id=el.dataset.scope;sc.ids=sc.ids.filter(x=>x!==id);if(el.checked)sc.ids.push(id);V.review=null;V.game=null;render()}
   else if(el.id==='tN')V.testCfg.n=+el.value;
   else if(el.id==='tMin')V.testCfg.min=clamp(+el.value||15,3,180);
