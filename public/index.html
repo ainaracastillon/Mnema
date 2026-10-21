@@ -674,6 +674,7 @@ body.docopen{overflow:hidden}
   .bnav-sep{background:var(--line);margin:8px 2px}
   .bnav-subj{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;background:var(--surface-2);border-radius:14px;padding:2px}
 }
+.tfiles .tpdf{background:var(--spark);font-size:15px;box-shadow:none}
 </style>
 
 <div class="shell">
@@ -1211,15 +1212,15 @@ function renderTemario(s){
   const rm=V.readMat&&mats.find(m=>m.id===V.readMat);
   if(tab==='biblioteca')return '<div class="stack">'+exampleBanner(s)+nav+statusHtml+renderBiblioteca(s,groups)+(rm?readerPanel(rm):'')+'</div>';
   const withPdf=s.topics.filter(t=>t.notes).length;
-  const head='<div class="row" style="justify-content:space-between"><div><h2 class="sec">Temario</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s')+(s.topics.length?' · '+withPdf+' PDF listo'+(withPdf===1?'':'s'):'')+'</p></div><div class="row">'+
-    (withPdf>1?'<button class="btn small ghost" type="button" data-act="dlAllNotes" data-f="pdf">Todo en PDF</button><button class="btn small ghost" type="button" data-act="dlAllNotes" data-f="docx">Todo en Word</button>':'')+
+  const head='<div class="row" style="justify-content:space-between"><div><h2 class="sec">Temario</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s')+'</p></div><div class="row">'+
+
     (s.example?'':'<button class="btn small ghost" type="button" data-act="newBlock">+ Bloque</button><button class="btn small" type="button" data-act="newTopic">+ Tema</button>')+'</div></div>';
   return '<div class="stack">'+exampleBanner(s)+nav+statusHtml+head+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
     renderBlocks(s)+featureGrid(s,'Todo lo que puedes hacer con '+s.name,'Toca una herramienta para empezar.')+'</div>';
 }
 function fileSize(n){if(!n)return '';return n<1024*1024?Math.max(1,Math.round(n/1024))+' KB':(n/1048576).toFixed(1).replace('.',',')+' MB'}
 function renderBiblioteca(s,groups){
-  const intro='<div class="row" style="justify-content:space-between"><div><h2 class="sec">Biblioteca</h2><p class="muted" style="margin:2px 0 0;font-size:14px">Los archivos que tú has subido a esta asignatura. Los PDF que genera Mnema están dentro de cada tema.</p></div>'+(s.example?'':'<button class="btn small" type="button" data-act="libUpload">+ Subir archivos</button>')+'</div>';
+  const intro='<div class="row" style="justify-content:space-between"><div><h2 class="sec">Biblioteca</h2><p class="muted" style="margin:2px 0 0;font-size:14px">Los archivos que has subido a esta asignatura, ordenados por tema.</p></div>'+(s.example?'':'<button class="btn small" type="button" data-act="libUpload">+ Subir archivos</button>')+'</div>';
   if(!groups.length)return intro+'<div class="panel empty"><h2 class="sec">Tu biblioteca está vacía</h2><p class="muted">Sube los archivos dentro de cada tema (o desde aquí eligiendo el tema). Aparecerán en esta biblioteca.</p>'+(s.example?'':'<button class="btn" type="button" data-act="libUpload">Subir archivos</button>')+'</div>';
   const order=[];blocksOf(s).forEach(b=>topicsIn(s,b.id).forEach(t=>order.push(t)));topicsIn(s,null).forEach(t=>order.push(t));
   const sections=order.map(t=>({t,gs:groups.filter(g=>g.parts[0].topicId===t.id)})).filter(x=>x.gs.length);
@@ -1229,7 +1230,7 @@ function renderBiblioteca(s,groups){
       '<span class="row lacts" style="gap:6px">'+(m.fileUrl?'<a class="btn small soft" href="'+esc(m.fileUrl)+'" target="_blank" rel="noopener">Abrir original</a>':'')+'<button class="btn small '+(open?'':'ghost')+'" type="button" data-act="readMat" data-id="'+esc(open?V.readMat:m.id)+'">'+(open?'Cerrar':'Leer y subrayar')+'</button>'+
       (s.example?'':'<label class="sr" for="mv_'+esc(g.key)+'">Mover a otro tema</label><select id="mv_'+esc(g.key)+'" data-move="'+esc(g.key)+'" class="lmove"><option value="">Mover a…</option>'+topicOptions(s,null)+'</select><button class="btn small ghost" type="button" data-act="renameGroup" data-g="'+esc(g.key)+'">Renombrar</button><button class="btn small ghost" type="button" data-act="replaceGroup" data-g="'+esc(g.key)+'">Reemplazar</button><button class="btn small danger" type="button" data-act="delGroup" data-g="'+esc(g.key)+'">Quitar</button>')+'</span></div>'};
   return intro+sections.map(x=>'<section class="panel lsec"><div class="lsec-h"><span class="eyebrow">'+esc(blockOf(s,x.t)?blockOf(s,x.t).title:'Tema')+'</span><h3>'+esc(x.t.title)+'</h3></div>'+x.gs.map(row).join('')+'</section>').join('')+
-    (loose.length?'<section class="panel lsec"><div class="lsec-h"><span class="eyebrow">Sin tema</span><h3>Archivos sin tema</h3><p class="muted" style="margin:2px 0 0;font-size:13.5px">Muévelos a su tema con «Mover a…» para que entren en el PDF del tema.</p></div>'+loose.map(row).join('')+'</section>':'');
+    (loose.length?'<section class="panel lsec"><div class="lsec-h"><span class="eyebrow">Sin tema</span><h3>Archivos sin tema</h3><p class="muted" style="margin:2px 0 0;font-size:13.5px">Muévelos a su tema con «Mover a…» para que se usen al estudiar ese tema.</p></div>'+loose.map(row).join('')+'</section>':'');
 }
 function libUploadModal(s){
   if(!s.topics.length){toast('Primero crea un tema: los archivos se suben dentro de cada tema.');ACT.newTopic();return}
@@ -1244,12 +1245,10 @@ function topicFiles(s,t){
   const gs=groupMats(materialsOf(s.id).filter(m=>m.topicId===t.id));
   const busy=V.busy['notes_'+t.id];
   if(!gs.length){
-    return s.example?'':'<div class="tdrop" data-drop-tid="'+t.id+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.upload+'</svg><span><b>Sube aquí los archivos de este tema</b><small>PDF, Word, texto o fotos. Mnema creará el PDF del tema.</small></span><span class="row" style="gap:6px"><button class="btn small" type="button" data-act="uploadTo" data-tid="'+t.id+'">Elegir archivos</button><button class="btn small ghost" type="button" data-act="pasteText" data-tid="'+t.id+'">Pegar texto</button></span></div>';
+    return s.example?'':'<div class="tdrop" data-drop-tid="'+t.id+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.upload+'</svg><span><b>Sube aquí los archivos de este tema</b><small>PDF, Word, texto o fotos. Con ellos funcionan el resumen, el mapa, las tarjetas, los tests y el tutor.</small></span><span class="row" style="gap:6px"><button class="btn small" type="button" data-act="uploadTo" data-tid="'+t.id+'">Elegir archivos</button><button class="btn small ghost" type="button" data-act="pasteText" data-tid="'+t.id+'">Pegar texto</button></span></div>';
   }
-  const pending=!s.example&&(t.pendingFiles||!t.notes);
-  if(busy)return '<div class="tfiles" data-drop-tid="'+t.id+'"><span class="tpdf" aria-hidden="true">DOC</span><span class="tf-txt"><b>Creando el documento del tema…</b><small>Mnema está juntando el contenido de '+gs.length+' archivo'+(gs.length===1?'':'s')+'.</small></span><span class="chip spark"><span class="spin"></span> Escribiendo</span></div>';
-  if(pending)return '<div class="tfiles tpend" data-drop-tid="'+t.id+'"><span class="tpdf" aria-hidden="true">'+gs.length+'</span><span class="tf-txt"><b>'+gs.length+' archivo'+(gs.length===1?'':'s')+' subido'+(gs.length===1?'':'s')+(t.notes?' · hay cambios':'')+'</b><small>¿Has terminado de subir todo el contenido de este tema? Pulsa <b>Aceptar</b> y Mnema '+(t.notes?'actualizará el documento':'creará el documento del tema')+' con todos los archivos. · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver archivos</button></small></span><span class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Más archivos</button><button class="btn small" type="button" data-act="acceptFiles" data-id="'+t.id+'">Aceptar</button></span></div>';
-  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">PDF</span><span class="tf-txt"><b>Documento del tema</b><small>'+(t.notesEdited?'Editado por ti':'Listo')+' · hecho con '+gs.length+' archivo'+(gs.length===1?'':'s')+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span><span class="row" style="gap:6px"><button class="btn small soft" type="button" data-act="openDoc" data-id="'+t.id+'">Ver y editar</button><button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Word</button>'+(s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button>')+'</span></div>';
+  const kinds=gs.map(g=>kindOf(g.base));
+  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">'+gs.length+'</span><span class="tf-txt"><b>'+gs.length+' archivo'+(gs.length===1?'':'s')+' en este tema</b><small>'+esc(gs.slice(0,3).map(g=>g.base).join(' · '))+(gs.length>3?' · …':'')+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span>'+(s.example?'':'<span class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button></span>')+'</div>';
 }
 /* PDF bonito con pdfmake */
 let pdfLibP=null;
@@ -1314,7 +1313,7 @@ function topicHtml(s,t,i){
     body='<div class="topic-body">'+inner+'</div>';
   }
   return '<div class="topic"><div class="topic-h"><span class="idx num">'+String(i+1).padStart(2,'0')+'</span><div style="min-width:0"><div class="tt">'+esc(t.title)+'</div><div class="kt">'+esc((t.keyTerms||[]).join(' · '))+'</div></div><div class="row" style="gap:8px;flex-wrap:nowrap">'+mbar(m)+'<span class="num faint" style="font-size:13px;width:38px;text-align:right">'+pct(m)+'%</span></div></div>'+
-    topicFiles(s,t)+'<div class="ttools" role="group" aria-label="Estudiar este tema">'+[['apuntes','Documento'],['resumen','Resumen'],['mapa','Mapa'],['tabla','Tabla'],['podcast','Pódcast']].map(([v,l])=>'<button class="ttb'+(open&&v!=='apuntes'&&(V.topicView||'resumen')===v?' on':'')+'" type="button" data-act="'+(v==='apuntes'?'openDoc':'topicTool')+'" data-v="'+v+'" data-id="'+t.id+'" aria-pressed="'+(open&&(V.topicView||'apuntes')===v)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON[v==='apuntes'?'notes':v]+'</svg><span>'+l+'</span></button>').join('')+
+    topicFiles(s,t)+'<div class="ttools" role="group" aria-label="Estudiar este tema">'+[['resumen','Resumen'],['mapa','Mapa'],['tabla','Tabla'],['podcast','Pódcast']].map(([v,l])=>'<button class="ttb'+(open&&v!=='apuntes'&&(V.topicView||'resumen')===v?' on':'')+'" type="button" data-act="'+(v==='apuntes'?'openDoc':'topicTool')+'" data-v="'+v+'" data-id="'+t.id+'" aria-pressed="'+(open&&(V.topicView||'apuntes')===v)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON[v==='apuntes'?'notes':v]+'</svg><span>'+l+'</span></button>').join('')+
       '<button class="ttb" type="button" data-act="genCards" data-id="'+t.id+'"'+(V.busy['cards_'+t.id]?' disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tarjetas+'</svg><span>'+(V.busy['cards_'+t.id]?'Creando…':'Tarjetas'+(nCards?' ('+nCards+')':''))+'</span></button>'+
       '<button class="ttb" type="button" data-act="testTopic" data-id="'+t.id+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tests+'</svg><span>Test</span></button>'+
       '<button class="ttb" type="button" data-act="tutorTopic" data-id="'+t.id+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tutor+'</svg><span>Tutor</span></button></div>'+
@@ -1404,8 +1403,8 @@ async function handleFiles(files,opts){
   if(added&&oldGroup&&oldGroup.length){oldGroup.forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id);if(V.readMat===m.id)V.readMat=null});s.materialsChanged=true;saveSubject(s)}
   V.status=null;render();
   if(added){const where=tag.topicId?(s.topics.find(x=>x.id===tag.topicId)||{}).title:tag.blockId?(blocksOf(s).find(x=>x.id===tag.blockId)||{}).title:'';
-    toast(oldGroup?'Archivo reemplazado.':(added===1?'Archivo añadido':added+' archivos añadidos')+(where?' a «'+where+'».':'.')+(tag.topicId?' Cuando hayas subido todos, pulsa Aceptar.':''));if(!s.topics.length&&!tag.topicId&&!tag.blockId)analyze();
-    else if(tag.topicId&&s.topics.some(x=>x.id===tag.topicId)){markPending(s,tag.topicId);render()}
+    toast(oldGroup?'Archivo reemplazado.':(added===1?'Archivo añadido':added+' archivos añadidos')+(where?' a «'+where+'».':'.'));if(!s.topics.length&&!tag.topicId&&!tag.blockId)analyze();
+    else if(tag.topicId&&s.topics.some(x=>x.id===tag.topicId)){render()}
     else if(tag.blockId){const ts=topicsIn(s,tag.blockId);if(ts.length&&!V.notesRun){(async()=>{V.notesRun={sid:s.id,done:0,total:ts.length,cur:''};render();for(const t of ts){V.notesRun.cur=t.title;try{await genNotes(s,t,{silent:true})}catch(e){}V.notesRun.done++}V.notesRun=null;render();toast('Apuntes del bloque actualizados.')})()}}}
 }
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
@@ -1510,7 +1509,7 @@ async function analyze(){
     s.blocks=nb;s.topics=nt;
     const ids=new Set(s.topics.map(t=>t.id));
     s.cards.forEach(c=>{if(!ids.has(c.topicId))c.topicId=s.topics[0].id});
-    s.materialsChanged=false;saveSubject(s);markActive();setTimeout(()=>makeAllNotes(s,true),300);toast('Temario organizado en '+(s.blocks.length?s.blocks.length+' bloque'+(s.blocks.length===1?'':'s')+' y ':'')+s.topics.length+' temas.');
+    s.materialsChanged=false;saveSubject(s);markActive();toast('Temario organizado en '+(s.blocks.length?s.blocks.length+' bloque'+(s.blocks.length===1?'':'s')+' y ':'')+s.topics.length+' temas.');
   });
 }
 async function summarize(tid){
@@ -2169,7 +2168,7 @@ const ACT={
   pickFiles:()=>$('#fileIn').click(),
   pasteText:b=>{const tid=b&&b.dataset&&b.dataset.tid;const s0=cur();if(!tid){if(s0)libUploadModal(s0);return}const tt=s0.topics.find(x=>x.id===tid);openModal('<h3>Pegar texto</h3><p class="muted" style="margin:0">Se añadirá al tema «'+esc(tt?tt.title:'')+'».</p><label class="lbl" for="mTitle">Título<input type="text" id="mTitle" placeholder="Ej.: Apuntes de clase del martes"></label><label class="lbl" for="mText">Texto<textarea id="mText" rows="10" placeholder="Pega aquí tus apuntes o el temario"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Añadir</button></div>',bx=>{
     bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();const txt=cleanText($('#mText').value);if(txt.length<30){toast('Pega un texto un poco más largo.');return}
-      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});markPending(s,tid);closeModal();render();toast('Texto añadido. Cuando hayas subido todo, pulsa Aceptar.')}})},
+      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});closeModal();render();toast('Texto añadido al tema.')}})},
   readPart:b=>{V.readMat=b.dataset.id;V.sel=null;render()},
   readMat:b=>{V.readMat=V.readMat===b.dataset.id?null:b.dataset.id;V.sel=null;render();if(V.readMat){const p=$('#readerPanel');p&&p.scrollIntoView({block:'start',behavior:'smooth'})}},
   hlAdd:()=>{const m=curMat();if(m&&V.sel)addHl(m,V.sel,'')},
@@ -2288,14 +2287,14 @@ const MI={
 };
 const MANUAL=[
  {id:'empezar',icon:'start',color:'#4A7DFF',title:'Primeros pasos',desc:'De cero a estudiar en cinco minutos.',
-  steps:['Ve a **Asignaturas** y pulsa **+ Nueva asignatura**. Ponle nombre, la fecha del examen y, si quieres, una carpeta y un color.','Dentro de la asignatura, crea sus **temas**. Si quieres, agrúpalos en **bloques** (es opcional).','Dentro de cada tema, **sube sus archivos**: PDF, Word, texto o fotos. Mnema crea un **PDF del tema** bien organizado.','Vuelve a **Hoy**: ahí tienes cada día lo que te toca estudiar.'],
+  steps:['Ve a **Asignaturas** y pulsa **+ Nueva asignatura**. Ponle nombre, la fecha del examen y, si quieres, una carpeta y un color.','Dentro de la asignatura, crea sus **temas**. Si quieres, agrúpalos en **bloques** (es opcional).','Dentro de cada tema, **sube sus archivos**: PDF, Word, texto o fotos. Con ellos Mnema prepara el resumen, el mapa, las tarjetas, los tests y el tutor.','Vuelve a **Hoy**: ahí tienes cada día lo que te toca estudiar.'],
   tip:'Empieza con un solo tema para probar. Luego sube el resto cuando quieras.'},
  {id:'hoy',icon:'hoy',color:'#0EA5B7',title:'Hoy: tu plan del día',desc:'Qué estudiar hoy y cómo vas.',
   items:[['Plan de hoy','Las tareas que más te ayudan ahora: repasar tarjetas, leer un resumen o hacer un test. Empieza por arriba.'],['Tu semana','Reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.'],['Racha y dominio','Los días seguidos que has estudiado y cuánto dominas la asignatura.'],['Pomodoro','Bloques de concentración y descanso. Cambia su duración en Mi cuenta › Preferencias.']]},
  {id:'asignaturas',icon:'folder',color:'#F08A24',title:'Asignaturas y carpetas',desc:'Organiza todo como en tu mochila.',
-  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['Documento del tema','Sube todos los archivos del tema y pulsa **Aceptar**: entonces Mnema escribe un único documento con todo ese temario, con formato de apuntes: apartados numerados, citas, ejemplos y listas. Pulsa **Editar** para cambiar lo que quieras (negrita, cursiva, subrayado, resaltado, rojo, listas…) y descárgalo en **PDF** o en **Word**.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
- {id:'temas',icon:'book',color:'#8B5CF6',title:'Apuntes, resúmenes, mapas, pódcast y tablas',desc:'Cinco formas de estudiar cada tema.',
-  items:[['Apuntes','Al subir los documentos de la profesora, Mnema prepara un documento por tema con todo lo necesario para estudiarlo y sin lo irrelevante. Puedes leerlo, escucharlo y descargarlo para Word.'],['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo con voces naturales. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
+  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
+ {id:'temas',icon:'book',color:'#8B5CF6',title:'Resúmenes, mapas, pódcast y tablas',desc:'Cuatro formas de estudiar cada tema.',
+  items:[['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo con voces naturales. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
   tip:'Todo sale solo de tu temario. Si algo no te convence, pulsa «Rehacer».'},
  {id:'subrayar',icon:'pen',color:'#E0457B',title:'Subrayar y tomar notas',desc:'Como con tu fluorescente, pero mejor.',
   steps:['Dentro de una asignatura, pulsa **Leer y subrayar** en cualquier archivo.','Selecciona un fragmento y elige **Subrayar**, **Subrayar con nota** o **Crear tarjeta**.','Toca un subrayado para editar su nota o quitarlo.'],
@@ -2618,7 +2617,7 @@ function topicOptions(s,sel){
 function blockSelect(s,sel,id){return '<label class="lbl" for="'+(id||'mBlock')+'">Bloque<select id="'+(id||'mBlock')+'"><option value="">Sin bloque</option>'+blocksOf(s).map(b=>'<option value="'+b.id+'"'+(sel===b.id?' selected':'')+'>'+esc(b.title)+'</option>').join('')+'</select></label>'}
 function renderBlocks(s){
   const bs=blocksOf(s);let n=0;const collapsed=S.meta.bcollapsed||{};
-  if(!bs.length&&!s.topics.length)return '<div class="struct-empty"><div class="struct-demo" aria-hidden="true"><div class="sd-subj">'+esc(s.name)+'</div><div class="sd-row"><div class="sd-block"><b>Bloque (opcional)</b><span>Tema 1 · tus archivos</span><span>Tema 2 · tus archivos</span></div></div></div><div class="stack" style="gap:12px"><h3>Organiza tu asignatura</h3><ol class="man-steps" style="--c:var(--spark)"><li><span>Crea los <b>temas</b> de la asignatura. Si quieres, agrúpalos en <b>bloques</b> (es opcional).</span></li><li><span>Dentro de cada tema, <b>sube sus archivos</b>: PDF, Word, texto o fotos.</span></li><li><span>Mnema crea un <b>PDF del tema</b> con todo bien organizado, y con él tus resúmenes, tarjetas y tests.</span></li></ol><div class="row"><button class="btn" type="button" data-act="newTopic">+ Crear el primer tema</button><button class="btn ghost" type="button" data-act="newBlock">+ Crear un bloque</button></div></div></div>';
+  if(!bs.length&&!s.topics.length)return '<div class="struct-empty"><div class="struct-demo" aria-hidden="true"><div class="sd-subj">'+esc(s.name)+'</div><div class="sd-row"><div class="sd-block"><b>Bloque (opcional)</b><span>Tema 1 · tus archivos</span><span>Tema 2 · tus archivos</span></div></div></div><div class="stack" style="gap:12px"><h3>Organiza tu asignatura</h3><ol class="man-steps" style="--c:var(--spark)"><li><span>Crea los <b>temas</b> de la asignatura. Si quieres, agrúpalos en <b>bloques</b> (es opcional).</span></li><li><span>Dentro de cada tema, <b>sube sus archivos</b>: PDF, Word, texto o fotos.</span></li><li><span>Con esos archivos ya puedes usar el resumen, el mapa, las tarjetas, los tests y el tutor de cada tema.</span></li></ol><div class="row"><button class="btn" type="button" data-act="newTopic">+ Crear el primer tema</button><button class="btn ghost" type="button" data-act="newBlock">+ Crear un bloque</button></div></div></div>';
   const topicList=ts=>ts.map(t=>topicHtml(s,t,n++)).join('');
   if(!bs.length)return topicList(s.topics)+(s.example||!s.topics.length?'':'<div class="banner"><span class="chip spark">Consejo</span><span class="t">Agrupa tus temas en bloques (por ejemplo, «Bloque I · Historia antigua») para estudiar y examinarte por partes.</span><button class="btn small" type="button" data-act="newBlock">+ Crear bloque</button></div>');
   const blockHtml=(b,ts,idx)=>{
@@ -2648,7 +2647,7 @@ function blockModal(s,b){
 function sortTopics(s){const order=new Map(blocksOf(s).map((b,i)=>[b.id,i]));const pos=new Map(s.topics.map((t,i)=>[t.id,i]));s.topics.sort((a,b)=>{const ba=blockOf(s,a)?order.get(a.blockId):1e6,bb=blockOf(s,b)?order.get(b.blockId):1e6;return ba-bb||pos.get(a.id)-pos.get(b.id)})}
 function topicModal(s,t,bid){
   openModal('<h3>'+(t?'Editar tema':'Nuevo tema')+'</h3><label class="lbl" for="mTName">Título del tema<input type="text" id="mTName" maxlength="120" value="'+esc(t?t.title:'')+'" placeholder="Ej.: Tema 4 · La Reconquista"></label>'+blockSelect(s,t?t.blockId||'':bid||'')+
-    (!t?'<p class="faint" style="margin:0;font-size:13.5px">Dentro del tema subirás sus archivos y Mnema creará con ellos el documento del tema (PDF y Word).</p>':'')+
+    (!t?'<p class="faint" style="margin:0;font-size:13.5px">Dentro del tema subirás sus archivos. Con ellos funcionan el resumen, el mapa, las tarjetas, los tests y el tutor.</p>':'')+
     '<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button>'+(t?'':'<button class="btn ghost" type="button" data-mact="ok">Solo crear</button>')+'<button class="btn" type="button" data-mact="'+(t?'ok':'okup')+'">'+(t?'Guardar':'Crear y subir archivos')+'</button></div>',bx=>{
     const go=(up)=>{const title=$('#mTName').value.trim();if(!title){toast('Escribe el título del tema.');return}const blk=$('#mBlock').value||null;let nid=null;
       if(t){t.title=title.slice(0,120);t.blockId=blk}else{nid=rid();s.topics.push({id:nid,title:title.slice(0,120),blockId:blk,keyTerms:[],summary:'',read:false})}
@@ -2689,7 +2688,7 @@ const NOTES_PROMPT=(t,s)=>'Eres un profesor que prepara el DOCUMENTO DE ESTUDIO 
 async function genNotes(s,t,opts){
   opts=opts||{};
   const sm=await needSample();
-  if(!opts.silent){V.nstream={id:t.id,text:''};if(V.docView!==t.id)openDocView(t.id)}
+  if(!opts.silent){V.nstream={id:t.id,text:''}}
   const r=await sm(SYS+'\n\n<temario>\n'+contextFor(s,t,120000)+'\n</temario>\n\n'+NOTES_PROMPT(t,s),{modelTier:'default',onText:opts.silent?undefined:u=>{if(V.nstream&&V.nstream.id===t.id){V.nstream.text=u.text;const box=$('#notesBox');if(box)box.innerHTML=paperHtml(s,t,u.text)}}});
   t.notes=r.text.trim();t.notesAt=Date.now();t.pendingFiles=false;V.nstream=null;
   if(!(t.keyTerms||[]).length){const ks=[];(t.notes.match(/\*\*([^*]{2,40})\*\*/g)||[]).forEach(x=>{const k=x.slice(2,-2).trim();if(!ks.some(y=>norm(y)===norm(k)))ks.push(k)});t.keyTerms=ks.slice(0,6)}
@@ -2735,7 +2734,7 @@ function notesPanel(s){
 /* ---------- Herramientas: todo lo que puedes hacer ---------- */
 const FEATS=[
  ['upload','Sube lo que tengas','PDF, Word, texto o fotos de tus apuntes. Hasta los PDF escaneados.','#4A7DFF'],
- ['notes','Un PDF por tema','Sube los archivos de cada tema y Mnema crea un único PDF bien organizado, sin lo irrelevante.','#0EA5B7'],
+ 
  ['resumen','Resúmenes con lo esencial','Cada tema resumido con los conceptos clave resaltados y lo que más cae en el examen.','#8B5CF6'],
  ['mapa','Mapas mentales y tablas','Ve cómo se conectan las ideas y compara autores, etapas o tipos de un vistazo.','#E0457B'],
  ['podcast','Pódcast de repaso','Dos voces repasan el tema contigo para estudiar andando o en el bus.','#F08A24'],
