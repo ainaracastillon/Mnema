@@ -662,20 +662,36 @@ body.docopen{overflow:hidden}
 
 .tfiles.tpend{border-color:var(--spark);background:var(--spark-soft)}
 .tfiles.tpend .tpdf{background:var(--spark);font-size:15px}
+
+/* Menú: Asignaturas aparte; el resto, de la asignatura elegida */
+.side-main{margin-top:-4px}
+.side-group{display:flex;flex-direction:column;gap:10px;padding:12px 8px 8px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.side-group .side-subj{padding:0 2px}
+.side-group .side-nav{gap:2px}
+.side-group .tab{padding:9px 12px;min-height:42px}
+@media (max-width:899px){
+  .bnav{grid-template-columns:minmax(0,1.05fr) 1px minmax(0,5fr)!important;align-items:stretch}
+  .bnav-sep{background:var(--line);margin:8px 2px}
+  .bnav-subj{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;background:var(--surface-2);border-radius:14px;padding:2px}
+}
 </style>
 
 <div class="shell">
 <aside class="side" aria-label="Navegación principal">
   <div class="side-brand"><svg width="30" height="30" viewBox="0 0 84 84" aria-hidden="true"><polyline points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="14" cy="66" r="7.5" fill="currentColor"/><circle cx="14" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="66" r="7.5" fill="currentColor"/><circle cx="42" cy="50" r="11" fill="#7FA4FF"/></svg><span class="word">mnema</span></div>
-  <div class="side-subj"><label for="subjSel" class="side-lbl">Asignatura</label><select id="subjSel" class="subj-sel"></select></div>
-  <nav class="side-nav" aria-label="Secciones">
-    <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
+  <nav class="side-nav side-main" aria-label="General">
     <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Asignaturas</span></button>
-    <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
-    <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
-    <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
-    <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
   </nav>
+  <section class="side-group" aria-label="Asignatura elegida">
+    <div class="side-subj"><label for="subjSel" class="side-lbl">Asignatura elegida</label><select id="subjSel" class="subj-sel"></select></div>
+    <nav class="side-nav" aria-label="Secciones de la asignatura">
+      <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
+      <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
+      <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
+      <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
+      <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
+    </nav>
+  </section>
   <div class="side-foot">
     <button class="tab admin-link" data-tab="admin" type="button" hidden><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Administración</span></button>
     <button class="reload-btn" type="button" data-act="reloadApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Recargar</span></button>
@@ -696,12 +712,15 @@ body.docopen{overflow:hidden}
   <main class="wrap" id="main"></main>
 </div>
 <nav class="bnav" aria-label="Secciones">
-  <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
   <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Asignaturas</span></button>
-  <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
-  <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
-  <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
-  <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
+  <span class="bnav-sep" aria-hidden="true"></span>
+  <div class="bnav-subj" role="group" aria-label="De la asignatura elegida">
+    <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
+    <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
+    <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
+    <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
+    <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
+  </div>
 </nav>
 </div>
 <input type="file" id="fileIn" multiple accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
@@ -1374,12 +1393,12 @@ async function handleFiles(files,opts){
       let text=await extractFile(f);
       text=cleanText(text);
       if(!text||text.length<30)throw new Error('no se encontró texto en '+f.name);
-      const orig=await storeOriginal(f);
-      addMaterial(s,f.name,text,Object.assign({},tag,orig?{fileUrl:orig.url,size:orig.size,mime:orig.mime}:{size:f.size}));added++;
+      const gid=addMaterial(s,f.name,text,Object.assign({},tag,{size:f.size}));added++;
+      storeOriginal(f).then(orig=>{if(!orig)return;const m=Object.values(S.materials).find(x=>x.group===gid&&x.part===1);if(m){m.fileUrl=orig.url;m.mime=orig.mime;Store.save('m',m);if(V.subjTab==='biblioteca')render()}});
     }catch(e){console.warn(e);setStatus('No se pudo leer '+f.name+': '+(e.message||e.code||'formato no reconocido')+'.',true);await pause(2500)}
   }
   if(imgs.length){
-    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Transcribiendo fotos con IA… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text),tag);added++}}
+    try{const text=await imagesToText(imgs,(i,n)=>setStatus('Leyendo tus fotos… '+i+' de '+n));if(text.trim()){addMaterial(s,'Fotos de apuntes ('+imgs.length+')',cleanText(text),tag);added++}}
     catch(e){setStatus(errMsg(e),true);await pause(3000)}
   }
   if(added&&oldGroup&&oldGroup.length){oldGroup.forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id);if(V.readMat===m.id)V.readMat=null});s.materialsChanged=true;saveSubject(s)}
@@ -1411,9 +1430,9 @@ async function pdfText(f){
   if(out.replace(/\s/g,'').length<40*doc.numPages){
     const lim=await imageLimits();
     if(!lim)throw new Error('parece escaneado; entra con tu cuenta para que la IA lo lea');
-    const maxP=Math.min(doc.numPages,30);const blobs=[];
-    for(let p=1;p<=maxP;p++){setStatus('Preparando páginas escaneadas… '+p+' de '+maxP);const pg=await doc.getPage(p);const vp=pg.getViewport({scale:1.6});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;blobs.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.82)))}
-    out=await imagesToText(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas con IA… '+i+' de '+n));
+    const maxP=Math.min(doc.numPages,40);const blobs=[];
+    for(let p=1;p<=maxP;p++){setStatus('Preparando páginas escaneadas… '+p+' de '+maxP);const pg=await doc.getPage(p);const vp=pg.getViewport({scale:1.4});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;blobs.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.82)))}
+    out=await imagesToText(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas… '+i+' de '+n));
     if(doc.numPages>maxP)toast('Solo se han leído las primeras '+maxP+' páginas escaneadas.');
   }
   return out;
@@ -1421,19 +1440,21 @@ async function pdfText(f){
 async function imagesToText(blobs,onProg){
   const s=await needSample();const lim=await imageLimits();
   if(!lim)throw{code:'unavailable',message:'Leer fotos con IA necesita entrar con tu cuenta'};
-  const per=Math.max(1,Math.min(lim.maxCount||1,4));let out='';
-  for(let i=0;i<blobs.length;i+=per){
-    onProg&&onProg(Math.min(i+per,blobs.length),blobs.length);
-    const r=await s('Transcribe fielmente todo el texto de estas imágenes de apuntes o de un libro, en orden. Conserva títulos y listas. Si hay esquemas o tablas, pásalos a texto. Devuelve solo la transcripción, sin comentarios.',{images:blobs.slice(i,i+per),modelTier:'default'});
-    out+=r.text+'\n\n';
-  }
-  return out;
+  const per=Math.max(1,Math.min(lim.maxCount||1,2));const groups=[];for(let i=0;i<blobs.length;i+=per)groups.push(blobs.slice(i,i+per));
+  const res=new Array(groups.length).fill('');let next=0,done=0,fails=0;let lastErr=null;
+  const ask=g=>s('Transcribe fielmente todo el texto de estas imágenes de apuntes o de un libro, en orden. Conserva títulos y listas. Si hay esquemas o tablas, pásalos a texto. Devuelve solo la transcripción, sin comentarios.',{images:g,modelTier:'default'});
+  const worker=async()=>{while(next<groups.length){const i=next++;try{res[i]=(await ask(groups[i])).text}catch(e){try{res[i]=(await ask(groups[i])).text}catch(e2){fails++;lastErr=e2}}done++;onProg&&onProg(Math.min(done*per,blobs.length),blobs.length)}};
+  onProg&&onProg(0,blobs.length);
+  await Promise.all(Array.from({length:Math.min(4,groups.length)},worker));
+  if(fails===groups.length&&lastErr)throw lastErr;
+  return res.join('\n\n');
 }
 function addMaterial(s,name,text,tag){tag=tag||{};
   const MAX=100000;const parts=[];for(let i=0;i<text.length;i+=MAX)parts.push(text.slice(i,i+MAX));
   const gid=rid();
   parts.forEach((p,i)=>{const m={id:rid(),subjectId:s.id,group:gid,topicId:tag.topicId||null,blockId:tag.blockId||null,fileUrl:i===0?tag.fileUrl||null:null,size:tag.size||null,mime:tag.mime||null,base:name,part:i+1,parts:parts.length,name:parts.length>1?name+' ('+(i+1)+'/'+parts.length+')':name,text:p,createdAt:Date.now()+i};S.materials[m.id]=m;Store.save('m',m)});
   if(s.topics.length&&!tag.topicId&&!tag.blockId){s.materialsChanged=true;saveSubject(s)}
+  return gid;
 }
 function groupMats(mats){
   const map=new Map();
@@ -1799,7 +1820,7 @@ function startReview(all){
 function cardModal(c,pre){
   const s=cur();pre=pre||{};
   const topicOpts=topicOptions(s,c&&c.topicId);
-  openModal('<h3>'+(c?'Editar tarjeta':'Nueva tarjeta')+'</h3>'+(s.topics.length?'<label class="lbl" for="mTopic">Tema<select id="mTopic">'+topicOpts+'</select></label>':'')+'<label class="lbl" for="mQ">Pregunta<textarea id="mQ" rows="3">'+esc(c?c.q:'')+'</textarea></label>'+(pre.a?'<button class="btn small soft" type="button" data-mact="suggest" style="align-self:flex-start">Sugerir pregunta con IA</button>':'')+'<label class="lbl" for="mA">Respuesta<textarea id="mA" rows="3">'+esc(c?c.a:(pre.a||''))+'</textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="save">Guardar</button></div>',b=>{
+  openModal('<h3>'+(c?'Editar tarjeta':'Nueva tarjeta')+'</h3>'+(s.topics.length?'<label class="lbl" for="mTopic">Tema<select id="mTopic">'+topicOpts+'</select></label>':'')+'<label class="lbl" for="mQ">Pregunta<textarea id="mQ" rows="3">'+esc(c?c.q:'')+'</textarea></label>'+(pre.a?'<button class="btn small soft" type="button" data-mact="suggest" style="align-self:flex-start">Sugerir pregunta</button>':'')+'<label class="lbl" for="mA">Respuesta<textarea id="mA" rows="3">'+esc(c?c.a:(pre.a||''))+'</textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="save">Guardar</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();
       if(a.dataset.mact==='suggest'){a.disabled=true;a.innerHTML='<span class="spin"></span>Pensando…';
         try{const sm=await needSample();const r=await sm.json('Este es un fragmento de los apuntes de un estudiante:\n<fragmento>\n'+$('#mA').value.slice(0,1500)+'\n</fragmento>\nEscribe una pregunta de examen concreta cuya respuesta sea ese fragmento, y una respuesta breve (máximo 30 palabras) basada solo en él. Español de España. Responde solo con JSON: {"pregunta":"","respuesta":""}',{modelTier:'quick'});

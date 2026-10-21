@@ -408,9 +408,47 @@ app.get('/a/:id', async (req, res) => {
 
 /* IA (Groq + Cloudflare) */
 const SYSTEM_PROMPT = 'Eres el asistente de estudio de la app Mnema. Responde siempre en español de España, con claridad. Sigue exactamente el formato que se te pida.';
+/* Modelos de visión: se comprueban al arrancar y se usa el primero que funcione */
+const VISION = { groq: HAS_GROQ ? GROQ_VISION_MODEL : null, cf: HAS_CF ? CF_MODEL : null, checked: false };
+function tinyPng() {
+  const w = 32, h = 32; const raw = Buffer.alloc((w * 3 + 1) * h, 255); for (let y = 0; y < h; y++) raw[y * (w * 3 + 1)] = 0;
+  const zlib = require('zlib'); const crcT = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; crcT[n] = c >>> 0; }
+  const crc = b => { let c = 0xFFFFFFFF; for (const x of b) c = crcT[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const chunk = (t, d) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const td = Buffer.concat([Buffer.from(t), d]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([l, td, c]); };
+  const ih = Buffer.alloc(13); ih.writeUInt32BE(w, 0); ih.writeUInt32BE(h, 4); ih[8] = 8; ih[9] = 2;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ih), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]).toString('base64');
+}
+async function visionWorks(url, key, model) {
+  try {
+    const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, signal: AbortSignal.timeout(25000),
+      body: JSON.stringify({ model, max_tokens: 5, messages: [{ role: 'user', content: [{ type: 'text', text: '¿De qué color es esta imagen? Una palabra.' }, { type: 'image_url', image_url: { url: 'data:image/png;base64,' + tinyPng() } }] }] }) });
+    if (!r.ok) { console.error('visión', model, r.status, (await r.text().catch(() => '')).slice(0, 160)); return false; }
+    return true;
+  } catch (e) { console.error('visión', model, String(e && e.message)); return false; }
+}
+async function checkVision() {
+  if (HAS_GROQ) {
+    let ids = [];
+    try { const r = await fetch('https://api.groq.com/openai/v1/models', { headers: { authorization: 'Bearer ' + GROQ_API_KEY } }); const j = await r.json(); ids = (j.data || []).filter(m => m.active !== false).map(m => m.id); } catch (e) {}
+    const pats = [/llama-4-maverick/i, /llama-4-scout/i, /qwen.*vl|vl.*qwen/i, /vision/i, /(^|[-\/])vl([-\/]|$)/i, /gemma-3/i, /llama-4/i];
+    const cands = [GROQ_VISION_MODEL].concat(...pats.map(p => ids.filter(id => p.test(id)))).filter((x, i, a) => x && a.indexOf(x) === i && (!ids.length || ids.includes(x)));
+    VISION.groq = null;
+    for (const m of cands.slice(0, 6)) if (await visionWorks('https://api.groq.com/openai/v1/chat/completions', GROQ_API_KEY, m)) { VISION.groq = m; break; }
+  }
+  if (HAS_CF) {
+    const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`;
+    VISION.cf = null;
+    for (const m of [CF_MODEL, '@cf/meta/llama-4-scout-17b-16e-instruct', '@cf/mistralai/mistral-small-3.1-24b-instruct', '@cf/google/gemma-3-12b-it'].filter((x, i, a) => a.indexOf(x) === i))
+      if (await visionWorks(url, CF_API_TOKEN, m)) { VISION.cf = m; break; }
+  }
+  VISION.checked = true;
+  console.log('Lectura de imágenes: groq=' + (VISION.groq || 'no') + ' · cloudflare=' + (VISION.cf || 'no'));
+}
 function providersFor(tier, hasImages) {
-  const groq = HAS_GROQ ? { name: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: GROQ_API_KEY, model: hasImages ? GROQ_VISION_MODEL : tier === 'quick' ? GROQ_MODEL_QUICK : GROQ_MODEL, maxTokens: 8000, maxChars: 380000 } : null;
-  const cf = HAS_CF ? { name: 'cloudflare', url: `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`, key: CF_API_TOKEN, model: CF_MODEL, maxTokens: 4096, maxChars: 300000 } : null;
+  const gModel = hasImages ? VISION.groq : tier === 'quick' ? GROQ_MODEL_QUICK : GROQ_MODEL;
+  const cModel = hasImages ? VISION.cf : CF_MODEL;
+  const groq = HAS_GROQ && gModel ? { name: 'groq', url: 'https://api.groq.com/openai/v1/chat/completions', key: GROQ_API_KEY, model: gModel, maxTokens: 8000, maxChars: 380000 } : null;
+  const cf = HAS_CF && cModel ? { name: 'cloudflare', url: `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1/chat/completions`, key: CF_API_TOKEN, model: cModel, maxTokens: 4096, maxChars: 300000 } : null;
   // Los modelos de Groq no leen imágenes: las fotos van a Cloudflare (Llama 4 Scout, con visión)
   const order = [groq, cf];
   return order.filter(Boolean);
@@ -458,7 +496,9 @@ app.post('/api/ai', auth, async (req, res) => {
         body: JSON.stringify({ model: p.model, stream: true, max_tokens: p.maxTokens, temperature: 0.4, messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(msgs) })
       });
     } catch (e) { if (ctrl.signal.aborted) return res.end(); lastErr = { status: 502, text: String(e && e.message) }; console.error(p.name, 'fetch', lastErr.text); continue; }
-    if (!upstream.ok) { const txt = await upstream.text().catch(() => ''); lastErr = { status: upstream.status, text: txt.slice(0, 500) }; console.error(p.name, upstream.status, lastErr.text); continue; }
+    if (!upstream.ok) { const txt = await upstream.text().catch(() => ''); lastErr = { status: upstream.status, text: txt.slice(0, 500) }; console.error(p.name, upstream.status, lastErr.text);
+      if (imgs.length && (upstream.status === 404 || /model_not_found|does not exist|not support/i.test(txt))) { if (p.name === 'groq') VISION.groq = null; else VISION.cf = null; checkVision().catch(() => {}); }
+      continue; }
     res.setHeader('Content-Type', 'text/plain; charset=utf-8'); res.setHeader('Cache-Control', 'no-cache'); res.setHeader('X-Accel-Buffering', 'no'); res.setHeader('X-Mnema-Provider', p.name);
     const reader = upstream.body.getReader(); const dec = new TextDecoder(); let buf = ''; let finish = '';
     try {
@@ -529,5 +569,6 @@ app.use((err, req, res, next) => { if (!err.expose) console.error(err); if (res.
 
 migrate().then(() => app.listen(PORT, () => {
   console.log('Mnema escuchando en ' + PORT);
+  checkVision().catch(e => console.error('visión', e));
   if (HAS_CF) cfTTS('Prueba de voz de Mnema.', TTS_VOICES.A).then(o => console.log('Voces naturales OK: ' + o.mime + ' ' + o.data.length + ' bytes')).catch(e => console.error('Voces naturales NO disponibles: ' + e.message));
 })).catch(e => { console.error('No se pudo preparar la base de datos', e); process.exit(1); });
