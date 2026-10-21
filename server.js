@@ -392,9 +392,10 @@ app.put('/api/shared/:code/scores', auth, async (req, res) => {
 });
 
 /* imágenes */
-app.post('/api/assets', auth, express.raw({ type: ['image/*'], limit: '12mb' }), async (req, res) => {
-  const mime = String(req.headers['content-type'] || '').split(';')[0];
-  if (!/^image\/(png|jpeg|webp|gif)$/.test(mime) || !Buffer.isBuffer(req.body) || !req.body.length) return res.status(400).json({ error: 'Solo imágenes PNG, JPG, WEBP o GIF.' });
+const ASSET_TYPES = /^(image\/(png|jpeg|webp|gif)|application\/pdf|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|text\/plain|text\/markdown)$/;
+app.post('/api/assets', auth, express.raw({ type: () => true, limit: '20mb' }), async (req, res) => {
+  const mime = String(req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
+  if (!ASSET_TYPES.test(mime) || !Buffer.isBuffer(req.body) || !req.body.length) return res.status(400).json({ error: 'Tipo de archivo no admitido.' });
   const id = newId();
   await pool.query('INSERT INTO assets (id, user_id, mime, data) VALUES ($1,$2,$3,$4)', [id, req.uid, mime, req.body]);
   res.json({ id, url: '/a/' + id, sizeBytes: req.body.length, contentType: mime });
@@ -402,7 +403,7 @@ app.post('/api/assets', auth, express.raw({ type: ['image/*'], limit: '12mb' }),
 app.get('/a/:id', async (req, res) => {
   const r = await pool.query('SELECT mime, data FROM assets WHERE id=$1', [req.params.id]);
   if (!r.rows[0]) return res.status(404).end();
-  res.setHeader('Content-Type', r.rows[0].mime); res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); res.end(r.rows[0].data);
+  res.setHeader('Content-Type', r.rows[0].mime); res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); res.end(r.rows[0].data);
 });
 
 /* IA (Groq + Cloudflare) */

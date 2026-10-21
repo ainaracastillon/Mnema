@@ -74,9 +74,9 @@
 
   /* ---- assets ---- */
   const assets = Object.freeze({
-    async upload(blob) {
-      const r = await fetch('/api/assets', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': blob.type || 'image/jpeg' }, body: blob });
-      if (!r.ok) { let j = {}; try { j = await r.json(); } catch (e) {} throw { code: 'upload_failed', message: j.error || 'No se pudo subir la imagen.' }; }
+    async upload(blob, type) {
+      const r = await fetch('/api/assets', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': type || blob.type || 'image/jpeg' }, body: blob });
+      if (!r.ok) { let j = {}; try { j = await r.json(); } catch (e) {} throw { code: 'upload_failed', message: j.error || 'No se pudo subir el archivo.' }; }
       return r.json();
     }
   });
