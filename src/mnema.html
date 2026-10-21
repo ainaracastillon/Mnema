@@ -627,6 +627,9 @@ h3{font-size:17px}
 .edhl{background:#FFF200;color:#000;padding:0 3px}
 .edred{color:#E00000;font-weight:600}
 @media (max-width:560px){.paper{padding:20px 18px 26px;font-size:14.5px;text-align:left}.paper h2{padding-left:0}.paper h3{padding-left:16px}.paper h4{padding-left:30px}.paper blockquote{margin:0 14px 12px}.paper ul,.paper ol{padding-left:28px}.edbar{top:62px}.edg{border-right:0;padding-right:0}}
+
+.tfiles.tpend{border-color:var(--spark);background:var(--spark-soft)}
+.tfiles.tpend .tpdf{background:var(--spark);font-size:15px}
 </style>
 
 <div class="shell">
@@ -1156,14 +1159,17 @@ function libUploadModal(s){
       if(a.dataset.mact==='paste')return ACT.pasteText({dataset:{tid}});
       V.uploadTarget={topicId:tid,blockId:null};$('#scopedIn').click()}});
 }
+function markPending(s,tid){const t=s.topics.find(x=>x.id===tid);if(t&&!s.example){t.pendingFiles=true;saveSubject(s)}}
 function topicFiles(s,t){
   const gs=groupMats(materialsOf(s.id).filter(m=>m.topicId===t.id));
   const busy=V.busy['notes_'+t.id];
   if(!gs.length){
     return s.example?'':'<div class="tdrop" data-drop-tid="'+t.id+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.upload+'</svg><span><b>Sube aquí los archivos de este tema</b><small>PDF, Word, texto o fotos. Mnema creará el PDF del tema.</small></span><span class="row" style="gap:6px"><button class="btn small" type="button" data-act="uploadTo" data-tid="'+t.id+'">Elegir archivos</button><button class="btn small ghost" type="button" data-act="pasteText" data-tid="'+t.id+'">Pegar texto</button></span></div>';
   }
-  const pdf=busy?'<span class="chip spark"><span class="spin"></span> Creando el documento del tema…</span>':t.notes?'<button class="btn small soft" type="button" data-act="topicTool" data-v="apuntes" data-keep="1" data-id="'+t.id+'">Ver y editar</button><button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Word</button>':(s.example?'':'<button class="btn small" type="button" data-act="mkNotes" data-id="'+t.id+'">Crear el PDF del tema</button>');
-  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">PDF</span><span class="tf-txt"><b>Documento del tema</b><small>'+(t.notes?(t.notesEdited?'Editado por ti':'Listo')+' · hecho con '+gs.length+' archivo'+(gs.length===1?'':'s'):gs.length+' archivo'+(gs.length===1?'':'s')+' subido'+(gs.length===1?'':'s'))+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span><span class="row" style="gap:6px">'+pdf+(s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button>')+'</span></div>';
+  const pending=!s.example&&(t.pendingFiles||!t.notes);
+  if(busy)return '<div class="tfiles" data-drop-tid="'+t.id+'"><span class="tpdf" aria-hidden="true">DOC</span><span class="tf-txt"><b>Creando el documento del tema…</b><small>Mnema está juntando el contenido de '+gs.length+' archivo'+(gs.length===1?'':'s')+'.</small></span><span class="chip spark"><span class="spin"></span> Escribiendo</span></div>';
+  if(pending)return '<div class="tfiles tpend" data-drop-tid="'+t.id+'"><span class="tpdf" aria-hidden="true">'+gs.length+'</span><span class="tf-txt"><b>'+gs.length+' archivo'+(gs.length===1?'':'s')+' subido'+(gs.length===1?'':'s')+(t.notes?' · hay cambios':'')+'</b><small>¿Has terminado de subir todo el contenido de este tema? Pulsa <b>Aceptar</b> y Mnema '+(t.notes?'actualizará el documento':'creará el documento del tema')+' con todos los archivos. · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver archivos</button></small></span><span class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Más archivos</button><button class="btn small" type="button" data-act="acceptFiles" data-id="'+t.id+'">Aceptar</button></span></div>';
+  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">PDF</span><span class="tf-txt"><b>Documento del tema</b><small>'+(t.notesEdited?'Editado por ti':'Listo')+' · hecho con '+gs.length+' archivo'+(gs.length===1?'':'s')+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span><span class="row" style="gap:6px"><button class="btn small soft" type="button" data-act="topicTool" data-v="apuntes" data-keep="1" data-id="'+t.id+'">Ver y editar</button><button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Word</button>'+(s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button>')+'</span></div>';
 }
 /* PDF bonito con pdfmake */
 let pdfLibP=null;
@@ -1194,11 +1200,11 @@ function topicHtml(s,t,i){
       if(V.busy[k]&&V.nstream&&V.nstream.id===t.id)inner=V.nstream.text?paperHtml(s,t,V.nstream.text):'<p class="muted"><span class="spin"></span> Preparando el documento del tema con tus archivos…</p>';
       else if(editing)inner=edToolbar()+paperHtml(s,t,'',V.edDraft||notesHtml(t.notes));
       else if(t.notes)inner=paperHtml(s,t,t.notes);
-      else inner='<p class="muted">'+(tmats(s,t.id)?'Mnema prepara un único PDF de este tema con todo lo necesario, bien organizado y sin lo irrelevante, a partir de los archivos que has subido.':'Sube los archivos de este tema y Mnema preparará con ellos un único PDF bien organizado.')+'</p>';
+      else inner='<p class="muted">'+(tmats(s,t.id)?'Cuando hayas subido todos los archivos de este tema, pulsa <b>Aceptar</b> y Mnema creará un único documento con todo su contenido, bien organizado y sin lo irrelevante.':'Sube los archivos de este tema. Cuando estén todos, pulsa Aceptar y Mnema creará con ellos el documento del tema.')+'</p>';
       inner='<div id="notesBox" class="notes-doc">'+inner+'</div><div class="row" style="margin-top:14px">'+
         (editing?'<button class="btn small" type="button" data-act="saveNotes" data-id="'+t.id+'">Guardar cambios</button><button class="btn small ghost" type="button" data-act="cancelNotes">Cancelar</button><span class="faint" style="font-size:13px">Tab mete un nivel en las listas; Mayús+Tab lo saca.</span>':
         (t.notes?(s.example?'':'<button class="btn small soft" type="button" data-act="editNotes" data-id="'+t.id+'">Editar</button>')+'<button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">Descargar PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Descargar Word</button><button class="btn small ghost" type="button" data-act="speak" data-src="notes" data-id="'+t.id+'">'+(V.speaking===t.id?'Parar audio':'Escuchar')+'</button>':'')+
-        (s.example&&!t.notes?'':busyBtn(k,t.notes?'Rehacer':'Crear el documento del tema','Escribiendo…',(t.notes?'redoNotes':'mkNotes')+'" data-id="'+t.id,t.notes?'ghost':'')))+'</div>';
+        (s.example||(!t.notes&&!tmats(s,t.id))?'':busyBtn(k,t.notes?'Rehacer':'Aceptar y crear el documento','Escribiendo…',(t.notes?'redoNotes':'acceptFiles')+'" data-id="'+t.id,t.notes?'ghost':'')))+'</div>';
     }else if(tv==='resumen'){
       const k='sum_'+t.id;
       if(V.busy[k]&&V.stream&&V.stream.id===t.id)inner=V.stream.text?md(V.stream.text):'<p class="muted"><span class="spin"></span> Preparando el resumen…</p>';
@@ -1318,8 +1324,8 @@ async function handleFiles(files,opts){
   if(added&&oldGroup&&oldGroup.length){oldGroup.forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id);if(V.readMat===m.id)V.readMat=null});s.materialsChanged=true;saveSubject(s)}
   V.status=null;render();
   if(added){const where=tag.topicId?(s.topics.find(x=>x.id===tag.topicId)||{}).title:tag.blockId?(blocksOf(s).find(x=>x.id===tag.blockId)||{}).title:'';
-    toast(oldGroup?'Archivo reemplazado.':(added===1?'Archivo añadido':added+' archivos añadidos')+(where?' a «'+where+'». Preparando sus apuntes…':'.'));if(!s.topics.length&&!tag.topicId&&!tag.blockId)analyze();
-    else if(tag.topicId&&s.topics.some(x=>x.id===tag.topicId))makeNotes(tag.topicId);
+    toast(oldGroup?'Archivo reemplazado.':(added===1?'Archivo añadido':added+' archivos añadidos')+(where?' a «'+where+'».':'.')+(tag.topicId?' Cuando hayas subido todos, pulsa Aceptar.':''));if(!s.topics.length&&!tag.topicId&&!tag.blockId)analyze();
+    else if(tag.topicId&&s.topics.some(x=>x.id===tag.topicId)){markPending(s,tag.topicId);render()}
     else if(tag.blockId){const ts=topicsIn(s,tag.blockId);if(ts.length&&!V.notesRun){(async()=>{V.notesRun={sid:s.id,done:0,total:ts.length,cur:''};render();for(const t of ts){V.notesRun.cur=t.title;try{await genNotes(s,t,{silent:true})}catch(e){}V.notesRun.done++}V.notesRun=null;render();toast('Apuntes del bloque actualizados.')})()}}}
 }
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
@@ -2057,7 +2063,7 @@ const ACT={
   pickFiles:()=>$('#fileIn').click(),
   pasteText:b=>{const tid=b&&b.dataset&&b.dataset.tid;const s0=cur();if(!tid){if(s0)libUploadModal(s0);return}const tt=s0.topics.find(x=>x.id===tid);openModal('<h3>Pegar texto</h3><p class="muted" style="margin:0">Se añadirá al tema «'+esc(tt?tt.title:'')+'».</p><label class="lbl" for="mTitle">Título<input type="text" id="mTitle" placeholder="Ej.: Apuntes de clase del martes"></label><label class="lbl" for="mText">Texto<textarea id="mText" rows="10" placeholder="Pega aquí tus apuntes o el temario"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Añadir</button></div>',bx=>{
     bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();const txt=cleanText($('#mText').value);if(txt.length<30){toast('Pega un texto un poco más largo.');return}
-      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});closeModal();render();toast('Texto añadido. Preparando el documento del tema…');makeNotes(tid)}})},
+      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});markPending(s,tid);closeModal();render();toast('Texto añadido. Cuando hayas subido todo, pulsa Aceptar.')}})},
   readPart:b=>{V.readMat=b.dataset.id;V.sel=null;render()},
   readMat:b=>{V.readMat=V.readMat===b.dataset.id?null:b.dataset.id;V.sel=null;render();if(V.readMat){const p=$('#readerPanel');p&&p.scrollIntoView({block:'start',behavior:'smooth'})}},
   hlAdd:()=>{const m=curMat();if(m&&V.sel)addHl(m,V.sel,'')},
@@ -2071,10 +2077,10 @@ const ACT={
   replaceGroup:b=>{V.replaceGroup=b.dataset.g;$('#replaceIn').click()},
   delGroup:b=>{const s=cur();const parts=groupParts(s,b.dataset.g);if(!parts.length)return;const base=parts[0].base||parts[0].name;
     openModal('<h3>¿Quitar «'+esc(base)+'»?</h3><p class="muted" style="margin:0">Se quitará este archivo del temario junto con sus subrayados. Tus temas, resúmenes y tarjetas se mantienen.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Quitar archivo</button></div>',bx=>{
-      bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){removeGroup(s,b.dataset.g);render();toast('Archivo quitado.')}closeModal()}})},
+      bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){const tid=parts[0].topicId;removeGroup(s,b.dataset.g);if(tid&&s.topics.some(x=>x.id===tid&&x.notes))markPending(s,tid);render();toast('Archivo quitado.')}closeModal()}})},
   manageFiles:b=>{openSubject(b.dataset.sid||(cur()&&cur().id),'#matsPanel')},
   analyze:()=>analyze(),
-  toggleTopic:b=>{V.openTopic=V.openTopic===b.dataset.id?null:b.dataset.id;V.topicView='apuntes';const t=cur().topics.find(x=>x.id===b.dataset.id);render();if(V.openTopic&&t&&!t.notes&&!cur().example)makeNotes(t.id)},
+  toggleTopic:b=>{V.openTopic=V.openTopic===b.dataset.id?null:b.dataset.id;V.topicView='apuntes';const t=cur().topics.find(x=>x.id===b.dataset.id);render()},
   tview:b=>{V.topicView=b.dataset.v;render()},
   genMap:b=>genTopicThing('map',b.dataset.id),
   genTable:b=>genTopicThing('tab',b.dataset.id),
@@ -2181,7 +2187,7 @@ const MANUAL=[
  {id:'hoy',icon:'hoy',color:'#0EA5B7',title:'Hoy: tu plan del día',desc:'Qué estudiar hoy y cómo vas.',
   items:[['Plan de hoy','Las tareas que más te ayudan ahora: repasar tarjetas, leer un resumen o hacer un test. Empieza por arriba.'],['Tu semana','Reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.'],['Racha y dominio','Los días seguidos que has estudiado y cuánto dominas la asignatura.'],['Pomodoro','Bloques de concentración y descanso. Cambia su duración en Mi cuenta › Preferencias.']]},
  {id:'asignaturas',icon:'folder',color:'#F08A24',title:'Asignaturas y carpetas',desc:'Organiza todo como en tu mochila.',
-  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['Documento del tema','Al subir los archivos de un tema, Mnema escribe un único documento con todo ese temario, con formato de apuntes: apartados numerados, citas, ejemplos y listas. Pulsa **Editar** para cambiar lo que quieras (negrita, cursiva, subrayado, resaltado, rojo, listas…) y descárgalo en **PDF** o en **Word**.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
+  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['Documento del tema','Sube todos los archivos del tema y pulsa **Aceptar**: entonces Mnema escribe un único documento con todo ese temario, con formato de apuntes: apartados numerados, citas, ejemplos y listas. Pulsa **Editar** para cambiar lo que quieras (negrita, cursiva, subrayado, resaltado, rojo, listas…) y descárgalo en **PDF** o en **Word**.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
  {id:'temas',icon:'book',color:'#8B5CF6',title:'Apuntes, resúmenes, mapas, pódcast y tablas',desc:'Cinco formas de estudiar cada tema.',
   items:[['Apuntes','Al subir los documentos de la profesora, Mnema prepara un documento por tema con todo lo necesario para estudiarlo y sin lo irrelevante. Puedes leerlo, escucharlo y descargarlo para Word.'],['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo con voces naturales. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
   tip:'Todo sale solo de tu temario. Si algo no te convence, pulsa «Rehacer».'},
@@ -2579,7 +2585,7 @@ async function genNotes(s,t,opts){
   const sm=await needSample();
   if(!opts.silent){V.openTopic=t.id;V.topicView='apuntes';V.nstream={id:t.id,text:''}}
   const r=await sm(SYS+'\n\n<temario>\n'+contextFor(s,t,120000)+'\n</temario>\n\n'+NOTES_PROMPT(t,s),{modelTier:'default',onText:opts.silent?undefined:u=>{if(V.nstream&&V.nstream.id===t.id){V.nstream.text=u.text;const box=$('#notesBox');if(box)box.innerHTML=paperHtml(s,t,u.text)}}});
-  t.notes=r.text.trim();t.notesAt=Date.now();V.nstream=null;
+  t.notes=r.text.trim();t.notesAt=Date.now();t.pendingFiles=false;V.nstream=null;
   if(!(t.keyTerms||[]).length){const ks=[];(t.notes.match(/\*\*([^*]{2,40})\*\*/g)||[]).forEach(x=>{const k=x.slice(2,-2).trim();if(!ks.some(y=>norm(y)===norm(k)))ks.push(k)});t.keyTerms=ks.slice(0,6)}
   saveSubject(s);
 }
@@ -2642,7 +2648,7 @@ function openTopicView(s,view){
   const t=s.topics.find(x=>x.id===V.openTopic)||s.topics[0];
   V.tab='temario';V.subjView='detail';V.openTopic=t.id;V.topicView=view;render();
   const el=document.querySelector('.topic-body');if(el)el.closest('.topic').scrollIntoView({block:'start',behavior:'smooth'});
-  if(!s.example){if(view==='resumen'&&!t.summary)summarize(t.id);else if(view==='apuntes'&&!t.notes)makeNotes(t.id)}
+  if(!s.example){if(view==='resumen'&&!t.summary)summarize(t.id);}
 }
 Object.assign(ACT,{
   feat:b=>{const s=cur();const k=b.dataset.k;
@@ -2655,6 +2661,10 @@ Object.assign(ACT,{
     if(k==='grupo'){if(s.example){toast('Crea tu propia asignatura para compartirla con tus compañeros.');return}shareModal();return}
   },
   mkNotes:b=>makeNotes(b.dataset.id),
+  acceptFiles:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(!t)return;if(!tmats(s,t.id)){toast('Primero sube los archivos del tema.');return}
+    const go=()=>{V.openTopic=t.id;V.topicView='apuntes';makeNotes(t.id)};
+    if(t.notes&&t.notesEdited){openModal('<h3>¿Actualizar el documento?</h3><p class="muted" style="margin:0">Has editado este documento a mano. Al actualizarlo con los archivos nuevos, Mnema lo vuelve a escribir y se pierden tus cambios.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Actualizar</button></div>',bx=>{bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;closeModal();if(a.dataset.mact==='ok'){t.notesEdited=null;go()}}});return}
+    go()},
   allNotes:()=>makeAllNotes(cur(),true),
   openNotes:b=>{const s=cur();V.openTopic=b.dataset.id;V.topicView='apuntes';render();const t=document.querySelector('.topic-body');if(t)t.closest('.topic').scrollIntoView({block:'start',behavior:'smooth'})},
   dlNotes:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(t)downloadNotes(s,[t],b.dataset.f||'pdf')},
@@ -2662,7 +2672,7 @@ Object.assign(ACT,{
   topicTool:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(!t)return;const v=b.dataset.v;
     if(V.openTopic===t.id&&V.topicView===v&&!b.dataset.keep){V.openTopic=null;render();return}
     V.openTopic=t.id;V.topicView=v;render();if(b.dataset.keep){const nb=$('#notesBox');if(nb)nb.scrollIntoView({block:'start',behavior:'smooth'})}
-    if(!s.example){if(v==='resumen'&&!t.summary)summarize(t.id);else if(v==='apuntes'&&!t.notes)makeNotes(t.id)}}
+    if(!s.example){if(v==='resumen'&&!t.summary)summarize(t.id);}}
 });
 Object.assign(ACT,{
   subjTab:b=>{V.subjTab=b.dataset.v;V.readMat=null;render()},
@@ -2670,7 +2680,7 @@ Object.assign(ACT,{
   libTopic:b=>{V.subjTab='biblioteca';V.openTopic=b.dataset.id;render();window.scrollTo(0,0)}
 });
 document.addEventListener('change',e=>{const el=e.target;if(!el||!el.dataset||el.dataset.move===undefined)return;const s=cur();const tid=el.value;if(!tid)return;
-  groupParts(s,el.dataset.move).forEach(m=>{m.topicId=tid;m.blockId=null;Store.save('m',m)});const t=s.topics.find(x=>x.id===tid);render();toast('Archivo movido a «'+(t?t.title:'')+'». Preparando su PDF…');makeNotes(tid)});
+  const gp=groupParts(s,el.dataset.move);const prevTid=gp[0]&&gp[0].topicId;gp.forEach(m=>{m.topicId=tid;m.blockId=null;Store.save('m',m)});const t=s.topics.find(x=>x.id===tid);const from=s.topics.find(x=>x.id===prevTid&&x.notes);if(from&&from.id!==tid)markPending(s,from.id);markPending(s,tid);render();toast('Archivo movido a «'+(t?t.title:'')+'». Pulsa Aceptar en el tema para actualizar su documento.')});
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('[data-drop-tid]');if(d&&d.dataset.dropTid){e.preventDefault();d.classList.add('over')}}));
 ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('[data-drop-tid]');if(d&&d.dataset.dropTid){e.preventDefault();d.classList.remove('over');if(ev==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)handleFiles(e.dataTransfer.files,{topicId:d.dataset.dropTid})}}));
 /* ---------- Documento del tema (formato de apuntes universitarios): ver, editar, PDF y Word ---------- */
