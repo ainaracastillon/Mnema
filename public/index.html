@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mnema">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}.booting body>header.top,.booting body>main{visibility:hidden}</style><script>document.documentElement.classList.add("booting");setTimeout(function(){document.documentElement.classList.remove("booting")},4000)</script>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}.booting .shell{visibility:hidden}</style><script>document.documentElement.classList.add("booting");setTimeout(function(){document.documentElement.classList.remove("booting")},4000)</script>
 <title>Mnema</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Mono:wght@500&display=swap">
@@ -24,26 +24,29 @@
   --anil:#1F2C86; --spark:#4A7DFF; --spark-ink:#2C55D6; --spark-soft:#DCE6FF;
   --btn-bg:#1F2C86; --btn-ink:#FFFFFF;
   --good:#17824F; --good-soft:#DDF3E8; --warn:#9A6400; --warn-soft:#FCEFD6; --bad:#B93A33; --bad-soft:#FBE3E1;
-  --shadow:0 1px 2px rgba(19,26,74,.06),0 6px 20px rgba(19,26,74,.06);
+  --shadow:0 1px 2px rgba(19,26,74,.05),0 8px 24px rgba(19,26,74,.07);
+  --side:#1F2C86; --side-ink:#FFFFFF;
   --f-display:'Unbounded','DM Sans',system-ui,sans-serif;
   --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-mono:'DM Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#2B3468; --surface:#36417A; --surface-2:#404C88; --line:#5663A6;
-  --ink:#F5F7FF; --ink-2:#D5DBF6; --ink-3:#B7C0E6;
-  --anil:#BBD0FF; --spark:#94B6FF; --spark-ink:#C9D9FF; --spark-soft:#4A5AA6;
-  --btn-bg:#A3C0FF; --btn-ink:#1B2356;
-  --good:#86EBBB; --good-soft:#2E6262; --warn:#FAD68A; --warn-soft:#665838; --bad:#FFB3AB; --bad-soft:#744060;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  --bg:#4A5596; --surface:#5763A8; --surface-2:#6170B5; --line:#7885C6;
+  --ink:#FFFFFF; --ink-2:#F0F3FF; --ink-3:#E3E8FF;
+  --anil:#E4ECFF; --spark:#CFDDFF; --spark-ink:#F2F6FF; --spark-soft:#4E5CA6;
+  --btn-bg:#EEF3FF; --btn-ink:#26307C;
+  --good:#C6F8E0; --good-soft:#3D7880; --warn:#FFEBBD; --warn-soft:#7A6A47; --bad:#FFE2DE; --bad-soft:#8C5376;
+  --side:#3F4A8A; --side-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,24,70,.25),0 10px 28px rgba(20,24,70,.22); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#2B3468; --surface:#36417A; --surface-2:#404C88; --line:#5663A6;
-  --ink:#F5F7FF; --ink-2:#D5DBF6; --ink-3:#B7C0E6;
-  --anil:#BBD0FF; --spark:#94B6FF; --spark-ink:#C9D9FF; --spark-soft:#4A5AA6;
-  --btn-bg:#A3C0FF; --btn-ink:#1B2356;
-  --good:#86EBBB; --good-soft:#2E6262; --warn:#FAD68A; --warn-soft:#665838; --bad:#FFB3AB; --bad-soft:#744060;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  --bg:#4A5596; --surface:#5763A8; --surface-2:#6170B5; --line:#7885C6;
+  --ink:#FFFFFF; --ink-2:#F0F3FF; --ink-3:#E3E8FF;
+  --anil:#E4ECFF; --spark:#CFDDFF; --spark-ink:#F2F6FF; --spark-soft:#4E5CA6;
+  --btn-bg:#EEF3FF; --btn-ink:#26307C;
+  --good:#C6F8E0; --good-soft:#3D7880; --warn:#FFEBBD; --warn-soft:#7A6A47; --bad:#FFE2DE; --bad-soft:#8C5376;
+  --side:#3F4A8A; --side-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,24,70,.25),0 10px 28px rgba(20,24,70,.22); color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -243,7 +246,7 @@ mark{background:var(--spark-soft);color:var(--ink);padding:0 3px;border-radius:4
 .shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .shortcuts .btn{justify-content:flex-start;min-height:48px}
 /* Presentación (versión con cuentas) */
-body.locked > header.top, body.locked > main{display:none}
+
 .land{display:flex;flex-direction:column}
 .land-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
 .land-top .in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
@@ -319,39 +322,169 @@ table.cmp tbody th{background:var(--surface-2);font-weight:500;color:var(--ink)}
 .brow:first-child{border-top:0}
 .brow.me{font-weight:700}
 .code{font-family:var(--f-mono);font-size:30px;letter-spacing:.2em;padding:10px 16px;border-radius:12px;background:var(--surface-2);text-align:center;user-select:all}
+
+/* ===== Diseño: barra lateral (ordenador) + barra inferior (móvil) ===== */
+body::before{display:none}
+.shell{min-height:100%;display:grid;grid-template-columns:268px minmax(0,1fr)}
+.side{position:sticky;top:0;height:100vh;height:100dvh;background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;gap:22px;padding:24px 16px 20px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-left:max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.side-brand{display:flex;align-items:center;gap:10px;color:inherit;padding:0 8px}
+.side-brand .word{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:-.5px}
+.side-subj{display:flex;flex-direction:column;gap:6px;padding:0 4px}
+.side-lbl{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;font-weight:500;padding-left:4px}
+.side .subj-sel{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:var(--side-ink);border-radius:12px;padding:10px 12px;min-height:44px;font-weight:500}
+.side .subj-sel option{color:#131A4A;background:#fff}
+.side-nav{display:flex;flex-direction:column;gap:4px}
+.tab{appearance:none;border:0;background:none;cursor:pointer;font:inherit;color:inherit;border-radius:12px}
+.side .tab{display:flex;align-items:center;gap:12px;padding:11px 14px;font-weight:500;font-size:15px;color:rgba(255,255,255,.82);text-align:left;width:100%;min-height:44px}
+.side .tab:hover{background:rgba(255,255,255,.08);color:#fff}
+.side .tab[aria-current="page"]{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 3px 0 0 #9DBBFF}
+.side .tab .ni{flex-shrink:0;opacity:.95}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.acct-row{gap:12px!important}
+.acct-row .avatar{width:38px;height:38px;border-color:rgba(255,255,255,.35)}
+.acct-txt{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.acct-txt b{font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-txt small{font-size:12px;opacity:.75}
+.content{min-width:0;display:flex;flex-direction:column}
+.mtop{display:none}
+.bnav{display:none}
+main{padding-block:40px 80px;max-width:1040px;width:100%;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px))}
+main > .stack, main .page{gap:28px}
+@media (max-width:899px){
+  .shell{display:block}
+  .side{display:none}
+  .mtop{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:6;background:var(--side);color:var(--side-ink);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));padding-top:calc(10px + env(safe-area-inset-top,0px))}
+  .mtop .side-brand{padding:0}
+  .mtop .side-brand .word{display:none}
+  .mtop .subj-sel{flex:1;min-width:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:12px;padding:8px 10px;min-height:40px;font-weight:500}
+  .mtop .subj-sel option{color:#131A4A;background:#fff}
+  .mtop .tab.mini{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;padding:0}
+  .mtop .avatar{border-color:rgba(255,255,255,.4)}
+  .bnav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));box-shadow:0 -6px 20px rgba(19,26,74,.08)}
+  .bnav .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;font-size:11px;font-weight:500;color:var(--ink-3);min-height:52px}
+  .bnav .tab[aria-current="page"]{color:var(--spark-ink);background:var(--spark-soft)}
+  main{padding-block:22px 110px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  main > .stack, main .page{gap:20px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+body.locked .shell{display:none}
+
+/* Cabecera de página */
+.phead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.phead h1{font-family:var(--f-display);font-weight:600;font-size:clamp(26px,3.4vw,34px);letter-spacing:-.6px;line-height:1.1;color:var(--ink)}
+.phead p{margin:8px 0 0;color:var(--ink-2);font-size:16px;max-width:60ch}
+.phead .eyebrow{display:block;margin-bottom:6px}
+
+/* Más aire en todo */
+.stack{gap:20px}
+.panel{border-radius:20px;padding:24px}
+.panel.flat{padding:18px 20px}
+.grid2{gap:20px}
+h2.sec{font-size:21px}
+h3{font-size:17px}
+.panel > h3:first-child,.panel .row > h3{letter-spacing:-.1px}
+.plan-list{gap:10px}
+.plan-item{padding:14px 16px;border-radius:14px}
+.topic{border-radius:18px}
+.topic-h{padding:18px 20px}
+.topic-acts{padding:0 20px 18px 58px;gap:8px}
+.mat{padding:14px 0}
+.stats{gap:14px}
+.stat{border-radius:16px;padding:16px 18px}
+.stat .v{font-size:30px}
+.flash{border-radius:24px;padding:32px 28px;min-height:300px}
+.empty{padding:44px 24px;gap:14px}
+@media (max-width:560px){.panel{padding:18px;border-radius:18px}.topic-acts{padding-left:20px}.flash{padding:24px 20px}}
+
+/* Hoy */
+.today{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.today{grid-template-columns:minmax(0,1fr)}}
+.hero-band{background:var(--side);color:#fff;border-radius:24px;padding:26px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:center}
+.hero-band .k{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.hero-band .v{font-family:var(--f-display);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.05;letter-spacing:-1px;margin-top:4px}
+.hero-band .s{font-size:13.5px;opacity:.85;margin-top:2px}
+.hero-band input[type=date]{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff;color-scheme:dark;margin-top:8px;max-width:100%}
+@media (max-width:560px){.hero-band{grid-template-columns:repeat(2,minmax(0,1fr));padding:20px}.hero-band > div:first-child{grid-column:1/-1}}
+.mring{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(#9DBBFF calc(var(--p)*1%),rgba(255,255,255,.18) 0);display:grid;place-items:center;flex-shrink:0}
+.mring span{width:48px;height:48px;border-radius:50%;background:var(--side);display:grid;place-items:center;font-family:var(--f-mono);font-size:14px}
+.tip{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:16px;background:var(--spark-soft);color:var(--spark-ink)}
+.tip svg{flex-shrink:0;margin-top:2px}
+
+/* Mi cuenta y admin: subnavegación */
+.subnav{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:640px){.subnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:2px 16px}.subnav::-webkit-scrollbar{display:none}.subnav button{flex-shrink:0}}
+.subnav button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;min-height:38px;display:inline-flex;align-items:center;gap:6px}
+.subnav button:hover{color:var(--ink);border-color:var(--spark)}
+.subnav button[aria-pressed="true"]{background:var(--btn-bg);color:var(--btn-ink);border-color:var(--btn-bg)}
+.subnav .badge{background:var(--bad);color:var(--surface);border-radius:99px;font-size:11px;padding:1px 7px;font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.tile .v{font-family:var(--f-display);font-weight:600;font-size:30px;letter-spacing:-.5px;color:var(--ink)}
+.tile .k{font-size:14px;color:var(--ink-2);font-weight:500}
+.tile .s{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.ulist{display:flex;flex-direction:column}
+.urow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;font:inherit;color:inherit;width:100%}
+.urow:first-child{border-top:0}
+.urow:hover{background:var(--surface-2)}
+.urow .avatar{width:44px;height:44px}
+.urow .who{min-width:0}
+.urow .who b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.urow .who small{color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.role{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+.role.superadmin{background:var(--btn-bg);color:var(--btn-ink)}
+.role.admin{background:var(--spark-soft);color:var(--spark-ink)}
+.msg-card{border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.msg-card p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.logrow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.logrow:first-child{border-top:0}
+@media (max-width:560px){.logrow{grid-template-columns:minmax(0,1fr)}}
+.sparkbars{display:flex;align-items:flex-end;gap:3px;height:90px}
+.sparkbars i{flex:1;background:var(--spark);border-radius:4px 4px 0 0;min-height:2px;opacity:.85}
 </style>
 
-</head>
-<body>
-<header class="top">
-  <div class="wrap top-in">
-    <div class="brand" aria-label="Mnema">
-      <svg width="34" height="34" viewBox="0 0 84 84" aria-hidden="true"><polyline class="ln" points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle class="nd" cx="14" cy="66" r="7.5"/><circle class="nd" cx="14" cy="18" r="7.5"/><circle class="nd" cx="70" cy="18" r="7.5"/><circle class="nd" cx="70" cy="66" r="7.5"/><circle class="hub" cx="42" cy="50" r="11"/></svg>
-      <span class="word">mnema</span>
-    </div>
-    <div class="subj">
-      <label for="subjSel" class="sr">Asignatura</label>
-      <select id="subjSel"></select>
-      <button class="btn small ghost" data-act="newSubject" type="button">+ Asignatura</button>
-      <button class="avatar" id="acctBtn" type="button" data-act="go" data-tab="cuenta" aria-label="Mi cuenta" title="Mi cuenta"></button>
-    </div>
-  </div>
-  <nav class="tabs wrap" id="tabs" role="tablist" aria-label="Secciones">
-    <button class="tab" role="tab" data-tab="hoy" type="button">Hoy</button>
-    <button class="tab" role="tab" data-tab="temario" type="button">Temario</button>
-    <button class="tab" role="tab" data-tab="tarjetas" type="button">Tarjetas</button>
-    <button class="tab" role="tab" data-tab="tests" type="button">Tests</button>
-    <button class="tab" role="tab" data-tab="tutor" type="button">Tutor</button>
-    <button class="tab" role="tab" data-tab="progreso" type="button">Progreso</button>
+<div class="shell">
+<aside class="side" aria-label="Navegación principal">
+  <div class="side-brand"><svg width="30" height="30" viewBox="0 0 84 84" aria-hidden="true"><polyline points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="14" cy="66" r="7.5" fill="currentColor"/><circle cx="14" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="66" r="7.5" fill="currentColor"/><circle cx="42" cy="50" r="11" fill="#7FA4FF"/></svg><span class="word">mnema</span></div>
+  <div class="side-subj"><label for="subjSel" class="side-lbl">Asignatura</label><select id="subjSel" class="subj-sel"></select></div>
+  <nav class="side-nav" aria-label="Secciones">
+    <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
+    <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/></svg><span>Temario</span></button>
+    <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
+    <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
+    <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
+    <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
   </nav>
-</header>
-<main class="wrap" id="main"></main>
+  <div class="side-foot">
+    <button class="tab admin-link" data-tab="admin" type="button" hidden><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Administración</span></button>
+    <button class="tab acct-row" data-tab="cuenta" type="button"><span class="avatar acct-av" aria-hidden="true"></span><span class="acct-txt"><b class="acct-name">Mi cuenta</b><small>Ajustes, ayuda y manual</small></span></button>
+  </div>
+</aside>
+<div class="content">
+  </head>
+<body>
+<header class="mtop">
+    <div class="side-brand"><svg width="30" height="30" viewBox="0 0 84 84" aria-hidden="true"><polyline points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="14" cy="66" r="7.5" fill="currentColor"/><circle cx="14" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="66" r="7.5" fill="currentColor"/><circle cx="42" cy="50" r="11" fill="#7FA4FF"/></svg><span class="word">mnema</span></div>
+    <label for="subjSel2" class="sr">Asignatura</label><select id="subjSel2" class="subj-sel"></select>
+    <button class="tab admin-link mini" data-tab="admin" type="button" hidden aria-label="Administración"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></button>
+    <button class="tab avatar acct-av mini" data-tab="cuenta" type="button" aria-label="Mi cuenta"></button>
+  </header>
+  <main class="wrap" id="main"></main>
+</div>
+<nav class="bnav" aria-label="Secciones">
+  <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
+  <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/></svg><span>Temario</span></button>
+  <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
+  <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
+  <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
+  <button class="tab" data-tab="progreso" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progreso</span></button>
+</nav>
+</div>
 <input type="file" id="fileIn" multiple accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
 <input type="file" id="replaceIn" accept=".pdf,.docx,.txt,.md,.markdown,image/*" hidden>
 <div id="modal" class="modal" hidden><div class="box" id="modalBox" role="dialog" aria-modal="true"></div></div>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="/mnema-shim.js?v=3a6dc0308e"></script>
+<script src="/mnema-shim.js?v=e9e9371f39"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -669,17 +802,32 @@ function exampleBanner(s){
 
 /* ---------- render ---------- */
 const main=$('#main');
+const PAGE={
+  hoy:s=>[greeting(),'Esto es lo que te toca hoy en '+s.name+'.','Tu día'],
+  temario:s=>['Temario','Sube tus apuntes y estudia cada tema con resúmenes, mapas, pódcast y tablas.',s.name],
+  tarjetas:s=>['Tarjetas','Repasa cada concepto justo antes de que se te olvide.',s.name],
+  tests:s=>['Tests','Ponte a prueba como en el examen y aprende de tus fallos.',s.name],
+  tutor:s=>['Tutor','Pregunta lo que no entiendas. Solo usa tu temario.',s.name],
+  progreso:s=>['Progreso','Cómo vas, qué dominas y qué te falta reforzar.',s.name],
+  cuenta:()=>['Mi cuenta','Tu perfil, tus asignaturas, tus preferencias y la ayuda.',''],
+  admin:()=>['Administración','Usuarios, mensajes y actividad de Mnema.','Panel']
+};
+function greeting(){const h=new Date().getHours();const n=V.me&&(V.me.displayName||V.me.username)||'';const first=n.split(/\s+/)[0];return (h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+(first?', '+first:'')}
+function pageHead(s){const f=PAGE[V.tab];if(!f)return '';const [t,sub,eb]=f(s||{name:''});return '<header class="phead"><div>'+(eb?'<span class="eyebrow">'+esc(eb)+'</span>':'')+'<h1>'+esc(t)+'</h1><p>'+esc(sub)+'</p></div></header>'}
 function render(){
   const list=allSubjects();const s=cur();
-  const sel=$('#subjSel');
-  sel.innerHTML=list.length?list.map(x=>'<option value="'+esc(x.id)+'"'+(s&&x.id===s.id?' selected':'')+'>'+(x.example?'Ejemplo · ':'')+esc(x.name)+'</option>').join(''):'<option>Sin asignaturas</option>';
-  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab===V.tab)));
+  const opts=(list.length?list.map(x=>'<option value="'+esc(x.id)+'"'+(s&&x.id===s.id?' selected':'')+'>'+(x.example?'Ejemplo · ':'')+esc(x.name)+'</option>').join(''):'<option value="">Sin asignaturas</option>')+'<option value="__new">＋ Nueva asignatura…</option>';
+  ['#subjSel','#subjSel2'].forEach(id=>{const el=$(id);if(el)el.innerHTML=opts});
+  if(V.tab==='admin'&&!(V.me&&V.me.isAdmin&&window.mnemaAdmin))V.tab='hoy';
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-current',t.dataset.tab===V.tab?'page':'false'));
+  document.querySelectorAll('.admin-link').forEach(b=>{b.hidden=!(V.me&&V.me.isAdmin&&window.mnemaAdmin)});
   renderAvatarBtn();
-  if(V.tab==='cuenta'){main.innerHTML=renderCuenta(s);return}
-  if(!s){main.innerHTML='<div class="panel empty"><h2 class="sec">Empieza creando una asignatura</h2><p class="muted">Ponle nombre y la fecha del examen. Después sube tu temario y Mnema hará el resto.</p><button class="btn" type="button" data-act="newSubject">Crear asignatura</button></div>';return}
-  const fn={hoy:renderHoy,temario:renderTemario,tarjetas:renderTarjetas,tests:renderTests,tutor:renderTutor,progreso:renderProgreso}[V.tab];
+  if(V.tab==='cuenta'){main.innerHTML='<div class="stack page">'+pageHead(s)+renderCuenta(s)+'</div>';return}
+  if(V.tab==='admin'){main.innerHTML='<div class="stack page">'+pageHead(s)+renderAdmin()+'</div>';return}
+  if(!s){main.innerHTML='<div class="stack page">'+'<header class="phead"><div><h1>'+esc(greeting())+'</h1><p>Vamos a preparar tu primera asignatura.</p></div></header><div class="panel empty"><h2 class="sec">Crea tu primera asignatura</h2><p class="muted">Ponle nombre y la fecha del examen. Después sube tu temario y Mnema hará el resto.</p><button class="btn" type="button" data-act="newSubject">Crear asignatura</button></div></div>';return}
+  const fn={hoy:renderHoy,temario:renderTemario,tarjetas:renderTarjetas,tests:renderTests,tutor:renderTutor,progreso:renderProgreso}[V.tab]||renderHoy;
   const ae=document.activeElement;const keepId=ae&&ae.id&&main.contains(ae)?ae.id:null;const selStart=keepId&&ae.selectionStart;
-  main.innerHTML=fn(s);
+  main.innerHTML='<div class="stack page">'+pageHead(s)+fn(s)+'</div>';
   if(keepId){const el=document.getElementById(keepId);if(el){el.focus();try{if(selStart!=null)el.setSelectionRange(selStart,selStart)}catch(e){}}}
   if(V.tab==='tutor'){const c=$('#chatBox');if(c)c.scrollTop=c.scrollHeight}
 }
@@ -688,22 +836,24 @@ function render(){
 function renderHoy(s){
   const plan=buildPlan(s);const st=streakNow();const m=subjectMastery(s);
   const doneToday=(S.meta.log[today()]||0);
-  const exam=plan.left===null
-    ?'<div class="stack" style="gap:8px"><span class="eyebrow">Fecha del examen</span><label class="lbl" for="examDate">¿Cuándo es el examen?<input type="date" id="examDate" value=""></label></div>'
-    :'<div class="stack" style="gap:4px"><span class="eyebrow">Examen · '+esc(fmtDate(s.examDate))+'</span><div class="count num">'+(plan.left<0?'Hecho':plan.left===0?'Hoy':plan.left)+'</div><span class="muted">'+(plan.left>0?(plan.left===1?'día':'días')+' para el examen':plan.left===0?'¡Mucha suerte!':'El examen ya pasó')+'</span><label class="lbl" for="examDate" style="margin-top:6px">Cambiar fecha<input type="date" id="examDate" value="'+esc(s.examDate)+'"></label></div>';
-  const items=plan.items.map((it,i)=>'<li class="plan-item"><span class="dot" aria-hidden="true"></span><span class="txt">'+esc(it.txt)+(it.m!=null?' <span class="chip '+barCls(it.m)+'">'+pct(it.m)+' %</span>':'')+'</span><button class="btn small soft" type="button" data-act="planGo" data-i="'+i+'">'+esc(it.cta)+'</button></li>').join('');
-  const week=plan.week.length?'<div class="panel stack"><div class="row" style="justify-content:space-between"><h3>Próximos 7 días</h3><span class="faint" style="font-size:13px">Se reajusta cada día según lo que peor llevas</span></div><div class="week">'+plan.week.map((w,i)=>{const dd=new Date(w.day+'T12:00:00');return '<div class="day'+(i===0?' today':'')+(w.exam?' exam':'')+'"><b>'+(i===0?'Hoy':DOW[dd.getDay()]+' '+dd.getDate())+'</b><span class="t">'+esc(w.label)+'</span></div>'}).join('')+'</div></div>':'';
+  const examCell=plan.left===null
+    ?'<div><div class="k">Examen</div><div class="v" style="font-size:22px">Sin fecha</div><label class="sr" for="examDate">Fecha del examen</label><input type="date" id="examDate" value=""></div>'
+    :'<div><div class="k">Examen · '+esc(fmtDate(s.examDate))+'</div><div class="v">'+(plan.left<0?'Hecho':plan.left===0?'¡Hoy!':plan.left+(plan.left===1?' día':' días'))+'</div><label class="sr" for="examDate">Cambiar fecha del examen</label><input type="date" id="examDate" value="'+esc(s.examDate)+'"></div>';
+  const band='<div class="hero-band">'+examCell+
+    '<div><div class="k">Racha</div><div class="v">'+st+(st===1?' día':' días')+'</div><div class="s">'+(doneToday?'Hoy ya llevas '+doneToday+' acciones':'Estudia hoy para sumar un día')+'</div></div>'+
+    '<div class="row" style="gap:14px;flex-wrap:nowrap"><div class="mring" style="--p:'+pct(m)+'"><span>'+pct(m)+'%</span></div><div><div class="k">Dominio</div><div class="s">'+(s.topics.length?s.topics.length+' temas':'Sin temas aún')+'</div></div></div></div>';
+  const items=plan.items.map((it,i)=>'<li class="plan-item"><span class="dot" aria-hidden="true"></span><span class="txt">'+esc(it.txt)+(it.m!=null?' <span class="chip '+barCls(it.m)+'">'+pct(it.m)+' %</span>':'')+'</span><button class="btn small" type="button" data-act="planGo" data-i="'+i+'">'+esc(it.cta)+'</button></li>').join('');
+  const week=plan.week.length?'<section class="panel stack"><div><h2 class="sec">Tu semana</h2><p class="muted" style="margin:4px 0 0">Mnema reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas.</p></div><div class="week">'+plan.week.map((w,i)=>{const dd=new Date(w.day+'T12:00:00');return '<div class="day'+(i===0?' today':'')+(w.exam?' exam':'')+'"><b>'+(i===0?'Hoy':DOW[dd.getDay()]+' '+dd.getDate())+'</b><span class="t">'+esc(w.label)+'</span></div>'}).join('')+'</div></section>':'';
   const p=V.pomo;const frac=1-p.left/p.total;const R=78,CIRC=2*Math.PI*R;
   const pomos=S.meta.pomos&&S.meta.pomos[today()]||0;
-  return '<div class="stack">'+exampleBanner(s)+
-  '<div class="hero"><div class="panel stack"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><span class="eyebrow">Plan de hoy</span><h2 class="sec" style="margin-top:4px">'+esc(s.name)+'</h2></div><div class="row"><span class="chip '+(st?'spark':'')+'">Racha: <b class="num">'+st+'</b> '+(st===1?'día':'días')+'</span><span class="chip">Dominio '+pct(m)+' %</span></div></div><ul class="plan-list">'+items+'</ul>'+(doneToday?'<p class="faint" style="margin:0;font-size:13px">Hoy llevas '+doneToday+' acciones de estudio.</p>':'')+'</div>'+
-  '<div class="panel stack">'+exam+'</div></div>'+
-  '<div class="grid2">'+week.replace('class="panel stack"','class="panel stack" style="grid-column:1/-1"')+
-  '<div class="panel pomo"><div class="row" style="justify-content:space-between;width:100%"><h3>Pomodoro</h3><div class="seg" role="group" aria-label="Modo"><button type="button" data-act="pomoMode" data-m="foco" aria-pressed="'+(p.mode==='foco')+'">Foco '+focoMin()+'</button><button type="button" data-act="pomoMode" data-m="descanso" aria-pressed="'+(p.mode==='descanso')+'">Descanso '+descMin()+'</button></div></div>'+
+  const pomo='<section class="panel pomo"><div class="row" style="justify-content:space-between;width:100%"><h2 class="sec">Pomodoro</h2><div class="seg" role="group" aria-label="Modo"><button type="button" data-act="pomoMode" data-m="foco" aria-pressed="'+(p.mode==='foco')+'">Foco '+focoMin()+'</button><button type="button" data-act="pomoMode" data-m="descanso" aria-pressed="'+(p.mode==='descanso')+'">Descanso '+descMin()+'</button></div></div>'+
   '<div class="ring"><svg viewBox="0 0 180 180" aria-hidden="true"><circle cx="90" cy="90" r="'+R+'" fill="none" stroke="var(--surface-2)" stroke-width="10"/><circle id="pomoArc" cx="90" cy="90" r="'+R+'" fill="none" stroke="'+(p.mode==='foco'?'var(--spark)':'var(--good)')+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+CIRC.toFixed(1)+'" stroke-dashoffset="'+(CIRC*(1-frac)).toFixed(1)+'"/></svg><div class="c"><div class="clock" id="pomoClock">'+fmtClock(p.left)+'</div><span class="faint" style="font-size:13px">'+(p.mode==='foco'?'Concentración':'Descanso')+'</span></div></div>'+
-  '<div class="row"><button class="btn" type="button" data-act="pomoToggle">'+(p.running?'Pausar':'Empezar')+'</button><button class="btn ghost" type="button" data-act="pomoReset">Reiniciar</button></div><span class="faint" style="font-size:13px">Hoy: '+pomos+' pomodoro'+(pomos===1?'':'s')+' completado'+(pomos===1?'':'s')+'</span></div>'+
-  '<div class="panel stack"><h3>Atajos</h3><div class="shortcuts"><button class="btn soft" type="button" data-act="go" data-tab="temario">Subir temario</button><button class="btn soft" type="button" data-act="go" data-tab="tarjetas">Repasar tarjetas</button><button class="btn soft" type="button" data-act="go" data-tab="tests">Hacer un test</button><button class="btn soft" type="button" data-act="go" data-tab="tutor">Preguntar al tutor</button></div><p class="faint" style="margin:0;font-size:13px">El nombre de la asignatura, compartir con compañeros y el resto de ajustes están en <a href="#" data-act="go" data-tab="cuenta" style="color:var(--spark-ink)">Mi cuenta</a>.</p></div>'+
-  '</div><p class="foot">'+(Store.mode==='db'?'Tu progreso se guarda en tu cuenta.':'Tu progreso se guarda en este navegador.')+'</p></div>';
+  '<div class="row"><button class="btn" type="button" data-act="pomoToggle">'+(p.running?'Pausar':'Empezar')+'</button><button class="btn ghost" type="button" data-act="pomoReset">Reiniciar</button></div><span class="faint" style="font-size:13px">Hoy: '+pomos+' pomodoro'+(pomos===1?'':'s')+'</span></section>';
+  const mailBanner=V.me&&!V.me.email?'<div class="banner"><span class="chip warn">Falta tu correo</span><span class="t">Añade tu correo para poder recuperar tu cuenta.</span><button class="btn small" type="button" data-act="go" data-tab="cuenta">Añadirlo</button></div>':'';
+  const shortcuts='<section class="panel stack"><h2 class="sec">Ir directo a…</h2><div class="shortcuts"><button class="btn soft" type="button" data-act="go" data-tab="temario">Subir temario</button><button class="btn soft" type="button" data-act="go" data-tab="tarjetas">Repasar tarjetas</button><button class="btn soft" type="button" data-act="go" data-tab="tests">Hacer un test</button><button class="btn soft" type="button" data-act="go" data-tab="tutor">Preguntar al tutor</button></div></section>';
+  return exampleBanner(s)+mailBanner+band+
+    '<div class="today"><section class="panel stack"><div><h2 class="sec">Tu plan de hoy</h2><p class="muted" style="margin:4px 0 0">Empieza por arriba: es lo que más te ayuda ahora.</p></div><ul class="plan-list">'+items+'</ul></section>'+pomo+'</div>'+
+    week+shortcuts+'<p class="foot">'+(Store.mode==='db'?'Tu progreso se guarda en tu cuenta.':'Tu progreso se guarda en este navegador.')+'</p>';
 }
 function fmtClock(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function pomoTick(){
@@ -1638,7 +1788,7 @@ function avatarInner(u){
   if(u)return esc(initials(u).toUpperCase());
   return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
 }
-function renderAvatarBtn(){const b=$('#acctBtn');if(!b)return;b.innerHTML=avatarInner(V.me);if(V.tab==='cuenta')b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')}
+function renderAvatarBtn(){document.querySelectorAll('.acct-av').forEach(b=>{b.innerHTML=avatarInner(V.me)});document.querySelectorAll('.acct-name').forEach(b=>{b.textContent=V.me?(V.me.displayName||V.me.username):'Mi cuenta'})}
 const HOST_THEME=document.documentElement.getAttribute('data-theme');
 function applyTheme(v,boot){
   v=v||'system';S.meta.theme=v;if(!boot){try{localStorage.setItem('mnema.theme',v)}catch(e){}}
@@ -1664,8 +1814,10 @@ function renderCuenta(s){
   const A=ACC();const u=V.me;
   const subs=Object.values(S.subjects).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
   const th=S.meta.theme||'system';
-  const nav='<nav class="acct-nav" aria-label="Secciones de Mi cuenta">'+(A?'<a href="#ac-perfil">Perfil</a><a href="#ac-seg">Contraseña</a>':'')+'<a href="#ac-asig">Asignaturas</a><a href="#ac-pref">Preferencias</a>'+(window.mnemaInstall?'<a href="#ac-app">Instalar la app</a>':'')+'<a href="#ac-manual">Manual de uso</a>'+(A?'<a href="#ac-sesion">Sesión</a>':'')+'</nav>';
-  const head='<div class="acct-head"><span class="avatar big" aria-hidden="true">'+avatarInner(u)+'</span><div style="min-width:0"><span class="eyebrow">Mi cuenta</span><h2 class="sec" style="font-size:24px;overflow-wrap:anywhere">'+esc(u?(u.displayName||u.username):'Mi cuenta')+'</h2>'+(u?'<span class="muted" style="font-size:14px;overflow-wrap:anywhere">@'+esc(u.username)+(u.email?' · '+esc(u.email):'')+'</span>':'')+'</div></div>';
+  const secs=[A?['perfil','Perfil']:null,A?['seguridad','Contraseña']:null,['asignaturas','Asignaturas'],['preferencias','Preferencias'],window.mnemaInstall?['app','Instalar la app']:null,['manual','Manual de uso'],A?['ayuda','Ayuda y contacto']:null,A?['sesion','Sesión']:null].filter(Boolean);
+  if(!V.acctTab||!secs.some(x=>x[0]===V.acctTab))V.acctTab=secs[0][0];
+  const nav='<nav class="subnav" aria-label="Secciones de Mi cuenta">'+secs.map(([k,l])=>'<button type="button" data-act="acctTab" data-v="'+k+'" aria-pressed="'+(V.acctTab===k)+'">'+l+'</button>').join('')+'</nav>';
+  const head='<div class="acct-head"><span class="avatar big" aria-hidden="true">'+avatarInner(u)+'</span><div style="min-width:0"><h2 class="sec" style="font-size:24px;overflow-wrap:anywhere">'+esc(u?(u.displayName||u.username):'Mi cuenta')+'</h2>'+(u?'<span class="muted" style="font-size:14px;overflow-wrap:anywhere">@'+esc(u.username)+(u.email?' · '+esc(u.email):'')+'</span>':'')+'</div></div>';
   const perfil=!A?'':'<section class="panel stack" id="ac-perfil"><h3>Perfil</h3>'+
     '<div class="row"><input type="file" id="acPhoto" accept="image/*" class="sr"><label for="acPhoto" class="btn small soft">'+(u&&u.avatarUrl?'Cambiar foto':'Subir foto')+'</label>'+(u&&u.avatarUrl?'<button class="btn small ghost" type="button" data-act="removePhoto">Quitar foto</button>':'')+(V.busy.photo?'<span class="faint" style="font-size:13px"><span class="spin"></span> Subiendo…</span>':'')+'</div>'+
     '<div class="form2"><label class="lbl" for="acName">Nombre de perfil<input type="text" id="acName" maxlength="60" value="'+esc(u&&u.displayName||'')+'" placeholder="Cómo te verán tus compañeros"></label>'+
@@ -1686,7 +1838,12 @@ function renderCuenta(s){
   const inst=!IN?'':'<section class="panel stack" id="ac-app"><h3>Instalar la app</h3>'+(IN.installed()?'<p class="muted" style="margin:0">Ya estás usando Mnema como aplicación en este dispositivo.</p>':'<p class="muted" style="margin:0">Instala Mnema en este '+(IN.platform==='desktop'?'ordenador':'móvil')+' para abrirla desde su icono, en su propia ventana, como cualquier otra aplicación.</p>'+(IN.available()?'<div class="row"><button class="btn" type="button" data-act="installApp">Instalar Mnema</button></div>':'<p style="margin:0">'+esc(IN.howTo())+'</p>'))+'</section>';
   const manual='<section class="panel stack manual" id="ac-manual"><h3>Manual de uso</h3><div>'+MANUAL.map(([t,b],i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(t)+'</summary>'+md(b)+'</details>').join('')+'</div></section>';
   const sesion=!A?'':'<section class="panel stack danger-zone" id="ac-sesion"><h3>Sesión</h3><div class="row"><button class="btn ghost" type="button" data-act="logout">Cerrar sesión</button><button class="btn danger" type="button" data-act="delAccount">Eliminar mi cuenta</button></div><p class="faint" style="margin:0;font-size:13px">Eliminar la cuenta borra para siempre tu temario, tarjetas, progreso y los grupos que hayas creado.</p></section>';
-  return '<div class="stack">'+head+nav+perfil+asig+pref+inst+manual+sesion+'</div>';
+  const ayuda=!A?'':'<section class="panel stack" id="ac-ayuda"><div><h3>Ayuda y contacto</h3><p class="muted" style="margin:4px 0 0">¿Algo no funciona, tienes una duda o una idea para mejorar Mnema? Escríbenos y te responderemos a tu correo.</p></div><div class="form2"><label class="lbl" for="ctKind">Tipo<select id="ctKind"><option value="consulta">Duda o consulta</option><option value="sugerencia">Sugerencia</option><option value="error">Algo no funciona</option></select></label><label class="lbl" for="ctSubj">Asunto<input type="text" id="ctSubj" maxlength="140"></label></div><label class="lbl" for="ctBody">Mensaje<textarea id="ctBody" rows="5" maxlength="5000"></textarea></label><div class="row">'+busyBtn('contact','Enviar mensaje','Enviando…','sendContact')+'</div></section>';
+  const SEC={perfil,seguridad:'',asignaturas:asig,preferencias:pref,app:inst,manual,ayuda,sesion};
+  let body=SEC[V.acctTab];
+  if(V.acctTab==='seguridad'){const m=perfil.indexOf('<section class="panel stack" id="ac-seg">');body=m>=0?perfil.slice(m):''}
+  if(V.acctTab==='perfil'){const m=perfil.indexOf('<section class="panel stack" id="ac-seg">');body=m>=0?perfil.slice(0,m):perfil}
+  return '<div class="stack">'+head+nav+(body||'')+'</div>';
 }
 async function accountDo(key,fn,ok){
   await withBusy(key,async()=>{try{await fn();if(ok)toast(ok)}catch(e){toast((e&&(e.message||e.error))||'No se pudo guardar.')}});
@@ -1702,6 +1859,9 @@ Object.assign(ACT,{
   delAccount:()=>openModal('<h3>Eliminar tu cuenta</h3><p class="muted" style="margin:0">Se borrarán para siempre tu temario, tarjetas, progreso y los grupos que hayas creado. Escribe tu contraseña para confirmarlo.</p><label class="lbl" for="mPw">Contraseña<input type="password" id="mPw" autocomplete="current-password"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Eliminar para siempre</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();a.disabled=true;try{await ACC().remove($('#mPw').value)}catch(err){a.disabled=false;toast(err.message||'No se pudo eliminar.')}}}),
   theme:b=>{applyTheme(b.dataset.v);saveMeta();render()},
+  acctTab:b=>{V.acctTab=b.dataset.v;render()},
+  sendContact:()=>{const body=$('#ctBody').value.trim();if(body.length<5){toast('Escribe tu mensaje.');return}
+    accountDo('contact',async()=>{await ACC().contact($('#ctKind').value,$('#ctSubj').value,body);$('#ctBody').value='';$('#ctSubj').value=''},'Mensaje enviado. ¡Gracias!')},
   installApp:async()=>{const IN=window.mnemaInstall;if(!IN)return;const ok=await IN.prompt();if(ok)toast('Mnema se ha instalado.');render()}
 });
 function onAccountChange(el){
@@ -1716,6 +1876,121 @@ function onAccountChange(el){
   if(el.id==='prefType'){S.meta.typeMode=el.checked;saveMeta();return true}
   return false;
 }
+/* ---------- Administración ---------- */
+V.adm={tab:'resumen',q:'',filter:'all',msg:'open',cache:{},loading:{}};
+const ADM=()=>window.mnemaAdmin;
+function admLoad(key,fn){
+  const A=V.adm;if(key in A.cache)return A.cache[key];
+  if(!A.loading[key]){A.loading[key]=true;fn().then(d=>{A.cache[key]=d}).catch(e=>{A.cache[key]={error:(e&&e.message)||'No se pudo cargar.'}}).finally(()=>{delete A.loading[key];if(V.tab==='admin')render()})}
+  return undefined;
+}
+function admReset(){V.adm.cache={}}
+const fmtWhen=d=>{if(!d)return '—';const x=new Date(d);return x.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})+' · '+x.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})};
+const fmtAgo=d=>{if(!d)return 'nunca';const m=Math.round((Date.now()-new Date(d))/60000);if(m<2)return 'ahora';if(m<60)return 'hace '+m+' min';const h=Math.round(m/60);if(h<24)return 'hace '+h+' h';const dd=Math.round(h/24);return 'hace '+dd+(dd===1?' día':' días')};
+const ROLE_L={superadmin:'Superadmin',admin:'Admin',user:'Usuario'};
+function admAvatar(u){return '<span class="avatar" aria-hidden="true">'+(u.avatarUrl?'<img src="'+esc(u.avatarUrl)+'" alt="">':esc(initials({displayName:u.displayName,username:u.username}).toUpperCase()))+'</span>'}
+const loadingHtml='<div class="panel"><p class="muted" style="margin:0"><span class="spin"></span> Cargando…</p></div>';
+const errHtml=e=>'<div class="status err">'+esc(e)+'</div>';
+function renderAdmin(){
+  if(!ADM())return '<div class="panel">'+errHtml('El panel de administración solo está disponible en la versión con cuentas.')+'</div>';
+  const st=admLoad('stats',()=>ADM().stats());
+  const open=st&&!st.error?st.messagesOpen:0;
+  const tabs=[['resumen','Resumen'],['usuarios','Usuarios'],['mensajes','Mensajes'],['registro','Registro']];
+  const nav='<nav class="subnav" aria-label="Secciones de administración">'+tabs.map(([k,l])=>'<button type="button" data-act="admTab" data-v="'+k+'" aria-pressed="'+(V.adm.tab===k)+'">'+l+(k==='mensajes'&&open?' <span class="badge">'+open+'</span>':'')+'</button>').join('')+'</nav>';
+  const who='<div class="tip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>'+(V.me.isSuperadmin?'Eres la <b>superadministradora</b>: puedes nombrar administradores y eliminar cuentas. Tu cuenta está protegida.':'Eres <b>administrador</b>: puedes ver usuarios y mensajes, suspender cuentas y sugerir que se eliminen. Solo la superadministradora las elimina.')+'</span></div>';
+  let body='';
+  if(V.adm.tab==='resumen')body=admResumen(st);
+  else if(V.adm.tab==='usuarios')body=admUsuarios();
+  else if(V.adm.tab==='mensajes')body=admMensajes();
+  else body=admRegistro();
+  return '<div class="stack">'+nav+who+body+'</div>';
+}
+function admResumen(st){
+  if(!st)return loadingHtml;if(st.error)return errHtml(st.error);
+  const u=st.users,c=st.content;
+  const tile=(v,k,sub)=>'<div class="tile"><div class="v num">'+v+'</div><div class="k">'+k+'</div>'+(sub?'<div class="s">'+sub+'</div>':'')+'</div>';
+  const max=Math.max(1,...st.signupsPerDay.map(d=>d.n));
+  const up=st.system.uptimeS;const upTxt=up<3600?Math.round(up/60)+' min':up<86400?Math.round(up/3600)+' h':Math.round(up/86400)+' días';
+  return '<section class="stack" style="gap:14px"><h2 class="sec">Personas</h2><div class="tiles">'+
+    tile(u.total,'Cuentas',u.new7+' nuevas esta semana')+tile(u.active7,'Activas 7 días',u.active30+' en 30 días')+tile(u.admins,'En administración','')+tile(u.suspended,'Suspendidas','')+tile(u.deleteSuggested,'Eliminación sugerida','')+tile(st.messagesOpen,'Mensajes sin atender','')+'</div></section>'+
+    '<section class="panel stack"><div class="row" style="justify-content:space-between"><h2 class="sec">Altas en los últimos 30 días</h2><span class="chip">'+u.new30+' en total</span></div><div class="sparkbars" role="img" aria-label="Altas por día en los últimos 30 días">'+st.signupsPerDay.map(d=>'<i title="'+esc(d.date)+': '+d.n+'" style="height:'+Math.max(2,Math.round(d.n/max*100))+'%"></i>').join('')+'</div><div class="row faint" style="justify-content:space-between;font-size:12.5px"><span>'+esc(fmtDate(st.signupsPerDay[0].date))+'</span><span>Hoy</span></div></section>'+
+    '<section class="stack" style="gap:14px"><h2 class="sec">Contenido</h2><div class="tiles">'+tile(c.subjects,'Asignaturas','')+tile(c.files,'Archivos de temario','')+tile(c.cards,'Tarjetas','')+tile(c.groups,'Grupos de estudio','')+tile(c.images,'Imágenes','')+'</div></section>'+
+    '<section class="panel stack"><h2 class="sec">Sistema</h2><div class="form2"><div><span class="eyebrow">Base de datos</span><p style="margin:4px 0 0">'+esc(st.system.database)+'</p></div><div><span class="eyebrow">Inteligencia artificial</span><p style="margin:4px 0 0">'+(st.system.ai.length?esc(st.system.ai.join(' + ')):'Sin configurar')+'</p></div><div><span class="eyebrow">Servidor</span><p style="margin:4px 0 0">Node '+esc(st.system.node)+' · encendido hace '+upTxt+'</p></div>'+(u.noEmail?'<div><span class="eyebrow">Sin correo</span><p style="margin:4px 0 0">'+u.noEmail+' cuentas antiguas sin correo</p></div>':'')+'</div></section>';
+}
+function admUsuarios(){
+  const key='users:'+V.adm.q+':'+V.adm.filter;const list=admLoad(key,()=>ADM().users(V.adm.q,V.adm.filter));
+  const filters=[['all','Todas'],['active','Activas (7 días)'],['admins','Administración'],['suspended','Suspendidas'],['delete_suggested','Eliminación sugerida'],['no_email','Sin correo']];
+  const tools='<div class="row"><label class="sr" for="admQ">Buscar</label><input type="search" id="admQ" placeholder="Buscar por nombre, usuario o correo" value="'+esc(V.adm.q)+'" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:42px"><label class="sr" for="admFilter">Filtrar</label><select id="admFilter">'+filters.map(([v,l])=>'<option value="'+v+'"'+(V.adm.filter===v?' selected':'')+'>'+l+'</option>').join('')+'</select></div>';
+  let inner;
+  if(!list)inner='<p class="muted" style="margin:0"><span class="spin"></span> Cargando…</p>';
+  else if(list.error)inner=errHtml(list.error);
+  else if(!list.length)inner='<div class="empty"><b>Nadie por aquí</b><p class="muted">No hay cuentas que coincidan.</p></div>';
+  else inner='<div class="ulist">'+list.map(u=>'<button class="urow" type="button" data-act="admUser" data-id="'+esc(u.id)+'">'+admAvatar(u)+'<span class="who"><b>'+esc(u.displayName||u.username)+'</b><small>@'+esc(u.username)+' · '+esc(u.email||'sin correo')+'</small><small>Última vez '+fmtAgo(u.lastSeenAt)+' · '+u.subjects+' asignatura'+(u.subjects===1?'':'s')+'</small></span><span class="row" style="gap:6px;justify-content:flex-end">'+(u.role!=='user'?'<span class="role '+u.role+'">'+ROLE_L[u.role]+'</span>':'')+(u.suspendedAt?'<span class="chip bad">Suspendida</span>':'')+(u.deleteSuggestedAt?'<span class="chip warn">Eliminar</span>':'')+'</span></button>').join('')+'</div>';
+  return '<section class="panel stack">'+tools+inner+'</section>';
+}
+function admMensajes(){
+  const list=admLoad('msgs:'+V.adm.msg,()=>ADM().messages(V.adm.msg));
+  const seg='<div class="seg" role="group" aria-label="Estado"><button type="button" data-act="admMsg" data-v="open" aria-pressed="'+(V.adm.msg==='open')+'">Sin atender</button><button type="button" data-act="admMsg" data-v="resolved" aria-pressed="'+(V.adm.msg==='resolved')+'">Atendidos</button><button type="button" data-act="admMsg" data-v="all" aria-pressed="'+(V.adm.msg==='all')+'">Todos</button></div>';
+  const KL={consulta:'Consulta',sugerencia:'Sugerencia',error:'Algo no funciona'};
+  let inner;
+  if(!list)inner=loadingHtml;else if(list.error)inner=errHtml(list.error);
+  else if(!list.length)inner='<div class="panel empty"><b>'+(V.adm.msg==='open'?'Todo atendido':'Sin mensajes')+'</b><p class="muted">'+(V.adm.msg==='open'?'No hay mensajes pendientes.':'Aquí aparecerán los mensajes de Ayuda y contacto.')+'</p></div>';
+  else inner=list.map(m=>'<article class="msg-card"><div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><span class="chip '+(m.kind==='error'?'bad':m.kind==='sugerencia'?'spark':'')+'">'+KL[m.kind]+'</span><b>'+esc(m.subject||'(sin asunto)')+'</b></div><span class="faint" style="font-size:13px">'+fmtWhen(m.createdAt)+'</span></div><p>'+esc(m.body)+'</p><div class="row faint" style="font-size:13.5px;justify-content:space-between"><span>De @'+esc(m.username)+' · <span style="user-select:all">'+esc(m.email||'sin correo')+'</span>'+(m.resolvedAt?' · atendido por '+esc(m.resolvedBy||'')+' '+fmtAgo(m.resolvedAt):'')+'</span><span class="row" style="gap:6px">'+(m.email?'<a class="btn small ghost" href="mailto:'+esc(m.email)+'?subject='+encodeURIComponent('Re: '+(m.subject||'Tu mensaje a Mnema'))+'">Responder</a>':'')+'<button class="btn small '+(m.resolvedAt?'ghost':'')+'" type="button" data-act="admResolve" data-id="'+m.id+'" data-v="'+(m.resolvedAt?'0':'1')+'">'+(m.resolvedAt?'Reabrir':'Marcar atendido')+'</button><button class="btn small danger" type="button" data-act="admDelMsg" data-id="'+m.id+'">Borrar</button></span></div></article>').join('');
+  return '<div class="stack">'+seg+inner+'</div>';
+}
+function admRegistro(){
+  const list=admLoad('log',()=>ADM().log());
+  if(!list)return loadingHtml;if(list.error)return errHtml(list.error);
+  return '<section class="panel">'+(list.length?list.map(l=>'<div class="logrow"><span class="faint">'+fmtWhen(l.createdAt)+'</span><span><b>'+esc(l.adminName)+'</b> · '+esc(l.action)+(l.target?' · '+esc(l.target):'')+(l.detail?'<br><span class="muted">'+esc(l.detail)+'</span>':'')+'</span></div>').join(''):'<p class="muted" style="margin:0">Todavía no hay acciones de administración.</p>')+'</section>';
+}
+function reasonModal(title,text,cta,onSend){
+  openModal('<h3>'+esc(title)+'</h3>'+(text?'<p class="muted" style="margin:0">'+esc(text)+'</p>':'')+'<label class="lbl" for="mReason">Motivo<textarea id="mReason" rows="3" maxlength="300"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">'+esc(cta)+'</button></div>',b=>{
+    b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();const r=$('#mReason').value.trim();if(!r){toast('Escribe el motivo.');return}a.disabled=true;try{await onSend(r);closeModal()}catch(err){a.disabled=false;toast(err.message||'No se pudo completar.')}}});
+}
+async function admUserModal(id){
+  openModal('<p class="muted"><span class="spin"></span> Cargando…</p>');
+  let u;try{u=await ADM().user(id)}catch(e){closeModal();toast(e.message||'No se pudo cargar.');return}
+  const me=V.me;const self=u.id===me.id;const prot=u.role==='superadmin'||(u.role==='admin'&&!me.isSuperadmin);const can=!self&&!prot;
+  const done=(msg)=>{admReset();closeModal();toast(msg);render()};
+  const acts=!can?'':'<div class="row">'+
+    (me.isSuperadmin?(u.role==='admin'?'<button class="btn small ghost" type="button" data-mact="role" data-v="user">Quitar administración</button>':'<button class="btn small ghost" type="button" data-mact="role" data-v="admin"'+(u.suspendedAt?' disabled':'')+'>Hacer administrador</button>'):'')+
+    '<button class="btn small ghost" type="button" data-mact="logout">Cerrar sus sesiones</button>'+
+    (u.suspendedAt?'<button class="btn small" type="button" data-mact="unsuspend">Reactivar cuenta</button>':'<button class="btn small ghost" type="button" data-mact="suspend">Suspender cuenta</button>')+
+    (u.deleteSuggestedAt?'<button class="btn small ghost" type="button" data-mact="unsuggest">'+(me.isSuperadmin?'Descartar sugerencia':'Retirar sugerencia')+'</button>':(me.isSuperadmin?'':'<button class="btn small danger" type="button" data-mact="suggest">Sugerir eliminación</button>'))+
+    (me.isSuperadmin?'<button class="btn small danger" type="button" data-mact="delete">Eliminar cuenta</button>':'')+'</div>';
+  openModal('<div class="row" style="gap:14px;flex-wrap:nowrap">'+admAvatar(u).replace('class="avatar"','class="avatar" style="width:56px;height:56px;font-size:20px"')+'<div style="min-width:0"><h3 style="overflow-wrap:anywhere">'+esc(u.displayName||u.username)+'</h3><span class="muted" style="font-size:14px;overflow-wrap:anywhere">@'+esc(u.username)+' · <span style="user-select:all">'+esc(u.email||'sin correo')+'</span></span></div></div>'+
+    '<div class="row" style="gap:6px"><span class="role '+u.role+'">'+ROLE_L[u.role]+'</span>'+(u.suspendedAt?'<span class="chip bad">Suspendida</span>':'<span class="chip good">Activa</span>')+'</div>'+
+    '<div class="tiles" style="grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">'+[['Asignaturas',u.subjects],['Archivos',u.files],['Tarjetas',u.cards],['Grupos',u.groups]].map(([k,v])=>'<div class="tile" style="padding:12px"><div class="v num" style="font-size:22px">'+v+'</div><div class="k" style="font-size:12.5px">'+k+'</div></div>').join('')+'</div>'+
+    '<div class="faint" style="font-size:13.5px">Alta: '+fmtWhen(u.createdAt)+'<br>Última vez: '+fmtAgo(u.lastSeenAt)+'</div>'+
+    (u.suspendedAt?'<div class="status err">Suspendida el '+fmtWhen(u.suspendedAt)+(u.suspendReason?'. Motivo: '+esc(u.suspendReason):'')+'</div>':'')+
+    (u.deleteSuggestedAt?'<div class="banner"><span class="chip warn">Eliminación sugerida</span><span class="t">Por '+esc(u.deleteSuggestedBy||'administración')+' · '+esc(u.deleteSuggestedReason||'')+'</span></div>':'')+
+    (self?'<p class="muted" style="margin:0">Esta es tu cuenta. Gestiónala desde «Mi cuenta».</p>':prot?'<p class="muted" style="margin:0">'+(u.role==='superadmin'?'La cuenta de la superadministradora está protegida.':'Solo la superadministradora puede actuar sobre otros administradores.')+'</p>':'')+
+    acts+'<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cerrar</button></div>',b=>{
+    b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a||a.disabled)return;const k=a.dataset.mact;
+      try{
+        if(k==='cancel')return closeModal();
+        if(k==='role'){a.disabled=true;await ADM().setRole(u.id,a.dataset.v);return done(a.dataset.v==='admin'?'Ahora es administrador.':'Ya no es administrador.')}
+        if(k==='logout'){a.disabled=true;await ADM().logoutUser(u.id);return done('Sesiones cerradas.')}
+        if(k==='unsuspend'){a.disabled=true;await ADM().suspend(u.id,false);return done('Cuenta reactivada.')}
+        if(k==='unsuggest'){a.disabled=true;await ADM().unsuggestDelete(u.id);return done('Sugerencia retirada.')}
+        if(k==='suspend')return reasonModal('Suspender a @'+u.username,'No podrá entrar en Mnema hasta que la reactives. Verá el motivo al intentar entrar.','Suspender',async r=>{await ADM().suspend(u.id,true,r);admReset();toast('Cuenta suspendida.');render()});
+        if(k==='suggest')return reasonModal('Sugerir eliminar a @'+u.username,'La superadministradora revisará la sugerencia. La persona no ve este motivo.','Enviar sugerencia',async r=>{await ADM().suggestDelete(u.id,r);admReset();toast('Sugerencia enviada.');render()});
+        if(k==='delete')return openModal('<h3>Eliminar a @'+esc(u.username)+'</h3><p class="muted" style="margin:0">Se borrarán para siempre su cuenta, su temario, sus tarjetas y los grupos que haya creado. Escribe tu contraseña para confirmar.</p><label class="lbl" for="mReason">Motivo (queda en el registro)<input type="text" id="mReason" maxlength="300"></label><label class="lbl" for="mPw">Tu contraseña<input type="password" id="mPw" autocomplete="current-password"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Eliminar para siempre</button></div>',bx=>{
+          bx.onclick=async ev=>{const c=ev.target.closest('[data-mact]');if(!c)return;if(c.dataset.mact==='cancel')return closeModal();c.disabled=true;try{await ADM().remove(u.id,$('#mPw').value,$('#mReason').value);admReset();closeModal();toast('Cuenta eliminada.');render()}catch(err){c.disabled=false;toast(err.message||'No se pudo eliminar.')}}});
+      }catch(err){a.disabled=false;toast(err.message||'No se pudo completar.')}
+    }});
+}
+Object.assign(ACT,{
+  admTab:b=>{V.adm.tab=b.dataset.v;if(b.dataset.v==='resumen')delete V.adm.cache.stats;render()},
+  admUser:b=>admUserModal(b.dataset.id),
+  admMsg:b=>{V.adm.msg=b.dataset.v;render()},
+  admResolve:async b=>{try{await ADM().resolve(+b.dataset.id,b.dataset.v==='1');admReset();toast(b.dataset.v==='1'?'Marcado como atendido.':'Mensaje reabierto.');render()}catch(e){toast(e.message||'Error')}},
+  admDelMsg:b=>openModal('<h3>¿Borrar este mensaje?</h3><p class="muted" style="margin:0">Se borrará para siempre.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Borrar</button></div>',bx=>{
+    bx.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){try{await ADM().delMessage(+b.dataset.id);admReset();toast('Mensaje borrado.');render()}catch(err){toast(err.message||'Error')}}closeModal()}})
+});
+let admQT=null;
+document.addEventListener('input',e=>{if(e.target.id==='admQ'){clearTimeout(admQT);const v=e.target.value;admQT=setTimeout(()=>{V.adm.q=v.trim();render();const q=$('#admQ');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},350)}});
+document.addEventListener('change',e=>{if(e.target.id==='admFilter'){V.adm.filter=e.target.value;render()}});
 document.addEventListener('click',e=>{
   const tab=e.target.closest('.tab');if(tab){V.tab=tab.dataset.tab;render();return}
   const mk=e.target.closest('#reader mark');
@@ -1727,7 +2002,8 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   const el=e.target;const s=cur();
   if(onAccountChange(el))return;
-  if(el.id==='subjSel'){S.meta.activeId=el.value;V.review=null;V.test=null;V.openTopic=null;saveMeta();render();return}
+  if((el.id==='subjSel'||el.id==='subjSel2')&&el.value==='__new'){render();ACT.newSubject();return}
+  if(el.id==='subjSel'||el.id==='subjSel2'){S.meta.activeId=el.value;V.review=null;V.test=null;V.openTopic=null;saveMeta();render();return}
   if(el.id==='fileIn'){handleFiles(el.files);el.value='';return}
   if(el.id==='replaceIn'){const g=V.replaceGroup;V.replaceGroup=null;handleFiles(el.files,{replace:g});el.value='';return}
   if(!s)return;

@@ -152,7 +152,26 @@
     async password(current, password) { await api('POST', '/api/account/password', { current, password }); },
     async avatar(blob) { const a = await assets.upload(blob); return this.update({ avatar: a.url }); },
     async logout() { await api('POST', '/api/logout', {}); try { localStorage.removeItem('mnema.v1'); } catch (e) {} location.href = '/'; },
+    async contact(kind, subject, body) { await api('POST', '/api/messages', { kind, subject, body }); },
     async remove(password) { await api('POST', '/api/account/delete', { password }); try { localStorage.removeItem('mnema.v1'); } catch (e) {} location.href = '/'; }
+  });
+
+  /* ---- administración ---- */
+  const q = (o) => Object.entries(o).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
+  window.mnemaAdmin = Object.freeze({
+    stats: () => api('GET', '/api/admin/stats'),
+    users: (query, filter) => api('GET', '/api/admin/users?' + q({ q: query, filter })),
+    user: (id) => api('GET', '/api/admin/users/' + encodeURIComponent(id)),
+    setRole: (id, role) => api('PUT', '/api/admin/users/' + encodeURIComponent(id) + '/role', { role }),
+    suspend: (id, suspended, reason) => api('PUT', '/api/admin/users/' + encodeURIComponent(id) + '/suspend', { suspended, reason }),
+    suggestDelete: (id, reason) => api('POST', '/api/admin/users/' + encodeURIComponent(id) + '/suggest-delete', { reason }),
+    unsuggestDelete: (id) => api('DELETE', '/api/admin/users/' + encodeURIComponent(id) + '/suggest-delete'),
+    logoutUser: (id) => api('POST', '/api/admin/users/' + encodeURIComponent(id) + '/logout', {}),
+    remove: (id, password, reason) => api('DELETE', '/api/admin/users/' + encodeURIComponent(id), { password, reason }),
+    messages: (status) => api('GET', '/api/admin/messages?' + q({ status })),
+    resolve: (id, resolved) => api('PUT', '/api/admin/messages/' + id, { resolved }),
+    delMessage: (id) => api('DELETE', '/api/admin/messages/' + id),
+    log: () => api('GET', '/api/admin/log')
   });
 
   /* ---- instalar como app ---- */
@@ -185,7 +204,7 @@
       '<h3 id="authT">' + (reg ? 'Crear tu cuenta' : 'Entrar en Mnema') + '</h3>' +
       '<form id="authForm" class="stack" style="gap:12px">' +
       (reg ? '<label class="lbl" for="aUser">Nombre de usuario<input type="text" id="aUser" autocomplete="username" required minlength="3" maxlength="30" placeholder="sin espacios"></label>' +
-             '<label class="lbl" for="aMail">Correo (opcional)<input type="email" id="aMail" autocomplete="email" placeholder="tu@correo.com"></label>'
+             '<label class="lbl" for="aMail">Correo<input type="email" id="aMail" autocomplete="email" required placeholder="tu@correo.com"></label>'
            : '<label class="lbl" for="aUser">Usuario o correo<input type="text" id="aUser" autocomplete="username" required></label>') +
       '<label class="lbl" for="aPass">Contraseña<input type="password" id="aPass" autocomplete="' + (reg ? 'new-password' : 'current-password') + '" required minlength="6"></label>' +
       '<p id="authErr" class="status err" hidden></p>' +
@@ -264,6 +283,7 @@
     if (m.user) { document.body.classList.remove('locked'); return; }
     document.body.classList.add('locked');
     const node = el(landing()); document.body.insertBefore(node, document.body.firstChild);
+    if (m.suspended) { const n2 = el('<div class="wrap" style="padding-top:16px"><div class="status err">Tu cuenta está suspendida' + (m.reason ? ': ' + m.reason.replace(/[<>&]/g, '') : '.') + '</div></div>'); node.insertBefore(n2, node.children[1]); }
     node.addEventListener('click', e => {
       const b = e.target.closest('[data-l]'); if (!b) return;
       if (b.dataset.l === 'login') accountModal('login');
