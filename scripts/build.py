@@ -1,6 +1,7 @@
 """Genera public/index.html a partir de src/mnema.html (la versión de la app que corre en Claude)."""
-import pathlib, sys
+import pathlib, sys, hashlib
 root = pathlib.Path(__file__).resolve().parent.parent
+shim_v = hashlib.sha1((root / 'public' / 'mnema-shim.js').read_bytes()).hexdigest()[:10]
 src = (root / 'src' / 'mnema.html').read_text(encoding='utf-8')
 cut = src.index('<header')
 head_part, body_part = src[:cut], src[cut:]
@@ -17,7 +18,7 @@ replacements = [
   ("Leyendo páginas escaneadas con Claude", "Leyendo páginas escaneadas con IA"),
   ("Sugerir pregunta con Claude", "Sugerir pregunta con IA"),
   ("Transcribiendo fotos con Claude", "Transcribiendo fotos con IA"),
-  ("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/", "<script src=\"/mnema-shim.js\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/"),
+  ("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js\">", "<script src=\"/mnema-shim.js?v=" + shim_v + "\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js\">"),
 ]
 for a, b in replacements:
     n = (head_part + body_part).count(a)
