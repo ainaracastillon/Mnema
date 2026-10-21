@@ -591,6 +591,42 @@ h3{font-size:17px}
 .lacts{justify-content:flex-end}
 .lmove{min-height:34px;padding:5px 8px;font-size:14px;max-width:160px}
 @media (max-width:760px){.lrow{grid-template-columns:48px minmax(0,1fr)}.lacts{grid-column:1/-1;justify-content:flex-start}}
+
+/* Documento del tema (formato apuntes) */
+.paper{background:#fff;color:#000;font-family:'Times New Roman',Tinos,'Liberation Serif',Times,serif;font-size:15.5px;line-height:1.42;padding:30px 44px 40px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.12),0 10px 30px rgba(19,26,74,.10);max-width:820px;text-align:justify;border:1px solid #E3E6EF}
+.paper .ph{text-align:right;font-size:10px;letter-spacing:.3px;color:#222;margin-bottom:26px}
+.paper h1.ttl{font-family:inherit;font-size:17px;font-weight:700;text-align:center;margin:0 6% 22px;line-height:1.3;color:#000;letter-spacing:0}
+.paper h2,.paper h3,.paper h4{font-family:inherit;color:#000;font-weight:700;text-align:left;letter-spacing:0;line-height:1.3}
+.paper h2{font-size:16px;margin:24px 0 10px;padding-left:18px}
+.paper h3{font-size:15.5px;margin:18px 0 8px;padding-left:44px}
+.paper h4{font-size:15.5px;margin:14px 0 8px;padding-left:68px}
+.paper .hn{display:inline-block;min-width:2.6em}
+.paper p{margin:0 0 10px}
+.paper p.c{text-align:center;font-weight:700}
+.paper blockquote{font-style:italic;margin:0 34px 12px;padding:0;border:0}
+.paper ul,.paper ol{margin:0 0 10px;padding-left:44px}
+.paper ul ul,.paper ol ol,.paper ul ol,.paper ol ul{margin:2px 0 4px;padding-left:30px}
+.paper ul{list-style:none}
+.paper ul>li{position:relative}
+.paper ul>li::before{content:'-';position:absolute;left:-18px}
+.paper ul ul>li::before{content:'\25CF';font-size:.75em;top:.2em}
+.paper ul ul ul>li::before{content:'\25AA';font-size:1em;top:0}
+.paper li{margin:0 0 4px}
+.paper li.nob::before{content:none}
+.paper mark{background:#FFF200;color:#000}
+.paper .red{color:#E00000}
+.paper u{text-underline-offset:2px}
+.paper #notesEd{outline:none;min-height:240px}
+.paper #notesEd:focus{box-shadow:none}
+.notes-doc .paper{margin:0 auto}
+.edbar{position:sticky;top:8px;z-index:5;display:flex;flex-wrap:wrap;gap:6px;padding:8px;margin-bottom:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.edg{display:flex;flex-wrap:wrap;gap:4px;padding-right:6px;border-right:1px solid var(--line)}
+.edg:last-child{border-right:0}
+.edb{appearance:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:13.5px;min-height:34px;padding:4px 10px;border-radius:9px;cursor:pointer}
+.edb:hover{border-color:var(--spark)}
+.edhl{background:#FFF200;color:#000;padding:0 3px}
+.edred{color:#E00000;font-weight:600}
+@media (max-width:560px){.paper{padding:20px 18px 26px;font-size:14.5px;text-align:left}.paper h2{padding-left:0}.paper h3{padding-left:16px}.paper h4{padding-left:30px}.paper blockquote{margin:0 14px 12px}.paper ul,.paper ol{padding-left:28px}.edbar{top:62px}.edg{border-right:0;padding-right:0}}
 </style>
 
 <div class="shell">
@@ -683,7 +719,7 @@ function exampleSubject(){
     blocks:[{id:'eb1',title:'Bloque I · La célula como unidad de vida'},{id:'eb2',title:'Bloque II · Organización celular'}],
     topics:[
       {id:t1,blockId:'eb1',title:'La teoría celular',
-       notes:'La **teoría celular** explica de qué están formados los seres vivos y de dónde proceden sus células. Es la base de toda la biología moderna.\n## Los tres postulados\n- Todos los seres vivos están formados por una o más **células**.\n- La célula es la ==unidad estructural y funcional== de los seres vivos: es la parte más pequeña que tiene vida propia.\n- Toda célula procede de otra célula preexistente.\n## Cómo se llegó a ella\n### Robert Hooke (1665)\n- Observó al microscopio una lámina de **corcho** y vio unas celdillas a las que llamó **células**.\n### Schleiden (1838) y Schwann (1839)\n- Schleiden estudió las **plantas** y Schwann los **animales**.\n- Concluyeron que ==plantas y animales están formados por células==.\n### Virchow (1855)\n- Añadió el principio **omnis cellula e cellula**: ==toda célula procede de otra célula==.\n## Lo imprescindible\n- Los tres postulados de la teoría celular.\n- Hooke: pone nombre a la célula al observar el corcho (1665).\n- Schleiden y Schwann: todos los seres vivos, plantas y animales, están hechos de células.\n- Virchow: toda célula procede de otra célula (1855).\n- La célula es la unidad estructural y funcional de los seres vivos.',notesAt:Date.now(),keyTerms:['Hooke','Schleiden y Schwann','Virchow','unidad estructural'],read:true,
+       notes:'## 1. Teoría celular\n\nLa **TEORÍA CELULAR** explica de qué están formados los seres vivos y de dónde proceden sus células. Es la base de toda la biología moderna.\n\n### 1.1. Postulados\n\nLa teoría celular se resume en **tres postulados**:\n\n1. Todos los seres vivos están formados por una o más **células**.\n2. La célula es la **unidad estructural y funcional** de los seres vivos: es la parte más pequeña que tiene vida propia.\n3. Toda célula procede de otra célula preexistente.\n\n## 2. Origen de la teoría celular\n\n### 2.1. Robert Hooke (1665)\n\nSegún ++Hooke++ (1665), al observar al microscopio una lámina de **corcho**:\n\n> “Vi que estaba toda perforada y porosa, como un panal de abejas”.\n\nA esas celdillas las llamó **células**.\n\n### 2.2. Schleiden y Schwann (1838-1839)\n\n- ++Schleiden++ estudió las **plantas**.\n- ++Schwann++ estudió los **animales**.\n  - Ambos concluyeron que plantas y animales están formados por células.\n\n### 2.3. Virchow (1855)\n\n++Virchow++ añadió el principio ***omnis cellula e cellula***: toda célula procede de otra célula.\n\nEjemplo: cuando una herida cicatriza, las células nuevas salen de la división de las células que ya había alrededor.',notesAt:Date.now(),keyTerms:['Hooke','Schleiden y Schwann','Virchow','unidad estructural'],read:true,
        podcast:[{voz:'A',texto:'Hola, soy Lucía. Hoy repasamos la teoría celular, la base de toda la biología.'},{voz:'B',texto:'Y yo soy Marcos. Lucía, ¿por dónde empezamos?'},{voz:'A',texto:'Por sus tres ideas. Una: todos los seres vivos están formados por una o más células. Dos: la célula es la unidad estructural y funcional. Y tres: toda célula viene de otra célula.'},{voz:'B',texto:'Vale, ¿y quién vio la primera célula?'},{voz:'A',texto:'Robert Hooke, en 1665, mirando una lámina de corcho. Vio celdillas y las llamó células.'},{voz:'B',texto:'Luego llegaron Schleiden y Schwann, en 1838 y 1839, que dijeron que plantas y animales están hechos de células.'},{voz:'A',texto:'Exacto. Y en 1855 Virchow cerró el círculo con la frase en latín omnis cellula e cellula: toda célula procede de otra célula.'},{voz:'B',texto:'Truco para el examen: Hooke pone el nombre, Schleiden y Schwann lo extienden a plantas y animales, y Virchow explica de dónde salen.'},{voz:'A',texto:'Perfecto. Con eso tienes el tema uno. ¡Nos escuchamos en el siguiente!'}],
        summary:`La ==teoría celular== es la base de la biología moderna: explica de qué están hechos los seres vivos y de dónde salen sus células.\n## Postulados\n- Todos los seres vivos están formados por una o más ==células==.\n- La célula es la ==unidad estructural y funcional== de los seres vivos.\n- Toda célula procede de otra célula preexistente.\n## Quién la construyó\n- **Robert Hooke** (1665) observó celdillas en el corcho y las llamó células.\n- **==Schleiden== y ==Schwann==** (1838-1839): plantas y animales están formados por células.\n- **==Virchow==** (1855): "omnis cellula e cellula".\n## Para el examen\n- Saber los tres postulados y asociar cada científico con su aportación y su fecha.`},
       {id:t2,blockId:'eb2',title:'Célula procariota y eucariota',keyTerms:['nucleoide','ribosomas 70S/80S','pared celular','cloroplastos'],read:false,summary:'',
@@ -1094,7 +1130,7 @@ function renderTemario(s){
   if(tab==='biblioteca')return '<div class="stack">'+exampleBanner(s)+nav+statusHtml+renderBiblioteca(s,groups)+(rm?readerPanel(rm):'')+'</div>';
   const withPdf=s.topics.filter(t=>t.notes).length;
   const head='<div class="row" style="justify-content:space-between"><div><h2 class="sec">Temario</h2><p class="muted" style="margin:2px 0 0;font-size:14px">'+(blocksOf(s).length?blocksOf(s).length+' bloque'+(blocksOf(s).length===1?'':'s')+' · ':'')+s.topics.length+' tema'+(s.topics.length===1?'':'s')+(s.topics.length?' · '+withPdf+' PDF listo'+(withPdf===1?'':'s'):'')+'</p></div><div class="row">'+
-    (withPdf>1?'<button class="btn small ghost" type="button" data-act="dlAllNotes">Descargar todos los PDF</button>':'')+
+    (withPdf>1?'<button class="btn small ghost" type="button" data-act="dlAllNotes" data-f="pdf">Todo en PDF</button><button class="btn small ghost" type="button" data-act="dlAllNotes" data-f="docx">Todo en Word</button>':'')+
     (s.example?'':'<button class="btn small ghost" type="button" data-act="newBlock">+ Bloque</button><button class="btn small" type="button" data-act="newTopic">+ Tema</button>')+'</div></div>';
   return '<div class="stack">'+exampleBanner(s)+nav+statusHtml+head+(s.joined?'<div class="banner"><span class="chip spark">Grupo '+esc(s.shareCode)+'</span><span class="t">Esta asignatura viene de un compañero.</span><button class="btn small ghost" type="button" data-act="share">Novedades del grupo</button></div>':'')+
     renderBlocks(s)+featureGrid(s,'Todo lo que puedes hacer con '+s.name,'Toca una herramienta para empezar.')+'</div>';
@@ -1126,62 +1162,13 @@ function topicFiles(s,t){
   if(!gs.length){
     return s.example?'':'<div class="tdrop" data-drop-tid="'+t.id+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.upload+'</svg><span><b>Sube aquí los archivos de este tema</b><small>PDF, Word, texto o fotos. Mnema creará el PDF del tema.</small></span><span class="row" style="gap:6px"><button class="btn small" type="button" data-act="uploadTo" data-tid="'+t.id+'">Elegir archivos</button><button class="btn small ghost" type="button" data-act="pasteText" data-tid="'+t.id+'">Pegar texto</button></span></div>';
   }
-  const pdf=busy?'<span class="chip spark"><span class="spin"></span> Creando el PDF del tema…</span>':t.notes?'<button class="btn small" type="button" data-act="dlNotes" data-id="'+t.id+'">Descargar PDF</button><button class="btn small soft" type="button" data-act="topicTool" data-v="apuntes" data-id="'+t.id+'">Ver</button>':(s.example?'':'<button class="btn small" type="button" data-act="mkNotes" data-id="'+t.id+'">Crear el PDF del tema</button>');
-  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">PDF</span><span class="tf-txt"><b>PDF del tema</b><small>'+(t.notes?'Listo · hecho con '+gs.length+' archivo'+(gs.length===1?'':'s'):gs.length+' archivo'+(gs.length===1?'':'s')+' subido'+(gs.length===1?'':'s'))+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span><span class="row" style="gap:6px">'+pdf+(s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button>')+'</span></div>';
+  const pdf=busy?'<span class="chip spark"><span class="spin"></span> Creando el documento del tema…</span>':t.notes?'<button class="btn small soft" type="button" data-act="topicTool" data-v="apuntes" data-keep="1" data-id="'+t.id+'">Ver y editar</button><button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Word</button>':(s.example?'':'<button class="btn small" type="button" data-act="mkNotes" data-id="'+t.id+'">Crear el PDF del tema</button>');
+  return '<div class="tfiles" data-drop-tid="'+(s.example?'':t.id)+'"><span class="tpdf" aria-hidden="true">PDF</span><span class="tf-txt"><b>Documento del tema</b><small>'+(t.notes?(t.notesEdited?'Editado por ti':'Listo')+' · hecho con '+gs.length+' archivo'+(gs.length===1?'':'s'):gs.length+' archivo'+(gs.length===1?'':'s')+' subido'+(gs.length===1?'':'s'))+' · <button class="linkbtn" type="button" data-act="libTopic" data-id="'+t.id+'">ver en la biblioteca</button></small></span><span class="row" style="gap:6px">'+pdf+(s.example?'':'<button class="btn small ghost" type="button" data-act="uploadTo" data-tid="'+t.id+'">+ Archivos</button>')+'</span></div>';
 }
 /* PDF bonito con pdfmake */
 let pdfLibP=null;
 function loadScript(src){return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=()=>rej(new Error('No se pudo cargar '+src));document.head.appendChild(sc)})}
 function pdfLib(){if(!pdfLibP)pdfLibP=(window.pdfMake&&window.pdfMake.vfs?Promise.resolve():loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js').then(()=>loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js'))).then(()=>window.pdfMake).catch(e=>{pdfLibP=null;throw e});return pdfLibP}
-function pdfRuns(txt){
-  const out=[];const re=/(\*\*[^*]+\*\*|==[^=]+==)/g;let last=0,m;txt=String(txt);
-  while((m=re.exec(txt))){if(m.index>last)out.push({text:txt.slice(last,m.index)});const v=m[0];if(v.startsWith('**'))out.push({text:v.slice(2,-2),bold:true,color:'#131A4A'});else out.push({text:v.slice(2,-2),bold:true,background:'#FFF1A8',color:'#131A4A'});last=m.index+v.length}
-  if(last<txt.length)out.push({text:txt.slice(last)});return out.map(r=>Object.assign(r,{text:r.text.replace(/(^|[^*])\*([^*\n]+)\*/g,'$1$2')}));
-}
-function mdToPdf(src){
-  const content=[];let list=null,olist=null;
-  const flush=()=>{if(list){content.push({ul:list,margin:[8,0,0,8],style:'li'});list=null}if(olist){content.push({ol:olist,margin:[8,0,0,8],style:'li'});olist=null}};
-  String(src||'').split('\n').forEach(raw=>{const l=raw.trim();if(!l){flush();return}let m;
-    if((m=l.match(/^#{1,2}\s+(.*)/))){flush();const imp=/imprescindible/i.test(m[1]);content.push(imp?{table:{widths:['*'],body:[[{text:m[1],style:'h2imp'}]]},layout:'noBorders',margin:[0,14,0,6]}:{text:m[1],style:'h2'});return}
-    if((m=l.match(/^#{3,4}\s+(.*)/))){flush();content.push({text:m[1],style:'h3'});return}
-    if((m=l.match(/^[-*•]\s+(.*)/))){if(olist)flush();(list=list||[]).push({text:pdfRuns(m[1])});return}
-    if((m=l.match(/^\d+[.)]\s+(.*)/))){if(list)flush();(olist=olist||[]).push({text:pdfRuns(m[1])});return}
-    flush();content.push({text:pdfRuns(l),style:'p'});
-  });
-  flush();return content;
-}
-function pdfDoc(s,ts){
-  const today_=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
-  const content=[];
-  ts.forEach((t,i)=>{
-    const blk=blockOf(s,t);
-    content.push({stack:[
-      {canvas:[{type:'rect',x:0,y:0,w:515,h:96,r:10,color:'#1F2C86'}]},
-      {text:(s.name+(blk?' · '+blk.title:'')).toUpperCase(),color:'#BFD0FF',fontSize:8.5,bold:true,characterSpacing:1,margin:[22,-82,22,0]},
-      {text:t.title,color:'#FFFFFF',fontSize:21,bold:true,margin:[22,6,22,0]},
-      {text:'Apuntes de estudio · '+today_,color:'#DCE6FF',fontSize:9.5,margin:[22,6,22,0]}
-    ],margin:[0,0,0,22],pageBreak:i>0?'before':undefined});
-    if((t.keyTerms||[]).length)content.push({text:[{text:'Conceptos clave: ',bold:true,color:'#2C55D6'},{text:t.keyTerms.join(' · '),color:'#4B5479'}],fontSize:9.5,margin:[0,0,0,14]});
-    content.push(...mdToPdf(t.notes||''));
-  });
-  return {pageSize:'A4',pageMargins:[40,44,40,54],content,
-    info:{title:(ts.length===1?ts[0].title:s.name)+' · Apuntes',author:'Mnema'},
-    footer:(cp,pc)=>({columns:[{text:'Mnema · '+s.name,color:'#8A93B5',fontSize:8},{text:cp+' / '+pc,alignment:'right',color:'#8A93B5',fontSize:8}],margin:[40,18,40,0]}),
-    defaultStyle:{font:'Roboto',fontSize:10.5,lineHeight:1.3,color:'#262B45'},
-    styles:{h2:{fontSize:14.5,bold:true,color:'#1F2C86',margin:[0,14,0,6]},h2imp:{fontSize:13,bold:true,color:'#1F2C86',fillColor:'#EAF0FF',margin:[10,7,10,7]},h3:{fontSize:12,bold:true,color:'#2C55D6',margin:[0,10,0,4]},p:{margin:[0,0,0,7]},li:{margin:[0,0,0,2]}}};
-}
-async function downloadNotes(s,ts){
-  ts=ts.filter(t=>t.notes);if(!ts.length){toast('Todavía no hay PDF para descargar.');return}
-  const safe=x=>norm(x).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'apuntes';
-  const name=(ts.length===1?safe(ts[0].title):safe(s.name)+'-temario')+'.pdf';
-  toast('Preparando el PDF…');
-  let blob;
-  try{const pm=await pdfLib();blob=await new Promise((res,rej)=>{try{pm.createPdf(pdfDoc(s,ts)).getBlob(res)}catch(e){rej(e)}})}
-  catch(e){console.warn(e);toast('No se pudo crear el PDF ahora. Inténtalo de nuevo en un momento.');return}
-  let dl=null;try{const C=window.claude;dl=C&&C.use?await C.use('downloads'):null}catch(e){}
-  if(dl){try{await dl.save({filename:name,data:blob});toast('PDF descargado.');return}catch(e){if(e&&e.code==='declined')return}}
-  try{const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),8000);toast('PDF descargado.')}catch(e){toast('No se pudo descargar el PDF desde esta vista.')}
-}
 async function storeOriginal(f){
   try{
     const C=window.claude;const A=C&&C.use?await C.use('assets'):null;if(!A)return null;
@@ -1203,12 +1190,15 @@ function topicHtml(s,t,i){
     let inner='';
     if(tv==='apuntes'){
       const k='notes_'+t.id;
-      if(V.busy[k]&&V.nstream&&V.nstream.id===t.id)inner=V.nstream.text?md(V.nstream.text):'<p class="muted"><span class="spin"></span> Preparando los apuntes del tema con los documentos de tu temario…</p>';
-      else if(t.notes)inner=md(t.notes);
+      const editing=V.editNotes===t.id&&t.notes&&!s.example;
+      if(V.busy[k]&&V.nstream&&V.nstream.id===t.id)inner=V.nstream.text?paperHtml(s,t,V.nstream.text):'<p class="muted"><span class="spin"></span> Preparando el documento del tema con tus archivos…</p>';
+      else if(editing)inner=edToolbar()+paperHtml(s,t,'',V.edDraft||notesHtml(t.notes));
+      else if(t.notes)inner=paperHtml(s,t,t.notes);
       else inner='<p class="muted">'+(tmats(s,t.id)?'Mnema prepara un único PDF de este tema con todo lo necesario, bien organizado y sin lo irrelevante, a partir de los archivos que has subido.':'Sube los archivos de este tema y Mnema preparará con ellos un único PDF bien organizado.')+'</p>';
       inner='<div id="notesBox" class="notes-doc">'+inner+'</div><div class="row" style="margin-top:14px">'+
-        (t.notes?'<button class="btn small ghost" type="button" data-act="speak" data-src="notes" data-id="'+t.id+'">'+(V.speaking===t.id?'Parar audio':'Escuchar')+'</button><button class="btn small" type="button" data-act="dlNotes" data-id="'+t.id+'">Descargar PDF</button>':'')+
-        (s.example&&!t.notes?'':busyBtn(k,t.notes?'Rehacer el PDF':'Crear el PDF del tema','Escribiendo…','mkNotes" data-id="'+t.id,t.notes?'ghost':''))+'</div>';
+        (editing?'<button class="btn small" type="button" data-act="saveNotes" data-id="'+t.id+'">Guardar cambios</button><button class="btn small ghost" type="button" data-act="cancelNotes">Cancelar</button><span class="faint" style="font-size:13px">Tab mete un nivel en las listas; Mayús+Tab lo saca.</span>':
+        (t.notes?(s.example?'':'<button class="btn small soft" type="button" data-act="editNotes" data-id="'+t.id+'">Editar</button>')+'<button class="btn small" type="button" data-act="dlNotes" data-f="pdf" data-id="'+t.id+'">Descargar PDF</button><button class="btn small" type="button" data-act="dlNotes" data-f="docx" data-id="'+t.id+'">Descargar Word</button><button class="btn small ghost" type="button" data-act="speak" data-src="notes" data-id="'+t.id+'">'+(V.speaking===t.id?'Parar audio':'Escuchar')+'</button>':'')+
+        (s.example&&!t.notes?'':busyBtn(k,t.notes?'Rehacer':'Crear el documento del tema','Escribiendo…',(t.notes?'redoNotes':'mkNotes')+'" data-id="'+t.id,t.notes?'ghost':'')))+'</div>';
     }else if(tv==='resumen'){
       const k='sum_'+t.id;
       if(V.busy[k]&&V.stream&&V.stream.id===t.id)inner=V.stream.text?md(V.stream.text):'<p class="muted"><span class="spin"></span> Preparando el resumen…</p>';
@@ -1238,7 +1228,7 @@ function topicHtml(s,t,i){
     body='<div class="topic-body">'+inner+'</div>';
   }
   return '<div class="topic"><div class="topic-h"><span class="idx num">'+String(i+1).padStart(2,'0')+'</span><div style="min-width:0"><div class="tt">'+esc(t.title)+'</div><div class="kt">'+esc((t.keyTerms||[]).join(' · '))+'</div></div><div class="row" style="gap:8px;flex-wrap:nowrap">'+mbar(m)+'<span class="num faint" style="font-size:13px;width:38px;text-align:right">'+pct(m)+'%</span></div></div>'+
-    topicFiles(s,t)+'<div class="ttools" role="group" aria-label="Estudiar este tema">'+[['apuntes','PDF del tema'],['resumen','Resumen'],['mapa','Mapa'],['tabla','Tabla'],['podcast','Pódcast']].map(([v,l])=>'<button class="ttb'+(open&&(V.topicView||'apuntes')===v?' on':'')+'" type="button" data-act="topicTool" data-v="'+v+'" data-id="'+t.id+'" aria-pressed="'+(open&&(V.topicView||'apuntes')===v)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON[v==='apuntes'?'notes':v]+'</svg><span>'+l+'</span></button>').join('')+
+    topicFiles(s,t)+'<div class="ttools" role="group" aria-label="Estudiar este tema">'+[['apuntes','Documento'],['resumen','Resumen'],['mapa','Mapa'],['tabla','Tabla'],['podcast','Pódcast']].map(([v,l])=>'<button class="ttb'+(open&&(V.topicView||'apuntes')===v?' on':'')+'" type="button" data-act="topicTool" data-v="'+v+'" data-id="'+t.id+'" aria-pressed="'+(open&&(V.topicView||'apuntes')===v)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON[v==='apuntes'?'notes':v]+'</svg><span>'+l+'</span></button>').join('')+
       '<button class="ttb" type="button" data-act="genCards" data-id="'+t.id+'"'+(V.busy['cards_'+t.id]?' disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tarjetas+'</svg><span>'+(V.busy['cards_'+t.id]?'Creando…':'Tarjetas'+(nCards?' ('+nCards+')':''))+'</span></button>'+
       '<button class="ttb" type="button" data-act="testTopic" data-id="'+t.id+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tests+'</svg><span>Test</span></button>'+
       '<button class="ttb" type="button" data-act="tutorTopic" data-id="'+t.id+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FICON.tutor+'</svg><span>Tutor</span></button></div>'+
@@ -1537,7 +1527,7 @@ async function podSpeak(){
 }
 function podHalt(){try{speechSynthesis.cancel()}catch(e){}if(podAudio){try{podAudio.pause()}catch(e){}}}
 function summaryLines(text){
-  const clean=String(text||'').replace(/==|\*\*/g,'').replace(/^#{1,6}\s*/gm,'').replace(/^[-*•]\s+/gm,'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const clean=String(text||'').replace(/==|\*\*|\+\+|!!|\*/g,'').replace(/^#{1,6}\s*/gm,'').replace(/^\s*(>|:::)\s*/gm,'').replace(/^\s*[-•●▪]\s+/gm,'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
   const out=[];let buf='';for(const p of clean){if((buf+' '+p).length>900&&buf){out.push(buf);buf=''}buf+=(buf?'. ':'')+p.replace(/[.:]$/,'')}if(buf)out.push(buf);
   return out.map(t=>({voz:'A',texto:t.endsWith('.')?t:t+'.'}));
 }
@@ -2067,7 +2057,7 @@ const ACT={
   pickFiles:()=>$('#fileIn').click(),
   pasteText:b=>{const tid=b&&b.dataset&&b.dataset.tid;const s0=cur();if(!tid){if(s0)libUploadModal(s0);return}const tt=s0.topics.find(x=>x.id===tid);openModal('<h3>Pegar texto</h3><p class="muted" style="margin:0">Se añadirá al tema «'+esc(tt?tt.title:'')+'».</p><label class="lbl" for="mTitle">Título<input type="text" id="mTitle" placeholder="Ej.: Apuntes de clase del martes"></label><label class="lbl" for="mText">Texto<textarea id="mText" rows="10" placeholder="Pega aquí tus apuntes o el temario"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Añadir</button></div>',bx=>{
     bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();const txt=cleanText($('#mText').value);if(txt.length<30){toast('Pega un texto un poco más largo.');return}
-      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});closeModal();render();toast('Texto añadido. Preparando el PDF del tema…');makeNotes(tid)}})},
+      const s=cur();addMaterial(s,($('#mTitle').value.trim()||'Texto pegado')+'.txt',txt,{topicId:tid});closeModal();render();toast('Texto añadido. Preparando el documento del tema…');makeNotes(tid)}})},
   readPart:b=>{V.readMat=b.dataset.id;V.sel=null;render()},
   readMat:b=>{V.readMat=V.readMat===b.dataset.id?null:b.dataset.id;V.sel=null;render();if(V.readMat){const p=$('#readerPanel');p&&p.scrollIntoView({block:'start',behavior:'smooth'})}},
   hlAdd:()=>{const m=curMat();if(m&&V.sel)addHl(m,V.sel,'')},
@@ -2191,7 +2181,7 @@ const MANUAL=[
  {id:'hoy',icon:'hoy',color:'#0EA5B7',title:'Hoy: tu plan del día',desc:'Qué estudiar hoy y cómo vas.',
   items:[['Plan de hoy','Las tareas que más te ayudan ahora: repasar tarjetas, leer un resumen o hacer un test. Empieza por arriba.'],['Tu semana','Reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.'],['Racha y dominio','Los días seguidos que has estudiado y cuánto dominas la asignatura.'],['Pomodoro','Bloques de concentración y descanso. Cambia su duración en Mi cuenta › Preferencias.']]},
  {id:'asignaturas',icon:'folder',color:'#F08A24',title:'Asignaturas y carpetas',desc:'Organiza todo como en tu mochila.',
-  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['PDF del tema','Al subir los archivos de un tema, Mnema crea un único **PDF** con todo ese temario bien organizado, con encabezados y listas. Lo puedes ver y descargar.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
+  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Asignatura › Bloque › Tema','Cada asignatura se divide en **temas**, y los temas se pueden agrupar en **bloques** (opcional). Los archivos se suben siempre **dentro de un tema**.'],['Documento del tema','Al subir los archivos de un tema, Mnema escribe un único documento con todo ese temario, con formato de apuntes: apartados numerados, citas, ejemplos y listas. Pulsa **Editar** para cambiar lo que quieras (negrita, cursiva, subrayado, resaltado, rojo, listas…) y descárgalo en **PDF** o en **Word**.'],['Biblioteca','En cada asignatura, la pestaña **Biblioteca** reúne los archivos que tú has subido: abrir el original, leer y subrayar, renombrar, mover a otro tema, reemplazar o quitar.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
  {id:'temas',icon:'book',color:'#8B5CF6',title:'Apuntes, resúmenes, mapas, pódcast y tablas',desc:'Cinco formas de estudiar cada tema.',
   items:[['Apuntes','Al subir los documentos de la profesora, Mnema prepara un documento por tema con todo lo necesario para estudiarlo y sin lo irrelevante. Puedes leerlo, escucharlo y descargarlo para Word.'],['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo con voces naturales. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
   tip:'Todo sale solo de tu temario. Si algo no te convence, pulsa «Rehacer».'},
@@ -2546,7 +2536,7 @@ function blockModal(s,b){
 function sortTopics(s){const order=new Map(blocksOf(s).map((b,i)=>[b.id,i]));const pos=new Map(s.topics.map((t,i)=>[t.id,i]));s.topics.sort((a,b)=>{const ba=blockOf(s,a)?order.get(a.blockId):1e6,bb=blockOf(s,b)?order.get(b.blockId):1e6;return ba-bb||pos.get(a.id)-pos.get(b.id)})}
 function topicModal(s,t,bid){
   openModal('<h3>'+(t?'Editar tema':'Nuevo tema')+'</h3><label class="lbl" for="mTName">Título del tema<input type="text" id="mTName" maxlength="120" value="'+esc(t?t.title:'')+'" placeholder="Ej.: Tema 4 · La Reconquista"></label>'+blockSelect(s,t?t.blockId||'':bid||'')+
-    (!t?'<p class="faint" style="margin:0;font-size:13.5px">Dentro del tema subirás sus archivos y Mnema creará con ellos el PDF del tema.</p>':'')+
+    (!t?'<p class="faint" style="margin:0;font-size:13.5px">Dentro del tema subirás sus archivos y Mnema creará con ellos el documento del tema (PDF y Word).</p>':'')+
     '<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button>'+(t?'':'<button class="btn ghost" type="button" data-mact="ok">Solo crear</button>')+'<button class="btn" type="button" data-mact="'+(t?'ok':'okup')+'">'+(t?'Guardar':'Crear y subir archivos')+'</button></div>',bx=>{
     const go=(up)=>{const title=$('#mTName').value.trim();if(!title){toast('Escribe el título del tema.');return}const blk=$('#mBlock').value||null;let nid=null;
       if(t){t.title=title.slice(0,120);t.blockId=blk}else{nid=rid();s.topics.push({id:nid,title:title.slice(0,120),blockId:blk,keyTerms:[],summary:'',read:false})}
@@ -2570,17 +2560,25 @@ Object.assign(ACT,{
   testBlock:b=>{const s=cur();const sc=scopeOf(s);sc.mode='block';sc.block=b.dataset.bid;V.testCfg.mode='practica';V.test=null;V.tab='tests';render();window.scrollTo(0,0)}
 });
 /* ---------- Apuntes por tema ---------- */
-const NOTES_PROMPT=(t,s)=>'Eres un profesor que prepara los APUNTES DE ESTUDIO del tema «'+t.title+'»'+(blockOf(s,t)?' (dentro del bloque «'+blockOf(s,t).title+'»)':'')+' de la asignatura «'+s.name+'», a partir de los documentos de la profesora que van en <temario>.\n\n'+
- 'Objetivo: un documento con TODO lo necesario para estudiar y aprobar este tema, y NADA irrelevante.\n'+
- 'Incluye: definiciones, conceptos clave, datos, fechas, autores, clasificaciones, causas y consecuencias, procesos paso a paso, fórmulas y ejemplos que ayuden a entender. Respeta el orden lógico del tema y el vocabulario de la profesora.\n'+
- 'Quita: información administrativa (fechas de entrega, normas de clase, avisos), instrucciones de ejercicios, saludos, numeración de páginas, cabeceras repetidas, bibliografía, relleno y repeticiones, y todo lo que pertenezca a OTROS temas.\n'+
+const NOTES_PROMPT=(t,s)=>'Eres un profesor que prepara el DOCUMENTO DE ESTUDIO del tema «'+t.title+'»'+(blockOf(s,t)?' (dentro del bloque «'+blockOf(s,t).title+'»)':'')+' de la asignatura «'+s.name+'», a partir de los archivos del tema que van en <temario>.\n\n'+
+ 'Objetivo: unos apuntes universitarios con TODO lo necesario para estudiar y aprobar este tema, y NADA irrelevante.\n'+
+ 'Incluye: definiciones, conceptos clave, autores y sus citas, datos, fechas, clasificaciones, tipos, características, causas y consecuencias, procesos paso a paso, fórmulas y ejemplos. Respeta el orden del temario y el vocabulario de la profesora.\n'+
+ 'Quita: información administrativa (fechas de entrega, normas de clase, avisos), instrucciones de ejercicios, saludos, numeración de páginas, cabeceras repetidas, bibliografía, relleno, repeticiones y todo lo que pertenezca a OTROS temas.\n'+
  'No inventes nada que no esté en el temario. Si el temario no trae nada de este tema, responde solo: «El temario no contiene información de este tema.»\n\n'+
- 'Formato: empieza con un párrafo breve que diga de qué va el tema. Después secciones con "## Título", subapartados con "### Título" si hace falta, viñetas con "- ", **negrita** para los términos clave y ==dobles iguales== para lo más importante del examen (con moderación). Termina con "## Lo imprescindible" (de 5 a 10 viñetas con lo que no puedes olvidar). Solo los apuntes, sin preámbulos.';
+ 'FORMATO (imita unos apuntes de Word bien hechos):\n'+
+ '- NO escribas el título del tema: ya lo pone la app.\n'+
+ '- Apartados numerados: "## 1. Nombre". Subapartados: "### 1.1. Nombre". Tercer nivel si hace falta: "#### 1.1.1. Nombre".\n'+
+ '- Párrafos completos y claros. Al definir un concepto, escríbelo en MAYÚSCULAS y negrita: "La **METODOLOGÍA** es…". Otros términos clave en **negrita**.\n'+
+ '- Cuando el temario cite a un autor, preséntalo ("Según Kuhn (1962):") y pon la cita literal en una línea aparte que empiece por "> ".\n'+
+ '- Ejemplos en su propia línea, empezando por "Ejemplo:".\n'+
+ '- Listas con "- ". Sublistas con 2 espacios delante ("  - ") y un tercer nivel con 4 espacios. Listas ordenadas con "1. ". Puedes usar "→" entre un término y su explicación.\n'+
+ '- ==Dobles iguales== solo para algún aviso muy importante (con mucha moderación).\n'+
+ 'Escribe solo los apuntes, sin preámbulos ni despedidas.';
 async function genNotes(s,t,opts){
   opts=opts||{};
   const sm=await needSample();
   if(!opts.silent){V.openTopic=t.id;V.topicView='apuntes';V.nstream={id:t.id,text:''}}
-  const r=await sm(SYS+'\n\n<temario>\n'+contextFor(s,t,120000)+'\n</temario>\n\n'+NOTES_PROMPT(t,s),{modelTier:'default',onText:opts.silent?undefined:u=>{if(V.nstream&&V.nstream.id===t.id){V.nstream.text=u.text;const box=$('#notesBox');if(box)box.innerHTML=md(u.text)}}});
+  const r=await sm(SYS+'\n\n<temario>\n'+contextFor(s,t,120000)+'\n</temario>\n\n'+NOTES_PROMPT(t,s),{modelTier:'default',onText:opts.silent?undefined:u=>{if(V.nstream&&V.nstream.id===t.id){V.nstream.text=u.text;const box=$('#notesBox');if(box)box.innerHTML=paperHtml(s,t,u.text)}}});
   t.notes=r.text.trim();t.notesAt=Date.now();V.nstream=null;
   if(!(t.keyTerms||[]).length){const ks=[];(t.notes.match(/\*\*([^*]{2,40})\*\*/g)||[]).forEach(x=>{const k=x.slice(2,-2).trim();if(!ks.some(y=>norm(y)===norm(k)))ks.push(k)});t.keyTerms=ks.slice(0,6)}
   saveSubject(s);
@@ -2659,11 +2657,11 @@ Object.assign(ACT,{
   mkNotes:b=>makeNotes(b.dataset.id),
   allNotes:()=>makeAllNotes(cur(),true),
   openNotes:b=>{const s=cur();V.openTopic=b.dataset.id;V.topicView='apuntes';render();const t=document.querySelector('.topic-body');if(t)t.closest('.topic').scrollIntoView({block:'start',behavior:'smooth'})},
-  dlNotes:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(t)downloadNotes(s,[t])},
-  dlAllNotes:()=>{const s=cur();downloadNotes(s,s.topics)},
+  dlNotes:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(t)downloadNotes(s,[t],b.dataset.f||'pdf')},
+  dlAllNotes:b=>{const s=cur();downloadNotes(s,s.topics,(b&&b.dataset.f)||'pdf')},
   topicTool:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(!t)return;const v=b.dataset.v;
-    if(V.openTopic===t.id&&V.topicView===v){V.openTopic=null;render();return}
-    V.openTopic=t.id;V.topicView=v;render();
+    if(V.openTopic===t.id&&V.topicView===v&&!b.dataset.keep){V.openTopic=null;render();return}
+    V.openTopic=t.id;V.topicView=v;render();if(b.dataset.keep){const nb=$('#notesBox');if(nb)nb.scrollIntoView({block:'start',behavior:'smooth'})}
     if(!s.example){if(v==='resumen'&&!t.summary)summarize(t.id);else if(v==='apuntes'&&!t.notes)makeNotes(t.id)}}
 });
 Object.assign(ACT,{
@@ -2675,6 +2673,270 @@ document.addEventListener('change',e=>{const el=e.target;if(!el||!el.dataset||el
   groupParts(s,el.dataset.move).forEach(m=>{m.topicId=tid;m.blockId=null;Store.save('m',m)});const t=s.topics.find(x=>x.id===tid);render();toast('Archivo movido a «'+(t?t.title:'')+'». Preparando su PDF…');makeNotes(tid)});
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('[data-drop-tid]');if(d&&d.dataset.dropTid){e.preventDefault();d.classList.add('over')}}));
 ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('[data-drop-tid]');if(d&&d.dataset.dropTid){e.preventDefault();d.classList.remove('over');if(ev==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)handleFiles(e.dataTransfer.files,{topicId:d.dataset.dropTid})}}));
+/* ---------- Documento del tema (formato de apuntes universitarios): ver, editar, PDF y Word ---------- */
+function topicHeading(s,t){
+  const i=s.topics.indexOf(t)+1;const x=String(t.title||'').trim();
+  const m=x.match(/^tema\s*(\d+)\s*[·:.\-–—]?\s*(.*)$/i);
+  return (m?'TEMA '+m[1]+(m[2]?': '+m[2]:''):'TEMA '+(i||1)+': '+x).toUpperCase();
+}
+function nRunsI(txt,f,out){
+  const re=/\*\*\*([^*]+)\*\*\*|\*\*([^*]+)\*\*|==([^=]+)==|\+\+([^+]+)\+\+|!!([^!]+)!!|\*([^*\n]+)\*/g;let last=0,m;
+  while((m=re.exec(txt))){
+    if(m.index>last)out.push(Object.assign({},f,{text:txt.slice(last,m.index)}));
+    const g=Object.assign({},f);let inner;
+    if(m[1]!=null){g.b=1;g.i=1;inner=m[1]}else if(m[2]!=null){g.b=1;inner=m[2]}else if(m[3]!=null){g.hl=1;inner=m[3]}else if(m[4]!=null){g.u=1;inner=m[4]}else if(m[5]!=null){g.red=1;inner=m[5]}else{g.i=1;inner=m[6]}
+    nRunsI(inner,g,out);last=m.index+m[0].length;
+  }
+  if(last<txt.length)out.push(Object.assign({},f,{text:txt.slice(last)}));
+  return out;
+}
+function nRuns(txt,f){
+  txt=String(txt||'');const out=[];
+  const pre=txt.match(/^((?:Ejemplos?|Por ejemplo)\s*[:,])/i);
+  if(pre){out.push(Object.assign({},f,{text:pre[1],red:1}));txt=txt.slice(pre[1].length)}
+  return nRunsI(txt,f||{},out).filter(r=>r.text);
+}
+function headParts(text){const m=String(text).match(/^(\d+(?:\.\d+)*\.?)\s+(.*)$/);return m?[m[1].replace(/\.?$/,'.'),m[2]]:[null,String(text)]}
+function parseNotes(src){
+  const out=[];let stack=[];
+  String(src||'').replace(/\r/g,'').split('\n').forEach(raw=>{
+    if(!raw.trim())return;const l=raw.trim();let m;
+    if((m=raw.match(/^(\s*)([-*•●▪◆➢]|\d+[.)]|[a-zA-Z][.)])\s+(.*)$/))&&!/^#/.test(l)){
+      const ind=m[1].replace(/\t/g,'  ').length;
+      while(stack.length&&stack[stack.length-1]>ind)stack.pop();
+      if(!stack.length||stack[stack.length-1]<ind)stack.push(ind);
+      const ord=!/^[-*•●▪◆➢]$/.test(m[2]);
+      out.push({t:'li',lvl:Math.min(2,stack.length-1),ord,mark:ord?m[2].replace(')','.'):null,text:m[3]});return;
+    }
+    stack=[];
+    if((m=l.match(/^(#{1,6})\s+(.*)/))){out.push({t:'h',lvl:Math.min(3,Math.max(1,m[1].length-1)),text:m[2]});return}
+    if((m=l.match(/^>\s?(.*)/))){if(m[1].trim())out.push({t:'q',text:m[1]});return}
+    if((m=l.match(/^:::\s*(.*)/))){out.push({t:'c',text:m[1]});return}
+    out.push({t:'p',text:l});
+  });
+  return out;
+}
+function runsHtml(rs){return rs.map(r=>{let h=esc(r.text);if(r.b)h='<b>'+h+'</b>';if(r.i)h='<i>'+h+'</i>';if(r.u)h='<u>'+h+'</u>';if(r.hl)h='<mark>'+h+'</mark>';if(r.red)h='<span class="red">'+h+'</span>';return h}).join('')}
+function notesHtml(src){
+  let out='',lv=-1;const tags=[];
+  const closeAll=()=>{while(lv>=0){out+='</li></'+tags.pop()+'>';lv--}};
+  const olAttrs=mark=>{const k=String(mark||'1').replace('.','');return /^[A-Z]$/.test(k)?' type="A" start="'+(k.charCodeAt(0)-64)+'"':/^[a-z]$/.test(k)?' type="a" start="'+(k.charCodeAt(0)-96)+'"':' start="'+(parseInt(k,10)||1)+'"'};
+  parseNotes(src).forEach(b=>{
+    if(b.t!=='li'){closeAll()}
+    if(b.t==='h'){const [n,txt]=headParts(b.text);out+='<h'+(b.lvl+1)+'>'+(n?'<span class="hn">'+esc(n)+'</span> ':'')+runsHtml(nRuns(txt))+'</h'+(b.lvl+1)+'>';return}
+    if(b.t==='q'){out+='<blockquote>'+runsHtml(nRuns(b.text))+'</blockquote>';return}
+    if(b.t==='c'){out+='<p class="c">'+runsHtml(nRuns(b.text))+'</p>';return}
+    if(b.t==='p'){out+='<p>'+runsHtml(nRuns(b.text))+'</p>';return}
+    const tg=b.ord?'ol':'ul';
+    while(lv>b.lvl){out+='</li></'+tags.pop()+'>';lv--}
+    if(lv===b.lvl){if(tags[lv]!==tg){out+='</li></'+tags.pop()+'>';lv--}else out+='</li>'}
+    while(lv<b.lvl){out+='<'+tg+(b.ord?olAttrs(b.mark):'')+'>';tags.push(tg);lv++;if(lv<b.lvl)out+='<li class="nob">'}
+    out+='<li>'+runsHtml(nRuns(b.text));
+  });
+  closeAll();return out;
+}
+function paperHtml(s,t,src,editing){
+  return '<div class="paper"><div class="ph">'+esc(String(s.name||'').toUpperCase())+'</div><h1 class="ttl">'+esc(topicHeading(s,t))+'</h1>'+
+    (editing?'<div id="notesEd" class="pbody" contenteditable="true" spellcheck="true" aria-label="Texto del tema (editable)">'+editing+'</div>':'<div class="pbody">'+notesHtml(src)+'</div>')+'</div>';
+}
+/* HTML del editor → texto con formato */
+function edColorRed(c){if(!c)return false;const x=document.createElement('canvas').getContext('2d');x.fillStyle='#000';x.fillStyle=c;const v=x.fillStyle;if(!/^#/.test(v))return false;const r=parseInt(v.slice(1,3),16),g=parseInt(v.slice(3,5),16),b=parseInt(v.slice(5,7),16);return r>150&&g<100&&b<100}
+function edInl(nodes,f,segs){
+  nodes.forEach(n=>{
+    if(n.nodeType===3){const t=n.nodeValue.replace(/[\s ]+/g,' ');if(t)segs.push({t,f});return}
+    if(n.nodeType!==1)return;const tg=n.tagName;
+    if(tg==='BR'){segs.push({t:' ',f});return}
+    if(tg==='UL'||tg==='OL')return;
+    const g=Object.assign({},f);const st=n.style||{};
+    if(tg==='B'||tg==='STRONG'||st.fontWeight==='bold'||+st.fontWeight>=600)g.b=1;
+    if(st.fontWeight==='normal'||st.fontWeight==='400')delete g.b;
+    if(tg==='I'||tg==='EM'||st.fontStyle==='italic')g.i=1;
+    if(tg==='U'||/underline/.test(st.textDecoration||'')||/underline/.test(st.textDecorationLine||''))g.u=1;
+    if(tg==='MARK'||(st.backgroundColor&&!/transparent|rgba\(0, 0, 0, 0\)|^(white|#fff|#ffffff|rgb\(255, 255, 255\))$/.test(st.backgroundColor)))g.hl=1;
+    const col=(n.getAttribute&&n.getAttribute('color'))||st.color||(n.classList&&n.classList.contains('red')?'#e00000':'');
+    if(col){if(edColorRed(col))g.red=1;else delete g.red}
+    if(n.classList&&n.classList.contains('hn')){segs.push({t:n.textContent,f:{}});return}
+    edInl(Array.from(n.childNodes),g,segs);
+  });
+  return segs;
+}
+function edSer(segs){
+  const key=f=>['b','i','u','hl','red'].map(k=>f[k]?k:'').join('');const m=[];
+  segs.forEach(s=>{const l=m[m.length-1];if(l&&key(l.f)===key(s.f))l.t+=s.t;else m.push({t:s.t,f:s.f})});
+  return m.map(s=>{let t=s.t;const f=s.f;if(!key(f))return t;const lead=t.match(/^\s*/)[0],trail=t.match(/\s*$/)[0];t=t.trim();if(!t)return lead+trail;
+    if(f.b&&f.i)t='***'+t+'***';else if(f.b)t='**'+t+'**';else if(f.i)t='*'+t+'*';if(f.u)t='++'+t+'++';if(f.hl)t='=='+t+'==';if(f.red)t='!!'+t+'!!';return lead+t+trail}).join('').replace(/ {2,}/g,' ');
+}
+const ED_BLOCK=/^(P|DIV|H[1-6]|UL|OL|BLOCKQUOTE|LI|SECTION|ARTICLE)$/;
+function edList(el,out,depth){
+  const ord=el.tagName==='OL';const type=el.getAttribute('type')||'';let k=(parseInt(el.getAttribute('start'),10)||1)-1;
+  Array.from(el.children).forEach(li=>{
+    if(li.tagName==='UL'||li.tagName==='OL'){edList(li,out,depth+1);return}
+    if(li.tagName!=='LI')return;k++;
+    const inl=[],subs=[];Array.from(li.childNodes).forEach(n=>{if(n.nodeType===1&&(n.tagName==='UL'||n.tagName==='OL'))subs.push(n);else inl.push(n)});
+    const text=edSer(edInl(inl,{},[])).trim();
+    const mark=ord?(type==='A'?String.fromCharCode(64+k):type==='a'?String.fromCharCode(96+k):k)+'.':'-';
+    if(text&&!li.classList.contains('nob'))out.push('  '.repeat(Math.min(2,depth))+mark+' '+text);
+    subs.forEach(x=>edList(x,out,depth+1));
+  });
+}
+function edBlocks(el,out,q){
+  let buf=[];const flush=()=>{const t=edSer(edInl(buf,{},[])).trim();buf=[];if(t)out.push((q?'> ':'')+t)};
+  Array.from(el.childNodes).forEach(n=>{
+    if(n.nodeType!==1||!ED_BLOCK.test(n.tagName)){buf.push(n);return}
+    flush();const tg=n.tagName;
+    if(/^H[1-6]$/.test(tg)){const t=edSer(edInl(Array.from(n.childNodes),{},[])).replace(/^\*\*(.*)\*\*$/,'$1').trim();if(t)out.push('#'.repeat(Math.min(4,Math.max(2,+tg[1])))+' '+t);return}
+    if(tg==='BLOCKQUOTE'){edBlocks(n,out,true);return}
+    if(tg==='UL'||tg==='OL'){edList(n,out,0);return}
+    if(tg==='P'&&n.classList.contains('c')&&!q){const t=edSer(edInl(Array.from(n.childNodes),{},[])).trim();if(t)out.push('::: '+t);return}
+    edBlocks(n,out,q);
+  });
+  flush();
+}
+function htmlToNotes(root){const out=[];edBlocks(root,out,false);
+  // separa bloques con una línea en blanco, salvo elementos seguidos de la misma lista
+  let s='';out.forEach((l,i)=>{const isLi=/^\s*([-*]|\d+\.|[A-Za-z]\.)\s/.test(l);const prevLi=i&&/^\s*([-*]|\d+\.|[A-Za-z]\.)\s/.test(out[i-1]);s+=(i?(isLi&&prevLi?'\n':'\n\n'):'')+l});return s.trim()}
+
+/* PDF (pdfmake) con letra tipo Times */
+let serifP=null;
+function b64(buf){let s='';const a=new Uint8Array(buf);for(let i=0;i<a.length;i+=0x8000)s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000));return btoa(s)}
+function serifFont(pm){
+  if(pm.vfs&&pm.vfs['LiberationSerif-Regular.ttf'])return Promise.resolve('Serif');
+  if(!serifP){const vs=['Regular','Bold','Italic','BoldItalic'];
+    serifP=Promise.all(vs.map(v=>fetch('/fonts/LiberationSerif-'+v+'.ttf').then(r=>{if(!r.ok)throw new Error('font');return r.arrayBuffer()}))).then(bufs=>{
+      vs.forEach((v,i)=>{pm.vfs['LiberationSerif-'+v+'.ttf']=b64(bufs[i])});
+      pm.fonts=Object.assign({Roboto:{normal:'Roboto-Regular.ttf',bold:'Roboto-Medium.ttf',italics:'Roboto-Italic.ttf',bolditalics:'Roboto-MediumItalic.ttf'}},pm.fonts||{},{Serif:{normal:'LiberationSerif-Regular.ttf',bold:'LiberationSerif-Bold.ttf',italics:'LiberationSerif-Italic.ttf',bolditalics:'LiberationSerif-BoldItalic.ttf'}});
+      return 'Serif'}).catch(()=>{serifP=null;return 'Roboto'})}
+  return serifP;
+}
+function pdfRunsN(rs){return rs.map(r=>{const o={text:r.text};if(r.b)o.bold=true;if(r.i)o.italics=true;if(r.u)o.decoration='underline';if(r.hl)o.background='#FFF200';if(r.red)o.color='#E00000';return o})}
+function notesPdfContent(src){
+  const c=[];const MK=['-','●','▪'];let prevLi=false;
+  parseNotes(src).forEach(b=>{
+    if(b.t!=='li'&&prevLi)c.push({text:'',margin:[0,0,0,4]});prevLi=b.t==='li';
+    if(b.t==='h'){const [n,txt]=headParts(b.text);const ind=[18,40,62][b.lvl-1];
+      c.push({text:[...(n?[{text:n+'    '}]:[]),...pdfRunsN(nRuns(txt))],bold:true,fontSize:b.lvl===1?12:11.5,alignment:'left',margin:[ind,b.lvl===1?16:10,0,8],headlineLevel:1});return}
+    if(b.t==='q'){c.push({text:pdfRunsN(nRuns(b.text,{i:1})),margin:[28,0,28,9]});return}
+    if(b.t==='c'){c.push({text:pdfRunsN(nRuns(b.text,{b:1})),alignment:'center',margin:[0,4,0,10]});return}
+    if(b.t==='p'){c.push({text:pdfRunsN(nRuns(b.text)),margin:[0,0,0,8]});return}
+    const mk=b.ord?b.mark:MK[b.lvl];
+    c.push({columns:[{width:b.ord?18:12,text:mk,alignment:b.ord?'right':'left'},{width:'*',text:pdfRunsN(nRuns(b.text))}],columnGap:8,margin:[22+b.lvl*24,0,0,3]});
+  });
+  return c;
+}
+function pdfDoc(s,ts,font){
+  const content=[];
+  ts.forEach((t,i)=>{content.push({text:topicHeading(s,t),bold:true,fontSize:13,alignment:'center',margin:[30,6,30,18],pageBreak:i>0?'before':undefined});content.push(...notesPdfContent(t.notes||''))});
+  return {pageSize:'A4',pageMargins:[56,60,56,56],content,
+    info:{title:(ts.length===1?topicHeading(s,ts[0]):s.name),author:'Mnema'},
+    header:()=>({text:String(s.name||'').toUpperCase(),alignment:'right',fontSize:8,color:'#222',margin:[56,26,56,0]}),
+    footer:cp=>({text:String(cp),alignment:'right',fontSize:9,margin:[56,18,56,0]}),
+    pageBreakBefore:(node,next)=>node.headlineLevel===1&&next.length===0,
+    defaultStyle:{font:font||'Roboto',fontSize:font==='Serif'?11:10,lineHeight:1.15,alignment:'justify',color:'#000'}};
+}
+/* Word (.docx) sin librerías */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function zipStore(files,type){
+  const enc=new TextEncoder();const parts=[],cen=[];let off=0;
+  files.forEach(f=>{const nm=enc.encode(f.name),d=enc.encode(f.data),crc=crc32(d);
+    const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,crc,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(h.buffer),nm,d);
+    const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(14,0x21,true);c.setUint32(16,crc,true);c.setUint32(20,d.length,true);c.setUint32(24,d.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+    cen.push(new Uint8Array(c.buffer),nm);off+=30+nm.length+d.length});
+  const cs=cen.reduce((n,a)=>n+a.length,0);const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type});
+}
+function xmlEsc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'')}
+function wRuns(rs){return rs.map(r=>{const p=(r.b?'<w:b/>':'')+(r.i?'<w:i/>':'')+(r.red?'<w:color w:val="E00000"/>':'')+(r.hl?'<w:highlight w:val="yellow"/>':'')+(r.u?'<w:u w:val="single"/>':'');return '<w:r>'+(p?'<w:rPr>'+p+'</w:rPr>':'')+'<w:t xml:space="preserve">'+xmlEsc(r.text)+'</w:t></w:r>'}).join('')}
+function wP(pPr,runs){return '<w:p>'+(pPr?'<w:pPr>'+pPr+'</w:pPr>':'')+runs+'</w:p>'}
+function docxBody(s,ts){
+  let x='';const MK=['-','●','▪'];
+  ts.forEach((t,i)=>{
+    x+=wP('<w:pStyle w:val="Title"/>'+(i>0?'<w:pageBreakBefore/>':''),wRuns([{text:topicHeading(s,t)}]));
+    parseNotes(t.notes||'').forEach(b=>{
+      if(b.t==='h'){const [n,txt]=headParts(b.text);x+=wP('<w:pStyle w:val="Heading'+b.lvl+'"/>',(n?'<w:r><w:t xml:space="preserve">'+xmlEsc(n)+'</w:t></w:r><w:r><w:tab/></w:r>':'')+wRuns(nRuns(txt)));return}
+      if(b.t==='q'){x+=wP('<w:pStyle w:val="Quote"/>',wRuns(nRuns(b.text)));return}
+      if(b.t==='c'){x+=wP('<w:jc w:val="center"/>',wRuns(nRuns(b.text,{b:1})));return}
+      if(b.t==='p'){x+=wP('',wRuns(nRuns(b.text)));return}
+      const left=720+b.lvl*567;
+      x+=wP('<w:tabs><w:tab w:val="left" w:pos="'+left+'"/></w:tabs><w:spacing w:after="60"/><w:ind w:left="'+left+'" w:hanging="340"/>','<w:r><w:t xml:space="preserve">'+xmlEsc(b.ord?b.mark:MK[b.lvl])+'</w:t></w:r><w:r><w:tab/></w:r>'+wRuns(nRuns(b.text)));
+    });
+  });
+  return x;
+}
+function notesDocx(s,ts){
+  const W='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+  const X='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  const font='<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="Times New Roman" w:cs="Times New Roman"/>';
+  const head=(id,ind,before)=>'<w:style w:type="paragraph" w:styleId="Heading'+id+'"><w:name w:val="heading '+id+'"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:uiPriority w:val="9"/><w:qFormat/><w:pPr><w:keepNext/><w:keepLines/><w:tabs><w:tab w:val="left" w:pos="'+(ind+(id===3?907:567))+'"/></w:tabs><w:spacing w:before="'+before+'" w:after="160"/><w:ind w:left="'+ind+'"/><w:jc w:val="left"/><w:outlineLvl w:val="'+(id-1)+'"/></w:pPr><w:rPr><w:b/><w:sz w:val="'+(id===1?24:23)+'"/><w:szCs w:val="'+(id===1?24:23)+'"/></w:rPr></w:style>';
+  const styles=X+'<w:styles '+W+'><w:docDefaults><w:rPrDefault><w:rPr>'+font+'<w:sz w:val="22"/><w:szCs w:val="22"/><w:lang w:val="es-ES"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="160" w:line="264" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr></w:pPrDefault></w:docDefaults>'+
+    '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>'+
+    '<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="120" w:after="360"/><w:ind w:left="567" w:right="567"/><w:jc w:val="center"/></w:pPr><w:rPr><w:b/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:style>'+
+    head(1,360,360)+head(2,794,240)+head(3,1247,200)+
+    '<w:style w:type="paragraph" w:styleId="Quote"><w:name w:val="Quote"/><w:basedOn w:val="Normal"/><w:qFormat/><w:pPr><w:ind w:left="567" w:right="567"/></w:pPr><w:rPr><w:i/></w:rPr></w:style>'+
+    '<w:style w:type="paragraph" w:styleId="Header"><w:name w:val="header"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:after="0"/><w:jc w:val="right"/></w:pPr><w:rPr><w:sz w:val="16"/></w:rPr></w:style>'+
+    '<w:style w:type="paragraph" w:styleId="Footer"><w:name w:val="footer"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:after="0"/><w:jc w:val="right"/></w:pPr><w:rPr><w:sz w:val="18"/></w:rPr></w:style></w:styles>';
+  const doc=X+'<w:document '+W+'><w:body>'+docxBody(s,ts)+'<w:sectPr><w:headerReference w:type="default" r:id="rIdH"/><w:footerReference w:type="default" r:id="rIdF"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  const hdr=X+'<w:hdr '+W+'>'+wP('<w:pStyle w:val="Header"/>','<w:r><w:t xml:space="preserve">'+xmlEsc(String(s.name||'').toUpperCase())+'</w:t></w:r>')+'</w:hdr>';
+  const ftr=X+'<w:ftr '+W+'>'+wP('<w:pStyle w:val="Footer"/>','<w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r>')+'</w:ftr>';
+  const R='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const files=[
+    {name:'[Content_Types].xml',data:X+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>'},
+    {name:'_rels/.rels',data:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>'},
+    {name:'docProps/core.xml',data:X+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>'+xmlEsc(ts.length===1?topicHeading(s,ts[0]):s.name)+'</dc:title><dc:creator>Mnema</dc:creator></cp:coreProperties>'},
+    {name:'word/_rels/document.xml.rels',data:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdS" Type="'+R+'/styles" Target="styles.xml"/><Relationship Id="rIdH" Type="'+R+'/header" Target="header1.xml"/><Relationship Id="rIdF" Type="'+R+'/footer" Target="footer1.xml"/></Relationships>'},
+    {name:'word/document.xml',data:doc},{name:'word/styles.xml',data:styles},{name:'word/header1.xml',data:hdr},{name:'word/footer1.xml',data:ftr}
+  ];
+  return zipStore(files,'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
+async function saveBlob(blob,name,label){
+  let dl=null;try{const C=window.claude;dl=C&&C.use?await C.use('downloads'):null}catch(e){}
+  if(dl){try{await dl.save({filename:name,data:blob});toast(label+' descargado.');return}catch(e){if(e&&e.code==='declined')return}}
+  try{const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),8000);toast(label+' descargado.')}catch(e){toast('No se pudo descargar desde esta vista.')}
+}
+async function downloadNotes(s,ts,fmt){
+  ts=ts.filter(t=>t.notes);if(!ts.length){toast('Todavía no hay documento del tema para descargar.');return}
+  const safe=x=>norm(x).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'tema';
+  const base=ts.length===1?safe(ts[0].title):safe(s.name)+'-temario';
+  if(fmt==='docx'){try{await saveBlob(notesDocx(s,ts),base+'.docx','Word')}catch(e){console.warn(e);toast('No se pudo crear el Word ahora.')}return}
+  toast('Preparando el PDF…');let blob;
+  try{const pm=await pdfLib();const font=await serifFont(pm);blob=await new Promise((res,rej)=>{try{pm.createPdf(pdfDoc(s,ts,font)).getBlob(res)}catch(e){rej(e)}})}
+  catch(e){console.warn(e);toast('No se pudo crear el PDF ahora. Inténtalo de nuevo en un momento.');return}
+  await saveBlob(blob,base+'.pdf','PDF');
+}
+/* Editor manual */
+function edToolbar(){
+  const B=(k,l,t)=>'<button type="button" class="edb" data-ed="'+k+'" title="'+esc(t||l)+'" aria-label="'+esc(t||l)+'">'+l+'</button>';
+  return '<div class="edbar" role="toolbar" aria-label="Formato">'+
+    '<span class="edg">'+B('h2','Apartado','Apartado (1.)')+B('h3','Subapartado','Subapartado (1.1.)')+B('h4','Sub-sub','Tercer nivel (1.1.1.)')+B('p','Texto','Párrafo normal')+B('blockquote','Cita','Cita en cursiva con sangría')+'</span>'+
+    '<span class="edg">'+B('bold','<b>N</b>','Negrita')+B('italic','<i>K</i>','Cursiva')+B('underline','<u>S</u>','Subrayado')+B('hl','<span class="edhl">Resaltar</span>','Resaltar en amarillo')+B('red','<span class="edred">Rojo</span>','Texto en rojo')+B('ex','<span class="edred">Ejemplo:</span>','Añadir un ejemplo')+'</span>'+
+    '<span class="edg">'+B('insertUnorderedList','• Lista','Lista con viñetas')+B('insertOrderedList','1. Lista','Lista numerada')+B('indent','→','Meter un nivel')+B('outdent','←','Sacar un nivel')+B('removeFormat','Quitar formato')+B('undo','Deshacer')+'</span></div>';
+}
+function edExec(k){
+  const ed=$('#notesEd');if(!ed)return;ed.focus();
+  try{document.execCommand('styleWithCSS',false,false)}catch(e){}
+  if(/^(h2|h3|h4|p|blockquote)$/.test(k))document.execCommand('formatBlock',false,'<'+k+'>');
+  else if(k==='hl'){document.execCommand('styleWithCSS',false,true);document.execCommand('hiliteColor',false,'#FFF200');document.execCommand('styleWithCSS',false,false)}
+  else if(k==='red')document.execCommand('foreColor',false,'#E00000');
+  else if(k==='ex')document.execCommand('insertHTML',false,'<span class="red">Ejemplo:</span>&nbsp;');
+  else document.execCommand(k,false,null);
+  V.edDraft=ed.innerHTML;
+}
+document.addEventListener('mousedown',e=>{const b=e.target.closest&&e.target.closest('[data-ed]');if(b){e.preventDefault();edExec(b.dataset.ed)}});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-ed]');if(b&&e.detail===0){edExec(b.dataset.ed)}});
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='notesEd')V.edDraft=e.target.innerHTML});
+document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='notesEd'&&e.key==='Tab'){e.preventDefault();document.execCommand(e.shiftKey?'outdent':'indent',false,null);V.edDraft=e.target.innerHTML}});
+Object.assign(ACT,{
+  editNotes:b=>{V.editNotes=b.dataset.id;V.edDraft=null;render();const ed=$('#notesEd');if(ed){ed.focus();ed.closest('.topic').scrollIntoView({block:'start',behavior:'smooth'})}},
+  cancelNotes:()=>{V.editNotes=null;V.edDraft=null;render()},
+  saveNotes:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);const ed=$('#notesEd');if(!t||!ed)return;
+    const txt=htmlToNotes(ed);if(txt.length<5){toast('El documento está vacío.');return}
+    t.notes=txt;t.notesEdited=Date.now();saveSubject(s);V.editNotes=null;V.edDraft=null;render();toast('Cambios guardados. El PDF y el Word ya los incluyen.')},
+  redoNotes:b=>{const s=cur();const t=s.topics.find(x=>x.id===b.dataset.id);if(!t)return;
+    if(!t.notesEdited){makeNotes(t.id);return}
+    openModal('<h3>¿Rehacer el documento del tema?</h3><p class="muted" style="margin:0">Has editado este documento a mano. Si lo rehaces, Mnema lo vuelve a escribir desde tus archivos y se pierden tus cambios.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Rehacer</button></div>',bx=>{
+      bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;closeModal();if(a.dataset.mact==='ok'){t.notesEdited=null;makeNotes(t.id)}}})}
+});
 
 document.addEventListener('click',e=>{
   const tab=e.target.closest('.tab');if(tab){V.tab=tab.dataset.tab;if(V.tab==='temario')V.subjView='list';render();window.scrollTo(0,0);return}
