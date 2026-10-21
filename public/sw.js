@@ -1,5 +1,5 @@
 /* Mnema · service worker: permite instalar la app y abrirla aunque la conexión falle. */
-const CACHE = 'mnema-v6';
+const CACHE = 'mnema-v7';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {

@@ -509,6 +509,15 @@ h3{font-size:17px}
 .scgrp{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:var(--surface-2)}
 .bcheck{background:transparent!important;border:0!important;padding:2px 0!important}
 .wrapseg{flex-wrap:wrap}
+
+/* Botón de recargar */
+.reload-btn{appearance:none;border:0;background:none;font:inherit;cursor:pointer;color:inherit;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;font-weight:500;font-size:15px;min-height:44px;width:100%;text-align:left}
+.side .reload-btn{color:rgba(255,255,255,.82)}
+.side .reload-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.reload-btn.mini{width:40px;height:40px;padding:0;justify-content:center;color:#fff;flex-shrink:0}
+.reload-btn.busy svg{animation:sp .8s linear infinite}
+.reload-btn:disabled{cursor:default;opacity:.8}
+@media (prefers-reduced-motion: reduce){.reload-btn.busy svg{animation-duration:2.4s}}
 </style>
 
 <div class="shell">
@@ -525,6 +534,7 @@ h3{font-size:17px}
   </nav>
   <div class="side-foot">
     <button class="tab admin-link" data-tab="admin" type="button" hidden><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Administración</span></button>
+    <button class="reload-btn" type="button" data-act="reloadApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Recargar</span></button>
     <button class="tab acct-row" data-tab="cuenta" type="button"><span class="avatar acct-av" aria-hidden="true"></span><span class="acct-txt"><b class="acct-name">Mi cuenta</b><small>Ajustes, ayuda y manual</small></span></button>
   </div>
 </aside>
@@ -533,6 +543,7 @@ h3{font-size:17px}
     <div class="side-brand"><svg width="30" height="30" viewBox="0 0 84 84" aria-hidden="true"><polyline points="14,66 14,18 42,50 70,18 70,66" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="14" cy="66" r="7.5" fill="currentColor"/><circle cx="14" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="18" r="7.5" fill="currentColor"/><circle cx="70" cy="66" r="7.5" fill="currentColor"/><circle cx="42" cy="50" r="11" fill="#7FA4FF"/></svg><span class="word">mnema</span></div>
     <label for="subjSel2" class="sr">Asignatura</label><select id="subjSel2" class="subj-sel"></select>
     <button class="tab admin-link mini" data-tab="admin" type="button" hidden aria-label="Administración"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></button>
+    <button class="reload-btn mini" type="button" data-act="reloadApp" aria-label="Recargar" title="Recargar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
     <button class="tab avatar acct-av mini" data-tab="cuenta" type="button" aria-label="Mi cuenta"></button>
   </header>
   <main class="wrap" id="main"></main>
@@ -696,7 +707,9 @@ const Store={
     if(this.mode!=='db'){this.saveLocal();return}
     const k=this.key(kind,obj);
     clearTimeout(this.timers[k]);
-    this.timers[k]=setTimeout(()=>{
+    this.pending=this.pending||{};
+    const run=this.pending[k]=()=>{
+      delete this.pending[k];
       let body=kind==='meta'?S.meta:(kind==='s'?S.subjects[obj.id]:kind==='i'?S.images[obj.id]:S.materials[obj.id]);
       if(!body)return;
       body=JSON.parse(JSON.stringify(body));
@@ -710,7 +723,13 @@ const Store={
         if(e&&e.code==='quota_exceeded')toast('Se ha llenado el espacio de Mnema. Borra materiales que ya no uses.');
         else toast('No se pudo guardar: '+(e&&e.message||'error de conexión'));
       });
-    },600);
+    };
+    this.timers[k]=setTimeout(run,600);
+  },
+  async flush(){
+    if(this.timers.__local){clearTimeout(this.timers.__local);try{localStorage.setItem(LS_KEY,JSON.stringify({subjects:S.subjects,materials:S.materials,images:S.images,meta:S.meta}))}catch(e){}}
+    Object.keys(this.pending||{}).forEach(k=>{clearTimeout(this.timers[k]);const f=this.pending[k];f&&f()});
+    await Promise.all(Object.values(this.chains).map(c=>c&&c.catch(()=>{})));
   },
   remove(kind,id){
     if(this.mode!=='db'){this.saveLocal();return}
@@ -2014,6 +2033,7 @@ Object.assign(ACT,{
   delAccount:()=>openModal('<h3>Eliminar tu cuenta</h3><p class="muted" style="margin:0">Se borrarán para siempre tu temario, tarjetas, progreso y los grupos que hayas creado. Escribe tu contraseña para confirmarlo.</p><label class="lbl" for="mPw">Contraseña<input type="password" id="mPw" autocomplete="current-password"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Eliminar para siempre</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();a.disabled=true;try{await ACC().remove($('#mPw').value)}catch(err){a.disabled=false;toast(err.message||'No se pudo eliminar.')}}}),
   theme:b=>{applyTheme(b.dataset.v);saveMeta();render()},
+  reloadApp:()=>reloadApp(),
   acctTab:b=>{V.acctTab=b.dataset.v;if(b.dataset.v==='manual')V.manSec=null;render()},
   manOpen:b=>{V.manSec=b.dataset.v||null;render();const m=$('#main');m&&window.scrollTo(0,0)},
   sendContact:()=>{const body=$('#ctBody').value.trim();if(body.length<5){toast('Escribe tu mensaje.');return}
@@ -2323,14 +2343,42 @@ document.addEventListener('keydown',e=>{if(e.target.id==='chatIn'&&e.key==='Ente
 ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.add('over')}}));
 ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('over');if(ev==='drop')handleFiles(e.dataTransfer.files)}}));
 
+/* ---------- recargar conservando la posición ---------- */
+const RESTORE_KEY='mnema.restore';
+function placeSnapshot(){
+  const s=cur();
+  return {t:Date.now(),tab:V.tab,subj:s&&s.id,subjView:V.subjView,openTopic:V.openTopic,topicView:V.topicView,readMat:V.readMat,cardView:V.cardView,acctTab:V.acctTab,manSec:V.manSec,manQ:V.manQ,
+    adm:V.adm?{tab:V.adm.tab,filter:V.adm.filter,q:V.adm.q,msg:V.adm.msg}:null,scopes:V.scopes||null,testCfg:V.testCfg,tutorMode:V.tutorMode,y:window.scrollY||0};
+}
+async function reloadApp(){
+  document.querySelectorAll('.reload-btn').forEach(b=>{b.disabled=true;b.classList.add('busy')});
+  try{sessionStorage.setItem(RESTORE_KEY,JSON.stringify(placeSnapshot()))}catch(e){}
+  try{await Promise.race([Store.flush(),pause(4000)])}catch(e){}
+  try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.update().catch(()=>{})))}}catch(e){}
+  try{if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}
+  location.reload();
+}
+function readRestore(){let r=null;try{r=JSON.parse(sessionStorage.getItem(RESTORE_KEY)||'null');sessionStorage.removeItem(RESTORE_KEY)}catch(e){}return r&&Date.now()-r.t<120000?r:null}
+function applyRestore(r){
+  if(!r)return;
+  ['tab','subjView','openTopic','topicView','readMat','cardView','acctTab','manSec','manQ','tutorMode'].forEach(k=>{if(r[k]!==undefined&&r[k]!==null)V[k]=r[k]});
+  if(r.adm&&V.adm)Object.assign(V.adm,r.adm);
+  if(r.scopes)V.scopes=r.scopes;
+  if(r.testCfg)V.testCfg=Object.assign(V.testCfg,r.testCfg);
+  if(r.subj&&(S.subjects[r.subj]||r.subj==='ejemplo'))S.meta.activeId=r.subj;
+}
+function restoreScroll(r){if(r&&r.y)requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,r.y)))}
+
 /* ---------- arranque ---------- */
 Store.loadLocal();
 try{applyTheme(localStorage.getItem('mnema.theme')||S.meta.theme||'system',true)}catch(e){applyTheme(S.meta.theme||'system',true)}
 V.podRate=S.meta.podRate||1;setPomo('foco');
 try{const qt=new URLSearchParams(location.search).get('tab');if(qt==='asignaturas')V.tab='temario';else if(['hoy','temario','tarjetas','tests','tutor','progreso','cuenta'].includes(qt))V.tab=qt}catch(e){}
 document.addEventListener('mnema-install-change',()=>{if(V.tab==='cuenta')render()});
+const RESTORE=readRestore();
+applyRestore(RESTORE);
 render();
-Store.init().then(()=>{if(S.meta.theme)applyTheme(S.meta.theme,true);render()});
-if(window.mnemaAccount)window.mnemaAccount.get().then(u=>{V.me=u||null;render()}).catch(()=>{});
+const meReady=window.mnemaAccount?window.mnemaAccount.get().then(u=>{V.me=u||null}).catch(()=>{}):Promise.resolve();
+Promise.all([Store.init(),meReady]).then(()=>{if(S.meta.theme)applyTheme(S.meta.theme,true);applyRestore(RESTORE);render();restoreScroll(RESTORE)});
 })();
 </script>
