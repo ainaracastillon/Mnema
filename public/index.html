@@ -2030,7 +2030,7 @@ function renderAdmin(){
   const open=st&&!st.error?st.messagesOpen:0;
   const tabs=[['resumen','Resumen'],['usuarios','Usuarios'],['mensajes','Mensajes'],['registro','Registro']];
   const nav='<nav class="subnav" aria-label="Secciones de administración">'+tabs.map(([k,l])=>'<button type="button" data-act="admTab" data-v="'+k+'" aria-pressed="'+(V.adm.tab===k)+'">'+l+(k==='mensajes'&&open?' <span class="badge">'+open+'</span>':'')+'</button>').join('')+'</nav>';
-  const who='<div class="tip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>'+(V.me.isSuperadmin?'Eres la <b>superadministradora</b>: puedes nombrar administradores y eliminar cuentas. Tu cuenta está protegida.':'Eres <b>administrador</b>: puedes ver usuarios y mensajes, suspender cuentas y sugerir que se eliminen. Solo la superadministradora las elimina.')+'</span></div>';
+  const who='<div class="tip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>'+(V.me.isSuperadmin?'Eres la <b>superadministradora</b> y solo hay una: tú. Puedes nombrar o quitar administradores y eliminar cuentas, y tu cuenta está protegida. Para nombrar a alguien, abre su ficha en <b>Usuarios</b> y pulsa «Hacer administrador». <button class="btn small soft" type="button" data-act="admAdmins" style="margin-left:6px">Ver administradores</button>':'Eres <b>administrador</b>: puedes ver usuarios y mensajes, suspender cuentas y sugerir que se eliminen. Solo la superadministradora las elimina.')+'</span></div>';
   let body='';
   if(V.adm.tab==='resumen')body=admResumen(st);
   else if(V.adm.tab==='usuarios')body=admUsuarios();
@@ -2116,6 +2116,7 @@ async function admUserModal(id){
 Object.assign(ACT,{
   admTab:b=>{V.adm.tab=b.dataset.v;if(b.dataset.v==='resumen')delete V.adm.cache.stats;render()},
   admUser:b=>admUserModal(b.dataset.id),
+  admAdmins:()=>{V.adm.tab='usuarios';V.adm.filter='admins';V.adm.q='';render()},
   admMsg:b=>{V.adm.msg=b.dataset.v;render()},
   admResolve:async b=>{try{await ADM().resolve(+b.dataset.id,b.dataset.v==='1');admReset();toast(b.dataset.v==='1'?'Marcado como atendido.':'Mensaje reabierto.');render()}catch(e){toast(e.message||'Error')}},
   admDelMsg:b=>openModal('<h3>¿Borrar este mensaje?</h3><p class="muted" style="margin:0">Se borrará para siempre.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Borrar</button></div>',bx=>{
