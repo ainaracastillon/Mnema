@@ -156,6 +156,16 @@
     async remove(password) { await api('POST', '/api/account/delete', { password }); try { localStorage.removeItem('mnema.v1'); } catch (e) {} location.href = '/'; }
   });
 
+  /* ---- voces naturales ---- */
+  window.mnemaTTS = Object.freeze({
+    async audio(text, voz) {
+      const m = await me(); if (!m.user || !m.tts) throw { code: 'unavailable' };
+      const r = await fetch('/api/tts', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, voz }) });
+      if (!r.ok) throw { code: 'unavailable', status: r.status };
+      return URL.createObjectURL(await r.blob());
+    }
+  });
+
   /* ---- administración ---- */
   const q = (o) => Object.entries(o).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
   window.mnemaAdmin = Object.freeze({
@@ -245,6 +255,7 @@
   function landing() {
     const feats = [
       ['upload', 'Sube lo que tengas', 'PDF, Word, texto o fotos de tus apuntes. Hasta los PDF escaneados.'],
+      ['doc', 'Apuntes por tema', 'Sube los documentos de la profesora y Mnema prepara un documento por tema con lo necesario, sin lo irrelevante.'],
       ['doc', 'Resúmenes con lo esencial', 'Cada tema resumido con los conceptos clave resaltados y lo que más cae en el examen.'],
       ['map', 'Mapas mentales y tablas', 'Ve cómo se conectan las ideas y compara autores, etapas o tipos de un vistazo.'],
       ['head', 'Pódcast de repaso', 'Dos voces repasan el tema contigo para estudiar andando o en el bus.'],

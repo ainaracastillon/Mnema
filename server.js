@@ -37,6 +37,7 @@ async function migrate() {
     `CREATE TABLE IF NOT EXISTS scores (code text NOT NULL REFERENCES shared(code) ON DELETE CASCADE, user_id text NOT NULL REFERENCES users(id) ON DELETE CASCADE, body jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY (code, user_id))`,
     `CREATE TABLE IF NOT EXISTS assets (id text PRIMARY KEY, user_id text NOT NULL REFERENCES users(id) ON DELETE CASCADE, mime text NOT NULL, data bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`,
     `CREATE TABLE IF NOT EXISTS admin_log (id serial PRIMARY KEY, admin_id text, admin_name text NOT NULL DEFAULT '', action text NOT NULL, target_id text, target_label text NOT NULL DEFAULT '', detail text NOT NULL DEFAULT '', created_at timestamptz NOT NULL DEFAULT now())`,
+    `CREATE TABLE IF NOT EXISTS tts_cache (key text PRIMARY KEY, mime text NOT NULL, data bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`,
     `CREATE TABLE IF NOT EXISTS messages (id serial PRIMARY KEY, user_id text, username text NOT NULL DEFAULT '', email text NOT NULL DEFAULT '', kind text NOT NULL DEFAULT 'consulta', subject text NOT NULL DEFAULT '', body text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), resolved_at timestamptz, resolved_by text)`
   ];
   for (const q of sql) await pool.query(q);
@@ -158,9 +159,9 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/logout', (req, res) => { setSession(res, null); res.json({ ok: true }); });
 app.get('/api/me', async (req, res) => {
   const u = await sessionUser(req);
-  if (!u) return res.json({ user: null, ai: AI_READY });
+  if (!u) return res.json({ user: null, ai: AI_READY, tts: HAS_CF });
   if (u.suspended_at) { setSession(res, null); return res.json({ user: null, ai: AI_READY, suspended: true, reason: u.suspend_reason || '' }); }
-  res.json({ user: publicUser(u), ai: AI_READY });
+  res.json({ user: publicUser(u), ai: AI_READY, tts: HAS_CF });
 });
 app.patch('/api/account', auth, async (req, res) => {
   const b = req.body || {}; const sets = []; const vals = [];
@@ -482,6 +483,42 @@ app.post('/api/ai', auth, async (req, res) => {
   res.status(st === 429 ? 429 : 502).json({ code, message: 'La IA devolvió un error' + (st ? ' (' + st + ')' : '') + '. Prueba de nuevo en un momento.' });
 });
 
+/* voces naturales para pódcast y lectura en voz alta (Cloudflare Workers AI · Deepgram Aura 2 en español) */
+const TTS_MODEL = process.env.CLOUDFLARE_TTS_MODEL || '@cf/deepgram/aura-2-es';
+const TTS_VOICES = { A: process.env.TTS_VOICE_A || 'carina', B: process.env.TTS_VOICE_B || 'alvaro' };
+async function cfTTS(text, speaker) {
+  const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${TTS_MODEL}`, {
+    method: 'POST', headers: { authorization: 'Bearer ' + CF_API_TOKEN, 'content-type': 'application/json' },
+    body: JSON.stringify({ text, speaker, encoding: 'mp3' })
+  });
+  const ct = String(r.headers.get('content-type') || '');
+  if (!r.ok) { const t = await r.text().catch(() => ''); throw new Error('TTS ' + r.status + ' ' + t.slice(0, 300)); }
+  if (ct.includes('application/json')) {
+    const j = await r.json();
+    const b64 = j && (j.result && (j.result.audio || j.result) || j.audio);
+    if (typeof b64 !== 'string') throw new Error('TTS: respuesta sin audio ' + JSON.stringify(j).slice(0, 200));
+    return { mime: 'audio/mpeg', data: Buffer.from(b64, 'base64') };
+  }
+  const buf = Buffer.from(await r.arrayBuffer());
+  if (!buf.length) throw new Error('TTS: audio vacío');
+  return { mime: ct.startsWith('audio/') ? ct.split(';')[0] : 'audio/mpeg', data: buf };
+}
+app.post('/api/tts', auth, async (req, res) => {
+  if (!HAS_CF) return res.status(503).json({ code: 'unavailable', message: 'Las voces naturales no están configuradas.' });
+  const text = String(req.body.text || '').replace(/\s+/g, ' ').trim().slice(0, 1800);
+  const voz = req.body.voz === 'B' ? 'B' : 'A';
+  if (!text) return res.status(400).json({ code: 'bad_request', message: 'Falta el texto.' });
+  const key = crypto.createHash('sha256').update(TTS_MODEL + '|' + TTS_VOICES[voz] + '|' + text).digest('hex');
+  const hit = await pool.query('SELECT mime, data FROM tts_cache WHERE key=$1', [key]);
+  if (hit.rows[0]) { res.setHeader('Content-Type', hit.rows[0].mime); res.setHeader('Cache-Control', 'private, max-age=31536000'); return res.end(hit.rows[0].data); }
+  if (!limit('tts:' + req.uid, 600, 3600e3)) return res.status(429).json({ code: 'rate_limited', message: 'Has generado mucho audio seguido. Espera un poco.' });
+  let out;
+  try { out = await cfTTS(text, TTS_VOICES[voz]); }
+  catch (e) { console.error(e.message); return res.status(502).json({ code: 'unavailable', message: 'No se pudo generar la voz.' }); }
+  pool.query('INSERT INTO tts_cache (key, mime, data) VALUES ($1,$2,$3) ON CONFLICT (key) DO NOTHING', [key, out.mime, out.data]).catch(() => {});
+  res.setHeader('Content-Type', out.mime); res.setHeader('Cache-Control', 'private, max-age=31536000'); res.end(out.data);
+});
+
 /* estáticos */
 app.get('/sw.js', (req, res) => { res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Service-Worker-Allowed', '/'); res.sendFile(path.join(__dirname, 'public', 'sw.js')); });
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h', setHeaders: (res, file) => { if (/\.(html|webmanifest)$/.test(file)) res.setHeader('Cache-Control', 'no-cache'); } }));
@@ -489,4 +526,7 @@ app.get('*', (req, res) => { res.setHeader('Cache-Control', 'no-cache'); res.sen
 
 app.use((err, req, res, next) => { if (!err.expose) console.error(err); if (res.headersSent) return res.end(); res.status(err.status || 500).json({ error: err.expose ? err.message : err.status === 413 ? 'Archivo demasiado grande.' : 'Error del servidor. Inténtalo de nuevo.' }); });
 
-migrate().then(() => app.listen(PORT, () => console.log('Mnema escuchando en ' + PORT))).catch(e => { console.error('No se pudo preparar la base de datos', e); process.exit(1); });
+migrate().then(() => app.listen(PORT, () => {
+  console.log('Mnema escuchando en ' + PORT);
+  if (HAS_CF) cfTTS('Prueba de voz de Mnema.', TTS_VOICES.A).then(o => console.log('Voces naturales OK: ' + o.mime + ' ' + o.data.length + ' bytes')).catch(e => console.error('Voces naturales NO disponibles: ' + e.message));
+})).catch(e => { console.error('No se pudo preparar la base de datos', e); process.exit(1); });
