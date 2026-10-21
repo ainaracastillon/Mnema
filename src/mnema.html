@@ -11,28 +11,28 @@
   --btn-bg:#1F2C86; --btn-ink:#FFFFFF;
   --good:#17824F; --good-soft:#DDF3E8; --warn:#9A6400; --warn-soft:#FCEFD6; --bad:#B93A33; --bad-soft:#FBE3E1;
   --shadow:0 1px 2px rgba(19,26,74,.05),0 8px 24px rgba(19,26,74,.07);
-  --side:#1F2C86; --side-ink:#FFFFFF;
+  --side:#1F2C86; --side-ink:#FFFFFF; --hero:#1F2C86;
   --f-display:'Unbounded','DM Sans',system-ui,sans-serif;
   --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-mono:'DM Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#4A5596; --surface:#5763A8; --surface-2:#6170B5; --line:#7885C6;
-  --ink:#FFFFFF; --ink-2:#F0F3FF; --ink-3:#E3E8FF;
-  --anil:#E4ECFF; --spark:#CFDDFF; --spark-ink:#F2F6FF; --spark-soft:#4E5CA6;
-  --btn-bg:#EEF3FF; --btn-ink:#26307C;
-  --good:#C6F8E0; --good-soft:#3D7880; --warn:#FFEBBD; --warn-soft:#7A6A47; --bad:#FFE2DE; --bad-soft:#8C5376;
-  --side:#3F4A8A; --side-ink:#FFFFFF;
-  --shadow:0 1px 2px rgba(20,24,70,.25),0 10px 28px rgba(20,24,70,.22); color-scheme:dark;
+  --bg:#000000; --surface:#111114; --surface-2:#1B1B21; --line:#2B2B34;
+  --ink:#F5F6FA; --ink-2:#C9CCD8; --ink-3:#9DA1B2;
+  --anil:#B4C8FF; --spark:#86A9FF; --spark-ink:#AFC5FF; --spark-soft:#19213F;
+  --btn-bg:#86A9FF; --btn-ink:#050B24;
+  --good:#6FE0A8; --good-soft:#0F2A20; --warn:#F5C86A; --warn-soft:#2B2210; --bad:#FF8F86; --bad-soft:#33141A;
+  --side:#0A0A0D; --side-ink:#FFFFFF; --hero:#1A2252;
+  --shadow:0 1px 2px rgba(0,0,0,.6),0 10px 28px rgba(0,0,0,.5); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#4A5596; --surface:#5763A8; --surface-2:#6170B5; --line:#7885C6;
-  --ink:#FFFFFF; --ink-2:#F0F3FF; --ink-3:#E3E8FF;
-  --anil:#E4ECFF; --spark:#CFDDFF; --spark-ink:#F2F6FF; --spark-soft:#4E5CA6;
-  --btn-bg:#EEF3FF; --btn-ink:#26307C;
-  --good:#C6F8E0; --good-soft:#3D7880; --warn:#FFEBBD; --warn-soft:#7A6A47; --bad:#FFE2DE; --bad-soft:#8C5376;
-  --side:#3F4A8A; --side-ink:#FFFFFF;
-  --shadow:0 1px 2px rgba(20,24,70,.25),0 10px 28px rgba(20,24,70,.22); color-scheme:dark;
+  --bg:#000000; --surface:#111114; --surface-2:#1B1B21; --line:#2B2B34;
+  --ink:#F5F6FA; --ink-2:#C9CCD8; --ink-3:#9DA1B2;
+  --anil:#B4C8FF; --spark:#86A9FF; --spark-ink:#AFC5FF; --spark-soft:#19213F;
+  --btn-bg:#86A9FF; --btn-ink:#050B24;
+  --good:#6FE0A8; --good-soft:#0F2A20; --warn:#F5C86A; --warn-soft:#2B2210; --bad:#FF8F86; --bad-soft:#33141A;
+  --side:#0A0A0D; --side-ink:#FFFFFF; --hero:#1A2252;
+  --shadow:0 1px 2px rgba(0,0,0,.6),0 10px 28px rgba(0,0,0,.5); color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -332,6 +332,10 @@ body::before{display:none}
 .acct-txt b{font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct-txt small{font-size:12px;opacity:.75}
 .content{min-width:0;display:flex;flex-direction:column}
+.side{border-right:1px solid var(--line)}
+/* Sin zoom en el móvil: sin doble toque y sin zoom automático al escribir */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media (max-width:899px),(pointer:coarse){input,select,textarea{font-size:16px!important}}
 .mtop{display:none}
 .bnav{display:none}
 main{padding-block:40px 80px;max-width:1040px;width:100%;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px))}
@@ -385,14 +389,14 @@ h3{font-size:17px}
 /* Hoy */
 .today{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px}
 @media (max-width:820px){.today{grid-template-columns:minmax(0,1fr)}}
-.hero-band{background:var(--side);color:#fff;border-radius:24px;padding:26px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:center}
+.hero-band{background:var(--hero);color:#fff;border-radius:24px;padding:26px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:center}
 .hero-band .k{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
 .hero-band .v{font-family:var(--f-display);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.05;letter-spacing:-1px;margin-top:4px}
 .hero-band .s{font-size:13.5px;opacity:.85;margin-top:2px}
 .hero-band input[type=date]{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff;color-scheme:dark;margin-top:8px;max-width:100%}
 @media (max-width:560px){.hero-band{grid-template-columns:repeat(2,minmax(0,1fr));padding:20px}.hero-band > div:first-child{grid-column:1/-1}}
 .mring{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(#9DBBFF calc(var(--p)*1%),rgba(255,255,255,.18) 0);display:grid;place-items:center;flex-shrink:0}
-.mring span{width:48px;height:48px;border-radius:50%;background:var(--side);display:grid;place-items:center;font-family:var(--f-mono);font-size:14px}
+.mring span{width:48px;height:48px;border-radius:50%;background:var(--hero);display:grid;place-items:center;font-family:var(--f-mono);font-size:14px}
 .tip{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:16px;background:var(--spark-soft);color:var(--spark-ink)}
 .tip svg{flex-shrink:0;margin-top:2px}
 
@@ -426,6 +430,67 @@ h3{font-size:17px}
 @media (max-width:560px){.logrow{grid-template-columns:minmax(0,1fr)}}
 .sparkbars{display:flex;align-items:flex-end;gap:3px;height:90px}
 .sparkbars i{flex:1;background:var(--spark);border-radius:4px 4px 0 0;min-height:2px;opacity:.85}
+
+/* Asignaturas y carpetas */
+.folder{display:flex;flex-direction:column;gap:14px}
+.fhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.fhead-t{appearance:none;border:0;background:none;font:inherit;color:var(--ink);display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:6px 4px;border-radius:10px;font-family:var(--f-display);font-weight:500;font-size:19px;letter-spacing:-.2px}
+.fhead-t svg:first-child{color:var(--spark-ink)}
+.fhead-t .chev{color:var(--ink-3);transition:transform .15s}
+.fhead-t .chev.open{transform:rotate(90deg)}
+@media (prefers-reduced-motion: reduce){.fhead-t .chev{transition:none}}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
+.scard{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow)}
+.scard::before{content:"";height:6px;background:var(--c)}
+.scard.on{border-color:var(--c)}
+.scard-main{appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;display:flex;gap:14px;align-items:center;padding:16px 18px 10px;cursor:pointer}
+.sicon{width:48px;height:48px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center;font-family:var(--f-display);font-weight:600;font-size:17px;flex-shrink:0;letter-spacing:.5px}
+.sicon.big{width:60px;height:60px;border-radius:18px;font-size:21px}
+.sbody{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sbody b{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+.smeta{font-size:13.5px;color:var(--ink-3)}
+.sfoot{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:0 18px 12px}
+.sbar{display:flex;align-items:center;gap:8px;flex:1;min-width:110px}
+.sbar .bar{flex:1}
+.sacts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;padding:12px 14px;border-top:1px solid var(--line);margin-top:auto;background:var(--surface-2)}
+.crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-3);margin-bottom:-10px}
+.crumb button{appearance:none;border:0;background:none;font:inherit;color:var(--spark-ink);cursor:pointer;padding:4px 0;font-weight:500}
+.phead-subj{display:flex;gap:16px;align-items:center}
+.phead-subj .sicon{background:var(--c)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{appearance:none;width:34px;height:34px;border-radius:50%;background:var(--c);border:3px solid transparent;cursor:pointer;box-shadow:0 0 0 1px var(--line)}
+.sw[aria-checked="true"]{border-color:var(--surface);box-shadow:0 0 0 2px var(--c)}
+
+/* Manual */
+.man-hero{background:var(--hero);color:#fff;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.man-hero .eyebrow{color:rgba(255,255,255,.75)}
+.man-hero h2{font-family:var(--f-display);font-weight:600;font-size:clamp(24px,3vw,30px);letter-spacing:-.5px;margin-top:4px}
+.man-hero p{margin:6px 0 0;opacity:.88}
+.man-hero input{width:100%;max-width:520px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:14px;padding:12px 16px;min-height:48px}
+.man-hero input::placeholder{color:rgba(255,255,255,.7)}
+.man-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:16px}
+.man-card{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px;transition:transform .12s,border-color .12s;box-shadow:var(--shadow)}
+.man-card:hover{border-color:var(--c);transform:translateY(-2px)}
+@media (prefers-reduced-motion: reduce){.man-card{transition:none}.man-card:hover{transform:none}}
+.man-card b{font-size:17px}
+.man-card > span:not(.man-ic):not(.man-go){color:var(--ink-2);font-size:14.5px}
+.man-go{margin-top:auto;color:var(--spark-ink);font-weight:600;font-size:14px;padding-top:6px}
+.man-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,var(--surface));color:var(--c)}
+.man-ic.big{width:64px;height:64px;border-radius:18px}
+.man-art{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:22px;box-shadow:var(--shadow);border-top:6px solid var(--c)}
+.man-art-h{display:flex;gap:16px;align-items:center}
+.man-art-h h2{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,3vw,28px);letter-spacing:-.4px}
+.man-art-h p{margin:4px 0 0;color:var(--ink-2)}
+.man-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:ms}
+.man-steps li{counter-increment:ms;display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;align-items:start;font-size:16px;line-height:1.55}
+.man-steps li::before{content:counter(ms);width:36px;height:36px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--f-mono)}
+.man-steps li span{padding-top:6px}
+.man-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.man-item{background:var(--surface-2);border-radius:16px;padding:16px 18px}
+.man-item b{display:block;margin-bottom:4px;font-size:15.5px}
+.man-item p{margin:0;color:var(--ink-2);font-size:14.5px}
+.man-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media (max-width:560px){.man-hero,.man-art{padding:20px;border-radius:20px}}
 </style>
 
 <div class="shell">
@@ -434,7 +499,7 @@ h3{font-size:17px}
   <div class="side-subj"><label for="subjSel" class="side-lbl">Asignatura</label><select id="subjSel" class="subj-sel"></select></div>
   <nav class="side-nav" aria-label="Secciones">
     <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
-    <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/></svg><span>Temario</span></button>
+    <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Asignaturas</span></button>
     <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
     <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
     <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
@@ -456,7 +521,7 @@ h3{font-size:17px}
 </div>
 <nav class="bnav" aria-label="Secciones">
   <button class="tab" data-tab="hoy" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Hoy</span></button>
-  <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/></svg><span>Temario</span></button>
+  <button class="tab" data-tab="temario" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Asignaturas</span></button>
   <button class="tab" data-tab="tarjetas" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg><span>Tarjetas</span></button>
   <button class="tab" data-tab="tests" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg><span>Tests</span></button>
   <button class="tab" data-tab="tutor" type="button"><svg class="ni" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg><span>Tutor</span></button>
@@ -474,6 +539,12 @@ h3{font-size:17px}
 <script>
 (function(){
 'use strict';
+/* Mnema se usa como una app: sin zoom con los dedos, con doble toque ni con Ctrl + rueda */
+(()=>{const stop=e=>e.preventDefault();
+  ['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,stop,{passive:false}));
+  document.addEventListener('touchmove',e=>{if(e.touches.length>1||(typeof e.scale==='number'&&e.scale!==1))e.preventDefault()},{passive:false});
+  window.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+})();
 try{ if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }catch(e){}
 
 /* ---------- utilidades ---------- */
@@ -769,7 +840,7 @@ function closeModal(){$('#modal').hidden=true;$('#modalBox').innerHTML=''}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal()});
 function barCls(m){return m>=0.7?'good':m>=0.4?'':m>0?'warn':'bad'}
-function mbar(m){return '<div class="bar '+barCls(m)+'" role="img" aria-label="Dominio '+pct(m)+' %"><i style="width:'+Math.max(2,pct(m))+'%"></i></div>'}
+function mbar(m){return '<div class="bar '+barCls(m)+'" role="img" aria-label="Dominio '+pct(m)+' %"><i style="width:'+(m>0?Math.max(2,pct(m)):0)+'%"></i></div>'}
 function busyBtn(key,label,busyLabel,act,extra=''){
   const b=V.busy[key];return '<button class="btn small '+(extra||'')+'" type="button" data-act="'+act+'" '+(b?'disabled':'')+'>'+(b?'<span class="spin"></span>'+busyLabel:label)+'</button>';
 }
@@ -787,7 +858,7 @@ function exampleBanner(s){
 const main=$('#main');
 const PAGE={
   hoy:s=>[greeting(),'Esto es lo que te toca hoy en '+s.name+'.','Tu día'],
-  temario:s=>['Temario','Sube tus apuntes y estudia cada tema con resúmenes, mapas, pódcast y tablas.',s.name],
+  temario:s=>V.subjView==='detail'&&s&&s.id?[s.name,'Sube el temario de esta asignatura y estudia cada tema con resúmenes, mapas, pódcast y tablas.',(folderOf(s)?folderOf(s).name:'Asignatura')]:['Asignaturas','Organiza tus asignaturas en carpetas y sube el temario de cada una.','Tus asignaturas'],
   tarjetas:s=>['Tarjetas','Repasa cada concepto justo antes de que se te olvide.',s.name],
   tests:s=>['Tests','Ponte a prueba como en el examen y aprende de tus fallos.',s.name],
   tutor:s=>['Tutor','Pregunta lo que no entiendas. Solo usa tu temario.',s.name],
@@ -796,7 +867,11 @@ const PAGE={
   admin:()=>['Administración','Usuarios, mensajes y actividad de Mnema.','Panel']
 };
 function greeting(){const h=new Date().getHours();const n=V.me&&(V.me.displayName||V.me.username)||'';const first=n.split(/\s+/)[0];return (h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+(first?', '+first:'')}
-function pageHead(s){const f=PAGE[V.tab];if(!f)return '';const [t,sub,eb]=f(s||{name:''});return '<header class="phead"><div>'+(eb?'<span class="eyebrow">'+esc(eb)+'</span>':'')+'<h1>'+esc(t)+'</h1><p>'+esc(sub)+'</p></div></header>'}
+function pageHead(s){const f=PAGE[V.tab];if(!f)return '';const [t,sub,eb]=f(s||{name:''});
+  const detail=V.tab==='temario'&&V.subjView==='detail'&&s&&s.id;
+  const crumb=detail?'<nav class="crumb" aria-label="Ruta"><button type="button" data-act="backToList">‹ Asignaturas</button>'+(folderOf(s)?'<span aria-hidden="true">/</span><span>'+esc(folderOf(s).name)+'</span>':'')+'</nav>':'';
+  const acts=detail&&!s.example?'<div class="row"><button class="btn ghost small" type="button" data-act="editSubject" data-sid="'+esc(s.id)+'">Editar asignatura</button><button class="btn ghost small" type="button" data-act="share" data-sid="'+esc(s.id)+'">'+(s.shareCode?'Grupo '+esc(s.shareCode):'Compartir')+'</button></div>':'';
+  return crumb+'<header class="phead"'+(detail?' style="--c:'+subjColor(s)+'"':'')+'><div class="'+(detail?'phead-subj':'')+'">'+(detail?'<span class="sicon big" aria-hidden="true">'+esc(subjInitials(s.name))+'</span>':'')+'<div>'+(eb?'<span class="eyebrow">'+esc(eb)+'</span>':'')+'<h1>'+esc(t)+'</h1><p>'+esc(sub)+'</p></div></div>'+acts+'</header>'}
 function render(){
   const list=allSubjects();const s=cur();
   const opts=(list.length?list.map(x=>'<option value="'+esc(x.id)+'"'+(s&&x.id===s.id?' selected':'')+'>'+(x.example?'Ejemplo · ':'')+esc(x.name)+'</option>').join(''):'<option value="">Sin asignaturas</option>')+'<option value="__new">＋ Nueva asignatura…</option>';
@@ -807,6 +882,7 @@ function render(){
   renderAvatarBtn();
   if(V.tab==='cuenta'){main.innerHTML='<div class="stack page">'+pageHead(s)+renderCuenta(s)+'</div>';return}
   if(V.tab==='admin'){main.innerHTML='<div class="stack page">'+pageHead(s)+renderAdmin()+'</div>';return}
+  if(V.tab==='temario'&&(V.subjView!=='detail'||!s)){V.subjView='list';main.innerHTML='<div class="stack page">'+pageHead(s)+renderAsignaturas()+'</div>';return}
   if(!s){main.innerHTML='<div class="stack page">'+'<header class="phead"><div><h1>'+esc(greeting())+'</h1><p>Vamos a preparar tu primera asignatura.</p></div></header><div class="panel empty"><h2 class="sec">Crea tu primera asignatura</h2><p class="muted">Ponle nombre y la fecha del examen. Después sube tu temario y Mnema hará el resto.</p><button class="btn" type="button" data-act="newSubject">Crear asignatura</button></div></div>';return}
   const fn={hoy:renderHoy,temario:renderTemario,tarjetas:renderTarjetas,tests:renderTests,tutor:renderTutor,progreso:renderProgreso}[V.tab]||renderHoy;
   const ae=document.activeElement;const keepId=ae&&ae.id&&main.contains(ae)?ae.id:null;const selStart=keepId&&ae.selectionStart;
@@ -1216,7 +1292,7 @@ function renderTarjetas(s){
   const views=[['repaso','Repasar'],['juegos','Juegos'],['lista','Todas ('+pool.length+')']];
   const head='<div class="row" style="justify-content:space-between"><div class="seg" role="group" aria-label="Vista">'+views.map(([k,l])=>'<button type="button" data-act="cardView" data-v="'+k+'" aria-pressed="'+(V.cardView===k)+'">'+l+'</button>').join('')+'</div></div>'+(s.topics.length?'<div class="panel flat">'+scopePicker(s,'Qué tarjetas entran')+'</div>':'');
   const stats='<div class="stats"><div class="stat"><div class="v">'+due.length+'</div><div class="k">Para hoy</div></div><div class="stat"><div class="v">'+nuevas+'</div><div class="k">Sin estudiar</div></div><div class="stat"><div class="v">'+dom+'</div><div class="k">Dominadas (+21 días)</div></div><div class="stat"><div class="v">'+pool.length+'</div><div class="k">Total</div></div></div>';
-  if(!s.cards.length)return '<div class="stack">'+exampleBanner(s)+'<div class="panel empty"><h2 class="sec">Aún no tienes tarjetas</h2><p class="muted">Ve a Temario y pulsa «Crear tarjetas» en cualquier tema. Mnema las saca de tu propio temario y te las pregunta justo antes de que las olvides.</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="go" data-tab="temario">Ir a Temario</button><button class="btn ghost" type="button" data-act="addCard">Escribir una tarjeta</button><button class="btn ghost" type="button" data-act="addImgCard">Tarjetas con imagen</button></div></div></div>';
+  if(!s.cards.length)return '<div class="stack">'+exampleBanner(s)+'<div class="panel empty"><h2 class="sec">Aún no tienes tarjetas</h2><p class="muted">Abre la asignatura y pulsa «Crear tarjetas» en cualquier tema. Mnema las saca de tu propio temario y te las pregunta justo antes de que las olvides.</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="go" data-tab="temario">Ir a la asignatura</button><button class="btn ghost" type="button" data-act="addCard">Escribir una tarjeta</button><button class="btn ghost" type="button" data-act="addImgCard">Tarjetas con imagen</button></div></div></div>';
   let body='';
   if(V.cardView==='lista'){
     body='<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3>Tus tarjetas</h3><div class="row"><button class="btn small ghost" type="button" data-act="addCard">Añadir tarjeta</button><button class="btn small ghost" type="button" data-act="addImgCard">Tarjetas con imagen</button><button class="btn small ghost" type="button" data-act="exportAnki">Exportar a Anki</button></div></div><div class="clist">'+
@@ -1394,7 +1470,7 @@ function renderTests(s){
   const c=V.testCfg;
   const missed=missedConcepts(s);
   const types=[['test','Tipo test'],['vf','Verdadero / falso'],['corta','Respuesta corta'],['desarrollo','Desarrollo']];
-  if(!s.topics.length)return '<div class="stack">'+exampleBanner(s)+'<div class="panel empty"><h2 class="sec">Primero, tu temario</h2><p class="muted">Sube y analiza tu temario para que Mnema pueda hacerte tests de cada tema.</p><button class="btn" type="button" data-act="go" data-tab="temario">Ir a Temario</button></div></div>';
+  if(!s.topics.length)return '<div class="stack">'+exampleBanner(s)+'<div class="panel empty"><h2 class="sec">Primero, tu temario</h2><p class="muted">Sube y analiza tu temario para que Mnema pueda hacerte tests de cada tema.</p><button class="btn" type="button" data-act="go" data-tab="temario">Ir a la asignatura</button></div></div>';
   return '<div class="stack">'+exampleBanner(s)+
   '<div class="panel stack"><h2 class="sec">Nuevo test</h2>'+
   scopePicker(s,'De qué temas salen las preguntas')+'<label class="lbl" for="tN" style="max-width:220px">Número de preguntas<select id="tN">'+[5,10,15,20,30].map(n=>'<option'+(c.n===n?' selected':'')+'>'+n+'</option>').join('')+'</select></label>'+
@@ -1660,21 +1736,24 @@ function shareModal(){
 
 /* ---------- eventos ---------- */
 const ACT={
-  go:b=>{V.tab=b.dataset.tab;render();window.scrollTo(0,0)},
+  go:b=>{if(b.dataset.tab==='temario'&&b.dataset.list){V.tab='temario';V.subjView='list';render();window.scrollTo(0,0);return}if(b.dataset.tab==='temario'&&cur())return openSubject(cur().id);V.tab=b.dataset.tab;render();window.scrollTo(0,0)},
   share:b=>{if(b&&b.dataset.sid&&S.subjects[b.dataset.sid]){S.meta.activeId=b.dataset.sid;saveMeta()}shareModal()},
   boardReload:()=>{V.board=null;render()},
-  newSubject:()=>openModal('<h3>Nueva asignatura</h3><label class="lbl" for="mName">Nombre<input type="text" id="mName" placeholder="Ej.: Historia de España"></label><label class="lbl" for="mDate">Fecha del examen (opcional)<input type="date" id="mDate"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Crear</button></div><div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:14px"><h3>Unirme con un código</h3><p class="muted" style="margin:0;font-size:14px">Si un compañero te ha pasado el código de su grupo, escríbelo aquí.</p><div class="row" style="flex-wrap:nowrap"><label class="sr" for="mCode">Código del grupo</label><input type="text" id="mCode" maxlength="7" placeholder="ABC123" style="flex:1;min-width:0;text-transform:uppercase;font-family:var(--f-mono);letter-spacing:.15em"><button class="btn ghost" type="button" data-mact="join">Unirme</button></div></div>',b=>{
-    b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();
+  newSubject:b=>{const fid=b&&b.dataset&&b.dataset.fid||'';openModal('<h3>Nueva asignatura</h3><label class="lbl" for="mName">Nombre<input type="text" id="mName" maxlength="80" placeholder="Ej.: Historia de España"></label><label class="lbl" for="mDate">Fecha del examen (opcional)<input type="date" id="mDate"></label>'+folderSelect(fid)+newFolderInput+colorPicker(SUBJ_COLORS[Object.keys(S.subjects).length%SUBJ_COLORS.length])+'<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Crear asignatura</button></div><div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:14px"><h3>Unirme con un código</h3><p class="muted" style="margin:0;font-size:14px">Si un compañero te ha pasado el código de su grupo, escríbelo aquí.</p><div class="row" style="flex-wrap:nowrap"><label class="sr" for="mCode">Código del grupo</label><input type="text" id="mCode" maxlength="7" placeholder="ABC123" style="flex:1;min-width:0;text-transform:uppercase;font-family:var(--f-mono);letter-spacing:.15em"><button class="btn ghost" type="button" data-mact="join">Unirme</button></div></div>',bx=>{
+    wireSubjectForm(bx);
+    bx.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();
       if(a.dataset.mact==='join'){a.disabled=true;a.innerHTML='<span class="spin"></span>';try{const ns=await joinCode($('#mCode').value);closeModal();V.tab='hoy';V.review=null;V.test=null;render();toast('Te has unido a «'+ns.name+'».')}catch(err){toast(errMsg(err));a.disabled=false;a.textContent='Unirme'}return}
-      const name=$('#mName').value.trim()||'Mi asignatura';const s={id:rid(),name,examDate:$('#mDate').value||null,createdAt:Date.now(),topics:[],cards:[],answers:[],tests:[]};
-      S.subjects[s.id]=s;S.meta.activeId=s.id;saveSubject(s);saveMeta();closeModal();V.tab='temario';V.review=null;V.test=null;render()};
-    $('#mName').addEventListener('keydown',e=>{if(e.key==='Enter')b.querySelector('[data-mact="ok"]').click()})}),
+      const name=$('#mName').value.trim();if(!name){toast('Escribe un nombre para la asignatura.');return}
+      const sw=bx.querySelector('.sw[aria-checked="true"]');
+      const ns={id:rid(),name,examDate:$('#mDate').value||null,folderId:resolveFolder($('#mFolder').value),color:sw?sw.dataset.col:null,createdAt:Date.now(),topics:[],cards:[],answers:[],tests:[]};
+      S.subjects[ns.id]=ns;saveSubject(ns);closeModal();openSubject(ns.id);toast('Asignatura creada. Ahora sube su temario.')};
+    $('#mName').addEventListener('keydown',e=>{if(e.key==='Enter')bx.querySelector('[data-mact="ok"]').click()})})},
   hideExample:()=>{S.meta.hideExample=true;if(S.meta.activeId==='ejemplo')S.meta.activeId=null;saveMeta();render()},
   delSubject:b=>{const s=(b&&b.dataset.sid&&S.subjects[b.dataset.sid])||cur();openModal('<h3>¿Eliminar «'+esc(s.name)+'»?</h3><p class="muted" style="margin:0">Se borrarán su temario, tarjetas y progreso. No se puede deshacer.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Eliminar</button></div>',b=>{
-    b.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){materialsOf(s.id).forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id)});Object.values(S.images).filter(m=>m.subjectId===s.id).forEach(m=>{delete S.images[m.id];Store.remove('i',m.id)});delete S.subjects[s.id];Store.remove('s',s.id);S.meta.activeId=null;saveMeta();render();toast('Asignatura eliminada.')}closeModal()}})},
+    b.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){materialsOf(s.id).forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id)});Object.values(S.images).filter(m=>m.subjectId===s.id).forEach(m=>{delete S.images[m.id];Store.remove('i',m.id)});delete S.subjects[s.id];Store.remove('s',s.id);if(S.meta.activeId===s.id)S.meta.activeId=null;if(V.tab==='temario')V.subjView='list';saveMeta();render();toast('Asignatura eliminada.')}closeModal()}})},
   planGo:b=>{const it=buildPlan(cur()).items[+b.dataset.i];if(!it)return;
     if(it.go==='tarjetas'){V.tab='tarjetas';V.cardView='repaso';scopeOf(cur()).mode='all';startReview(false)}
-    else if(it.go==='temario'){V.tab='temario';if(it.topic){V.openTopic=it.topic;const t=cur().topics.find(x=>x.id===it.topic);render();if(t&&!t.summary&&it.cta==='Resumen')summarize(it.topic);else if(it.cta==='Tarjetas')genCards(it.topic)}else{render();if(it.cta==='Analizar')analyze()}}
+    else if(it.go==='temario'){V.tab='temario';V.subjView='detail';if(it.topic){V.openTopic=it.topic;const t=cur().topics.find(x=>x.id===it.topic);render();if(t&&!t.summary&&it.cta==='Resumen')summarize(it.topic);else if(it.cta==='Tarjetas')genCards(it.topic)}else{render();if(it.cta==='Analizar')analyze()}}
     else if(it.go==='tests'){V.tab='tests';if(it.sim){V.testCfg.mode='simulacro';scopeOf(cur()).mode='all';V.testCfg.n=20;V.testCfg.types={test:true,vf:true,corta:true,desarrollo:true}}else if(it.topic)setScopeOne(cur(),it.topic);V.test=null;render()}
     window.scrollTo(0,0)},
   pomoToggle:()=>{const p=V.pomo;if(p.running){clearInterval(p.t);p.running=false}else{p.running=true;p.t=setInterval(pomoTick,1000)}render()},
@@ -1698,7 +1777,7 @@ const ACT={
   delGroup:b=>{const s=cur();const parts=groupParts(s,b.dataset.g);if(!parts.length)return;const base=parts[0].base||parts[0].name;
     openModal('<h3>¿Quitar «'+esc(base)+'»?</h3><p class="muted" style="margin:0">Se quitará este archivo del temario junto con sus subrayados. Tus temas, resúmenes y tarjetas se mantienen.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Quitar archivo</button></div>',bx=>{
       bx.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){removeGroup(s,b.dataset.g);render();toast('Archivo quitado.')}closeModal()}})},
-  manageFiles:b=>{if(b.dataset.sid){S.meta.activeId=b.dataset.sid;saveMeta()}V.tab='temario';render();const p=$('#matsPanel')||$('#drop');p&&p.scrollIntoView({block:'start'})},
+  manageFiles:b=>{openSubject(b.dataset.sid||(cur()&&cur().id),'#matsPanel')},
   analyze:()=>analyze(),
   toggleTopic:b=>{V.openTopic=V.openTopic===b.dataset.id?null:b.dataset.id;V.topicView='resumen';const t=cur().topics.find(x=>x.id===b.dataset.id);render();if(V.openTopic&&t&&!t.summary&&!cur().example)summarize(t.id)},
   tview:b=>{V.topicView=b.dataset.v;render()},
@@ -1779,20 +1858,73 @@ function applyTheme(v,boot){
   if(v==='system'){if(HOST_THEME)r.setAttribute('data-theme',HOST_THEME);else r.removeAttribute('data-theme')}
   else r.setAttribute('data-theme',v);
 }
+const MI={
+  start:'<path d="M5 3l14 9-14 9z"/>',
+  hoy:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/>',
+  pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+  cards:'<rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/>',
+  game:'<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r="1"/><circle cx="18" cy="14" r="1"/>',
+  test:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/>',
+  chat:'<path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+  group:'<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M15 15c3 0 6 1.5 6 4.5"/>',
+  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
+};
 const MANUAL=[
- ['Primeros pasos','1. Pulsa **+ Asignatura**, ponle nombre y, si la sabes, la fecha del examen.\n2. En **Temario** sube tus apuntes: PDF, Word, texto o fotos. También puedes pegar texto.\n3. Pulsa **Analizar temario**: Mnema lo divide en temas con sus conceptos clave.\n4. A partir de ahí, la pestaña **Hoy** te dice qué estudiar cada día.'],
- ['Hoy: tu plan de estudio','- **Plan de hoy**: las tareas que más te ayudan ahora (repasar tarjetas, leer un resumen, hacer un test…). Pulsa el botón de cada una para ir directo.\n- **Próximos 7 días**: reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.\n- **Pomodoro**: bloques de concentración y descanso. Cambia su duración en Preferencias.\n- **Racha**: los días seguidos que has estudiado.'],
- ['Temario: resúmenes, mapas, pódcast y tablas','- Pulsa **Resumen, mapa y pódcast** en un tema para abrirlo. Arriba eliges la vista:\n- **Resumen**: los conceptos clave aparecen ==resaltados==. Puedes escucharlo y marcarlo como leído.\n- **Mapa mental**: las ideas del tema y cómo se conectan.\n- **Pódcast**: Lucía y Marcos repasan el tema contigo. Puedes cambiar la velocidad.\n- **Tabla**: compara autores, etapas o tipos punto por punto.\n- Todo sale solo de tu temario. Si algo no te convence, pulsa **Rehacer**.'],
- ['Subrayar y tomar notas','- En **Temario**, pulsa **Leer y subrayar** en cualquier material.\n- Selecciona un fragmento y elige **Subrayar**, **Subrayar con nota** o **Crear tarjeta**.\n- Toca un subrayado para editar la nota o quitarlo.\n- Lo que subrayas tiene prioridad cuando Mnema crea tarjetas.'],
- ['Tarjetas y repetición espaciada','- Crea tarjetas desde cada tema o escríbelas tú.\n- Al repasar, di qué tal la sabías: **Otra vez**, **Difícil**, **Bien** o **Fácil**. Mnema calcula cuándo volver a enseñártela, justo antes de que se te olvide.\n- Activa **Escribir la respuesta antes de verla** para recordar de verdad: te dice cuánto coincide con la correcta.\n- **Tarjetas con imagen**: sube un esquema o un mapa, marca zonas arrastrando y cada zona se convierte en una tarjeta tapada.\n- **Exportar a Anki**: en la vista Todas.'],
- ['Juegos','- **Emparejar**: une cada pregunta con su respuesta lo más rápido que puedas. Cada fallo suma 2 segundos y se guarda tu récord.'],
- ['Tests y simulacros','- Elige qué temas entran, cuántas preguntas y de qué tipo: tipo test, verdadero/falso, respuesta corta o desarrollo.\n- **Práctica**: ves la corrección y la explicación tras cada pregunta.\n- **Simulacro**: con reloj y sin ayudas, como el examen real.\n- Las respuestas abiertas se corrigen con nota y comentario.\n- **Repasar mis fallos** te pregunta otra vez lo que fallaste, y puedes convertir tus fallos en tarjetas.'],
- ['Tutor','- Pregúntale lo que no entiendas: solo usa tu temario.\n- **Explícame**: te explica con ejemplos.\n- **Pregúntame**: te hace preguntas para que razones tú, sin darte la respuesta.\n- Elige un tema arriba para centrarte en él.'],
- ['Progreso','- El dominio de cada tema combina tus tarjetas (50 %), tus aciertos en tests (40 %) y si has leído el resumen (10 %).\n- El calendario muestra los días que has estudiado.\n- Mnema te indica el tema más flojo para que lo refuerces.'],
- ['Estudiar en grupo','- En **Mi cuenta › Asignaturas**, pulsa **Compartir** en una asignatura para crear un código de 6 letras.\n- Tus compañeros se unen desde **+ Asignatura › Unirme con un código** y reciben tus temas, resúmenes, mapas, pódcast y tarjetas. Tus apuntes originales y tu progreso no se comparten.\n- En **Progreso** veréis la clasificación del grupo: mejor nota en tests y mejor tiempo en Emparejar.'],
- ['Instalar Mnema como app','- En el ordenador (Chrome o Edge): pulsa el icono de instalar en la barra de direcciones o ve a **Mi cuenta › Instalar la app**.\n- En Android (Chrome): menú ⋮ › **Instalar aplicación**.\n- En iPhone o iPad (Safari): botón **Compartir** › **Añadir a pantalla de inicio**.\n- Una vez instalada, se abre desde su icono en su propia ventana.'],
- ['Tu cuenta y tus datos','- Cambia aquí tu foto, tu nombre, tu usuario, tu correo y tu contraseña.\n- Puedes entrar con tu nombre de usuario o con tu correo.\n- Tu temario y tu progreso son privados y se guardan en tu cuenta.']
+ {id:'empezar',icon:'start',color:'#4A7DFF',title:'Primeros pasos',desc:'De cero a estudiar en cinco minutos.',
+  steps:['Ve a **Asignaturas** y pulsa **+ Nueva asignatura**. Ponle nombre, la fecha del examen y, si quieres, una carpeta y un color.','Dentro de la asignatura, **sube tu temario**: PDF, Word, texto o fotos de tus apuntes. También puedes pegar texto.','Pulsa **Analizar temario**. Mnema lo lee y lo divide en temas con sus conceptos clave.','Vuelve a **Hoy**: ahí tienes cada día lo que te toca estudiar.'],
+  tip:'Empieza con un solo tema para probar. Luego sube el resto cuando quieras.'},
+ {id:'hoy',icon:'hoy',color:'#0EA5B7',title:'Hoy: tu plan del día',desc:'Qué estudiar hoy y cómo vas.',
+  items:[['Plan de hoy','Las tareas que más te ayudan ahora: repasar tarjetas, leer un resumen o hacer un test. Empieza por arriba.'],['Tu semana','Reparte los temas hasta el examen y se reajusta cada día según lo que peor llevas. Los dos últimos días toca simulacro.'],['Racha y dominio','Los días seguidos que has estudiado y cuánto dominas la asignatura.'],['Pomodoro','Bloques de concentración y descanso. Cambia su duración en Mi cuenta › Preferencias.']]},
+ {id:'asignaturas',icon:'folder',color:'#F08A24',title:'Asignaturas y carpetas',desc:'Organiza todo como en tu mochila.',
+  items:[['Carpetas','Agrupa tus asignaturas por curso, trimestre u oposición con **+ Nueva carpeta**. Puedes renombrarlas, plegarlas o eliminarlas.'],['Editar una asignatura','Pulsa **Editar** para cambiar el nombre, la fecha del examen, el color o moverla a otra carpeta.'],['Archivos del temario','Dentro de cada asignatura puedes añadir, renombrar, reemplazar o quitar archivos. Si cambias archivos, vuelve a analizar el temario.'],['Cambiar de asignatura','Usa el selector de arriba del menú (o de la barra superior en el móvil).']]},
+ {id:'temas',icon:'book',color:'#8B5CF6',title:'Resúmenes, mapas, pódcast y tablas',desc:'Cuatro formas de entender cada tema.',
+  items:[['Resumen','Lo esencial del tema, con los conceptos clave ==resaltados==. Puedes escucharlo en voz alta y marcarlo como leído.'],['Mapa mental','Las ideas del tema y cómo se conectan, de un vistazo.'],['Pódcast','Lucía y Marcos repasan el tema contigo. Ideal para andando o en el bus. Puedes cambiar la velocidad.'],['Tabla','Compara autores, etapas o tipos punto por punto.']],
+  tip:'Todo sale solo de tu temario. Si algo no te convence, pulsa «Rehacer».'},
+ {id:'subrayar',icon:'pen',color:'#E0457B',title:'Subrayar y tomar notas',desc:'Como con tu fluorescente, pero mejor.',
+  steps:['Dentro de una asignatura, pulsa **Leer y subrayar** en cualquier archivo.','Selecciona un fragmento y elige **Subrayar**, **Subrayar con nota** o **Crear tarjeta**.','Toca un subrayado para editar su nota o quitarlo.'],
+  tip:'Lo que subrayas tiene prioridad cuando Mnema crea tus tarjetas.'},
+ {id:'tarjetas',icon:'cards',color:'#17A673',title:'Tarjetas',desc:'Memoriza de verdad con repetición espaciada.',
+  steps:['Crea tarjetas desde cada tema, o escríbelas tú.','Al repasar, piensa la respuesta, dale la vuelta y di qué tal la sabías: **Otra vez**, **Difícil**, **Bien** o **Fácil**.','Mnema calcula cuándo volver a preguntártela: justo antes de que se te olvide.'],
+  items:[['Escribir la respuesta','Actívalo para recordar de verdad: Mnema te dice cuánto coincide con la correcta.'],['Tarjetas con imagen','Sube un esquema o un mapa, marca zonas arrastrando y cada zona se convierte en una tarjeta tapada.'],['Qué entra','Elige todo el temario, un tema o varios temas a la vez.'],['Exportar a Anki','En la vista «Todas».']]},
+ {id:'juegos',icon:'game',color:'#C9A227',title:'Juegos',desc:'Repasar también puede ser divertido.',
+  items:[['Emparejar','Une cada pregunta con su respuesta lo más rápido que puedas. Cada fallo suma 2 segundos y se guarda tu récord.']],
+  tip:'Si estudias en grupo, tu mejor tiempo aparece en la clasificación.'},
+ {id:'tests',icon:'test',color:'#4A7DFF',title:'Tests y simulacros',desc:'Ponte a prueba antes del examen.',
+  steps:['Elige qué temas entran, cuántas preguntas y de qué tipo: tipo test, verdadero/falso, respuesta corta o desarrollo.','Elige **Práctica** (ves la corrección tras cada pregunta) o **Simulacro** (con reloj y sin ayudas, como el examen real).','Al terminar, convierte tus fallos en tarjetas o pulsa **Repasar mis fallos**.'],
+  tip:'Las respuestas abiertas se corrigen con nota y un comentario de qué te ha faltado.'},
+ {id:'tutor',icon:'chat',color:'#0EA5B7',title:'Tutor',desc:'Un profe que se sabe tu temario.',
+  items:[['Explícame','Te explica lo que no entiendes, con ejemplos y comparaciones.'],['Pregúntame','Es él quien te hace preguntas para que razones tú, sin darte la respuesta.'],['Qué entra','Elige todo el temario, un tema o varios.']]},
+ {id:'progreso',icon:'chart',color:'#8B5CF6',title:'Progreso',desc:'Sabe en qué punto estás.',
+  items:[['Dominio por tema','Combina tus tarjetas (50 %), tus aciertos en tests (40 %) y si has leído el resumen (10 %).'],['Constancia','Un calendario con los días que has estudiado.'],['Para subir nota','Mnema te señala tu tema más flojo para que lo refuerces.']]},
+ {id:'grupo',icon:'group',color:'#E0457B',title:'Estudiar en grupo',desc:'Comparte tus temas y competid.',
+  steps:['Abre una asignatura y pulsa **Compartir**: obtendrás un código de 6 letras.','Tus compañeros pulsan **+ Nueva asignatura** y escriben el código en **Unirme con un código**.','Reciben tus temas, resúmenes, mapas, pódcast y tarjetas. En **Progreso** veréis la clasificación del grupo.'],
+  tip:'Tus archivos originales y tu progreso nunca se comparten.'},
+ {id:'app',icon:'phone',color:'#64748B',title:'Instalar Mnema como app',desc:'Con su icono, en el móvil y en el ordenador.',
+  items:[['Ordenador','En Chrome o Edge, pulsa el icono de instalar de la barra de direcciones, o ve a Mi cuenta › Instalar la app.'],['Android','En Chrome, menú ⋮ › Instalar aplicación.'],['iPhone y iPad','En Safari, botón Compartir › Añadir a pantalla de inicio.']]},
+ {id:'cuenta',icon:'user',color:'#17A673',title:'Tu cuenta y tus datos',desc:'Perfil, privacidad y ayuda.',
+  items:[['Perfil','Cambia tu foto, tu nombre, tu usuario, tu correo y tu contraseña en Mi cuenta.'],['Entrar','Puedes entrar con tu nombre de usuario o con tu correo.'],['Privacidad','Tu temario y tu progreso son privados y se guardan en tu cuenta.'],['¿Necesitas ayuda?','Escríbenos desde Mi cuenta › Ayuda y contacto.']]}
 ];
+function mIcon(k,size){return '<svg width="'+(size||24)+'" height="'+(size||24)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MI[k]+'</svg>'}
+function renderManual(){
+  const sec=V.manSec&&MANUAL.find(x=>x.id===V.manSec);
+  if(!sec){
+    const q=norm(V.manQ||'');
+    const list=MANUAL.filter(x=>!q||norm(x.title+' '+x.desc+' '+(x.steps||[]).join(' ')+' '+(x.items||[]).map(i=>i.join(' ')).join(' ')).includes(q));
+    return '<section class="man-hero"><div><span class="eyebrow">Manual de uso</span><h2>¿Cómo podemos ayudarte?</h2><p>Todo lo que puedes hacer con Mnema, paso a paso.</p></div><label class="sr" for="manQ">Buscar en el manual</label><input type="search" id="manQ" placeholder="Busca: tarjetas, carpetas, simulacro…" value="'+esc(V.manQ||'')+'"></section>'+
+      (list.length?'<div class="man-grid">'+list.map(x=>'<button class="man-card" type="button" data-act="manOpen" data-v="'+x.id+'" style="--c:'+x.color+'"><span class="man-ic">'+mIcon(x.icon)+'</span><b>'+esc(x.title)+'</b><span>'+esc(x.desc)+'</span><span class="man-go" aria-hidden="true">Leer →</span></button>').join('')+'</div>':'<div class="panel empty"><b>Sin resultados</b><p class="muted">Prueba con otra palabra o escríbenos desde Ayuda y contacto.</p></div>');
+  }
+  const i=MANUAL.indexOf(sec);const prev=MANUAL[i-1],next=MANUAL[i+1];
+  const steps=sec.steps?'<ol class="man-steps">'+sec.steps.map(t=>'<li><span>'+inl(t)+'</span></li>').join('')+'</ol>':'';
+  const items=sec.items?'<div class="man-items">'+sec.items.map(([k,t])=>'<div class="man-item"><b>'+esc(k)+'</b><p>'+inl(t)+'</p></div>').join('')+'</div>':'';
+  const tip=sec.tip?'<div class="tip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><span><b>Consejo:</b> '+inl(sec.tip)+'</span></div>':'';
+  return '<nav class="crumb" aria-label="Ruta" style="margin:0"><button type="button" data-act="manOpen" data-v="">‹ Manual de uso</button></nav>'+
+    '<article class="man-art" style="--c:'+sec.color+'"><header class="man-art-h"><span class="man-ic big">'+mIcon(sec.icon,30)+'</span><div><h2>'+esc(sec.title)+'</h2><p>'+esc(sec.desc)+'</p></div></header>'+steps+items+tip+'</article>'+
+    '<div class="man-nav">'+(prev?'<button class="btn ghost" type="button" data-act="manOpen" data-v="'+prev.id+'">‹ '+esc(prev.title)+'</button>':'<span></span>')+(next?'<button class="btn" type="button" data-act="manOpen" data-v="'+next.id+'">'+esc(next.title)+' ›</button>':'')+'</div>';
+}
 function renderCuenta(s){
   const A=ACC();const u=V.me;
   const subs=Object.values(S.subjects).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
@@ -1808,7 +1940,7 @@ function renderCuenta(s){
     '<label class="lbl" for="acEmail">Correo<input type="email" id="acEmail" autocomplete="email" value="'+esc(u&&u.email||'')+'" placeholder="tu@correo.com"></label></div>'+
     '<div class="row">'+busyBtn('profile','Guardar perfil','Guardando…','saveProfile')+'</div></section>'+
     '<section class="panel stack" id="ac-seg"><h3>Contraseña</h3><div class="form2"><label class="lbl" for="acCur">Contraseña actual<input type="password" id="acCur" autocomplete="current-password"></label><label class="lbl" for="acNew">Nueva contraseña<input type="password" id="acNew" autocomplete="new-password" minlength="6"></label><label class="lbl" for="acNew2">Repite la nueva<input type="password" id="acNew2" autocomplete="new-password" minlength="6"></label></div><div class="row">'+busyBtn('pw','Cambiar contraseña','Cambiando…','changePw')+'</div></section>';
-  const asig='<section class="panel stack" id="ac-asig"><div class="row" style="justify-content:space-between"><h3>Asignaturas</h3><button class="btn small" type="button" data-act="newSubject">+ Asignatura</button></div>'+
+  const asig='<section class="panel stack" id="ac-asig"><div><h3>Asignaturas y carpetas</h3><p class="muted" style="margin:4px 0 0">Crea, edita, agrupa en carpetas y elimina tus asignaturas desde su página.</p></div><div class="row"><button class="btn" type="button" data-act="go" data-tab="temario" data-list="1">Ir a Asignaturas</button></div><label class="check" for="showExample" style="align-self:flex-start"><input type="checkbox" id="showExample"'+(S.meta.hideExample?'':' checked')+'>Mostrar la asignatura de ejemplo</label></section>';
     (subs.length?'<div>'+subs.map(x=>'<div class="srow"><label class="lbl" for="sn_'+x.id+'">Nombre<input type="text" id="sn_'+x.id+'" data-sid="'+x.id+'" value="'+esc(x.name)+'"></label><label class="lbl" for="sd_'+x.id+'">Examen<input type="date" id="sd_'+x.id+'" data-sid="'+x.id+'" value="'+esc(x.examDate||'')+'"></label><div class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="manageFiles" data-sid="'+x.id+'">Archivos ('+groupMats(materialsOf(x.id)).length+')</button><button class="btn small soft" type="button" data-act="share" data-sid="'+x.id+'">'+(x.shareCode?'Grupo '+esc(x.shareCode):'Compartir')+'</button><button class="btn small danger" type="button" data-act="delSubject" data-sid="'+x.id+'">Eliminar</button></div></div>').join('')+'</div>':'<p class="muted" style="margin:0">Todavía no has creado ninguna asignatura.</p>')+
     '<label class="check" for="showExample" style="align-self:flex-start"><input type="checkbox" id="showExample"'+(S.meta.hideExample?'':' checked')+'>Mostrar la asignatura de ejemplo</label></section>';
   const pref='<section class="panel stack" id="ac-pref"><h3>Preferencias</h3>'+
@@ -1819,7 +1951,7 @@ function renderCuenta(s){
     '<label class="check" for="prefType" style="align-self:flex-start"><input type="checkbox" id="prefType"'+(S.meta.typeMode?' checked':'')+'>Escribir la respuesta antes de ver la tarjeta</label></section>';
   const IN=window.mnemaInstall;
   const inst=!IN?'':'<section class="panel stack" id="ac-app"><h3>Instalar la app</h3>'+(IN.installed()?'<p class="muted" style="margin:0">Ya estás usando Mnema como aplicación en este dispositivo.</p>':'<p class="muted" style="margin:0">Instala Mnema en este '+(IN.platform==='desktop'?'ordenador':'móvil')+' para abrirla desde su icono, en su propia ventana, como cualquier otra aplicación.</p>'+(IN.available()?'<div class="row"><button class="btn" type="button" data-act="installApp">Instalar Mnema</button></div>':'<p style="margin:0">'+esc(IN.howTo())+'</p>'))+'</section>';
-  const manual='<section class="panel stack manual" id="ac-manual"><h3>Manual de uso</h3><div>'+MANUAL.map(([t,b],i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(t)+'</summary>'+md(b)+'</details>').join('')+'</div></section>';
+  const manual=renderManual();
   const sesion=!A?'':'<section class="panel stack danger-zone" id="ac-sesion"><h3>Sesión</h3><div class="row"><button class="btn ghost" type="button" data-act="logout">Cerrar sesión</button><button class="btn danger" type="button" data-act="delAccount">Eliminar mi cuenta</button></div><p class="faint" style="margin:0;font-size:13px">Eliminar la cuenta borra para siempre tu temario, tarjetas, progreso y los grupos que hayas creado.</p></section>';
   const ayuda=!A?'':'<section class="panel stack" id="ac-ayuda"><div><h3>Ayuda y contacto</h3><p class="muted" style="margin:4px 0 0">¿Algo no funciona, tienes una duda o una idea para mejorar Mnema? Escríbenos y te responderemos a tu correo.</p></div><div class="form2"><label class="lbl" for="ctKind">Tipo<select id="ctKind"><option value="consulta">Duda o consulta</option><option value="sugerencia">Sugerencia</option><option value="error">Algo no funciona</option></select></label><label class="lbl" for="ctSubj">Asunto<input type="text" id="ctSubj" maxlength="140"></label></div><label class="lbl" for="ctBody">Mensaje<textarea id="ctBody" rows="5" maxlength="5000"></textarea></label><div class="row">'+busyBtn('contact','Enviar mensaje','Enviando…','sendContact')+'</div></section>';
   const SEC={perfil,seguridad:'',asignaturas:asig,preferencias:pref,app:inst,manual,ayuda,sesion};
@@ -1842,7 +1974,8 @@ Object.assign(ACT,{
   delAccount:()=>openModal('<h3>Eliminar tu cuenta</h3><p class="muted" style="margin:0">Se borrarán para siempre tu temario, tarjetas, progreso y los grupos que hayas creado. Escribe tu contraseña para confirmarlo.</p><label class="lbl" for="mPw">Contraseña<input type="password" id="mPw" autocomplete="current-password"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Eliminar para siempre</button></div>',b=>{
     b.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();a.disabled=true;try{await ACC().remove($('#mPw').value)}catch(err){a.disabled=false;toast(err.message||'No se pudo eliminar.')}}}),
   theme:b=>{applyTheme(b.dataset.v);saveMeta();render()},
-  acctTab:b=>{V.acctTab=b.dataset.v;render()},
+  acctTab:b=>{V.acctTab=b.dataset.v;if(b.dataset.v==='manual')V.manSec=null;render()},
+  manOpen:b=>{V.manSec=b.dataset.v||null;render();const m=$('#main');m&&window.scrollTo(0,0)},
   sendContact:()=>{const body=$('#ctBody').value.trim();if(body.length<5){toast('Escribe tu mensaje.');return}
     accountDo('contact',async()=>{await ACC().contact($('#ctKind').value,$('#ctSubj').value,body);$('#ctBody').value='';$('#ctSubj').value=''},'Mensaje enviado. ¡Gracias!')},
   installApp:async()=>{const IN=window.mnemaInstall;if(!IN)return;const ok=await IN.prompt();if(ok)toast('Mnema se ha instalado.');render()}
@@ -1971,11 +2104,87 @@ Object.assign(ACT,{
   admDelMsg:b=>openModal('<h3>¿Borrar este mensaje?</h3><p class="muted" style="margin:0">Se borrará para siempre.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:#fff" type="button" data-mact="ok">Borrar</button></div>',bx=>{
     bx.onclick=async e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){try{await ADM().delMessage(+b.dataset.id);admReset();toast('Mensaje borrado.');render()}catch(err){toast(err.message||'Error')}}closeModal()}})
 });
-let admQT=null;
+let admQT=null;let manQT=null;
+document.addEventListener('input',e=>{if(e.target.id==='manQ'){clearTimeout(manQT);const v=e.target.value;manQT=setTimeout(()=>{V.manQ=v;render();const q=$('#manQ');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},200)}});
 document.addEventListener('input',e=>{if(e.target.id==='admQ'){clearTimeout(admQT);const v=e.target.value;admQT=setTimeout(()=>{V.adm.q=v.trim();render();const q=$('#admQ');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},350)}});
 document.addEventListener('change',e=>{if(e.target.id==='admFilter'){V.adm.filter=e.target.value;render()}});
+/* ---------- Asignaturas y carpetas ---------- */
+const SUBJ_COLORS=['#4A7DFF','#17A673','#F08A24','#E0457B','#8B5CF6','#0EA5B7','#C9A227','#64748B'];
+function subjColor(s){return s.color||SUBJ_COLORS[Math.abs([...String(s.id)].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7))%SUBJ_COLORS.length]}
+function folders(){S.meta.folders=S.meta.folders||[];return S.meta.folders}
+function folderOf(s){return s&&s.folderId?folders().find(f=>f.id===s.folderId)||null:null}
+function openSubject(id,anchor){if(id){S.meta.activeId=id;saveMeta()}V.tab='temario';V.subjView='detail';V.review=null;V.test=null;render();window.scrollTo(0,0);if(anchor){const p=$(anchor);p&&p.scrollIntoView({block:'start'})}}
+function subjInitials(name){const STOP=['de','del','la','el','los','las','y','e','en','a','para','con'];const w0=String(name||'').replace(/[^\p{L}\p{N} ]/gu,' ').trim().split(/\s+/);const w=w0.filter(x=>!STOP.includes(x.toLowerCase())).length?w0.filter(x=>!STOP.includes(x.toLowerCase())):w0;return ((w[0]||'')[0]||'·').toUpperCase()+((w[1]||'')[0]||'').toUpperCase()}
+function subjCard(s){
+  const col=subjColor(s);const m=subjectMastery(s);const left=s.examDate?daysBetween(today(),s.examDate):null;const due=dueCards(s).length;
+  const exam=left===null?'<span class="chip">Sin fecha de examen</span>':left<0?'<span class="chip">Examen pasado</span>':'<span class="chip '+(left<=7?'warn':'spark')+'">'+(left===0?'Examen hoy':'Examen en '+left+(left===1?' día':' días'))+'</span>';
+  const active=cur()&&cur().id===s.id;
+  return '<article class="scard'+(active?' on':'')+'" style="--c:'+col+'">'+
+    '<button class="scard-main" type="button" data-act="openSubject" data-sid="'+esc(s.id)+'" aria-label="Abrir '+esc(s.name)+'"><span class="sicon" aria-hidden="true">'+esc(subjInitials(s.name))+'</span><span class="sbody"><b>'+esc(s.name)+'</b><span class="smeta">'+s.topics.length+' tema'+(s.topics.length===1?'':'s')+' · '+s.cards.length+' tarjeta'+(s.cards.length===1?'':'s')+(due?' · <b style="color:var(--spark-ink)">'+due+' para hoy</b>':'')+'</span></span></button>'+
+    '<div class="sfoot">'+exam+(s.example?'<span class="chip spark">Ejemplo</span>':'')+(s.shareCode?'<span class="chip">Grupo '+esc(s.shareCode)+'</span>':'')+'<span class="sbar">'+mbar(m)+'<span class="num faint" style="font-size:12.5px">'+pct(m)+'%</span></span></div>'+
+    '<div class="sacts">'+(s.example?'<button class="btn small ghost" type="button" data-act="hideExample">Ocultar</button>':'<button class="btn small ghost" type="button" data-act="editSubject" data-sid="'+esc(s.id)+'">Editar</button><button class="btn small danger" type="button" data-act="delSubject" data-sid="'+esc(s.id)+'">Eliminar</button>')+'<button class="btn small" type="button" data-act="openSubject" data-sid="'+esc(s.id)+'">Abrir</button></div></article>';
+}
+function renderAsignaturas(){
+  const all=allSubjects();const fs=folders();
+  const collapsed=S.meta.collapsed||{};
+  const bar='<div class="row" style="justify-content:space-between"><div class="row"><button class="btn" type="button" data-act="newSubject">+ Nueva asignatura</button><button class="btn ghost" type="button" data-act="newFolder">+ Nueva carpeta</button></div><span class="faint" style="font-size:13.5px">'+all.filter(x=>!x.example).length+' asignatura'+(all.filter(x=>!x.example).length===1?'':'s')+' · '+fs.length+' carpeta'+(fs.length===1?'':'s')+'</span></div>';
+  if(!all.length)return bar+'<div class="panel empty"><div class="sicon big" style="--c:#4A7DFF" aria-hidden="true">+</div><h2 class="sec">Crea tu primera asignatura</h2><p class="muted">Ponle nombre y la fecha del examen, y sube su temario. Si tienes muchas, agrúpalas en carpetas: por curso, por trimestre o como prefieras.</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="newSubject">Crear asignatura</button><button class="btn ghost" type="button" data-act="newFolder">Crear carpeta</button></div></div>';
+  const groupHtml=(f,list)=>{
+    const id=f?f.id:'__none';const closed=!!collapsed[id];
+    const head='<div class="fhead">'+
+      '<button class="fhead-t" type="button" data-act="toggleFolder" data-fid="'+id+'" aria-expanded="'+(!closed)+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(f?'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>':'<rect x="4" y="4" width="16" height="16" rx="3"/>')+'</svg><span>'+esc(f?f.name:(fs.length?'Sin carpeta':'Mis asignaturas'))+'</span><span class="chip">'+list.length+'</span><svg class="chev'+(closed?'':' open')+'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>'+
+      (f?'<div class="row" style="gap:6px"><button class="btn small ghost" type="button" data-act="newSubject" data-fid="'+f.id+'">+ Asignatura aquí</button><button class="btn small ghost" type="button" data-act="renameFolder" data-fid="'+f.id+'">Renombrar</button><button class="btn small danger" type="button" data-act="delFolder" data-fid="'+f.id+'">Eliminar</button></div>':'')+'</div>';
+    const body=closed?'':(list.length?'<div class="sgrid">'+list.map(subjCard).join('')+'</div>':'<p class="muted" style="margin:0;padding:6px 2px">Esta carpeta está vacía. Crea una asignatura aquí o mueve una existente desde «Editar».</p>');
+    return '<section class="folder'+(f?'':' nofolder')+'">'+head+body+'</section>';
+  };
+  const out=[];
+  fs.slice().sort((a,b)=>a.name.localeCompare(b.name,'es')).forEach(f=>out.push(groupHtml(f,all.filter(s=>s.folderId===f.id))));
+  const loose=all.filter(s=>!s.folderId||!fs.some(f=>f.id===s.folderId));
+  if(loose.length||!fs.length)out.push(groupHtml(null,loose));
+  return bar+out.join('');
+}
+function folderSelect(sel){const fs=folders();return '<label class="lbl" for="mFolder">Carpeta<select id="mFolder"><option value="">Sin carpeta</option>'+fs.map(f=>'<option value="'+f.id+'"'+(sel===f.id?' selected':'')+'>'+esc(f.name)+'</option>').join('')+'<option value="__new">＋ Nueva carpeta…</option></select></label>'}
+function colorPicker(sel){return '<div class="stack" style="gap:6px"><span class="lbl">Color</span><div class="swatches" role="radiogroup" aria-label="Color">'+SUBJ_COLORS.map(c=>'<button type="button" class="sw" role="radio" aria-checked="'+(sel===c)+'" aria-label="Color '+c+'" data-col="'+c+'" style="--c:'+c+'"></button>').join('')+'</div></div>'}
+function resolveFolder(v){if(v!=='__new')return v||null;const name=($('#mNewFolder')||{}).value;const n=String(name||'').trim();if(!n)return null;const f={id:rid(),name:n.slice(0,60),createdAt:Date.now()};folders().push(f);saveMeta();return f.id}
+function wireSubjectForm(b){
+  b.addEventListener('click',e=>{const sw=e.target.closest('.sw');if(!sw)return;b.querySelectorAll('.sw').forEach(x=>x.setAttribute('aria-checked',String(x===sw)))});
+  const fsel=$('#mFolder',b);if(fsel)fsel.addEventListener('change',()=>{const w=$('#mNewFolderWrap',b);if(w)w.hidden=fsel.value!=='__new';if(fsel.value==='__new'){const i=$('#mNewFolder',b);i&&i.focus()}});
+}
+const newFolderInput='<label class="lbl" id="mNewFolderWrap" for="mNewFolder" hidden>Nombre de la carpeta nueva<input type="text" id="mNewFolder" maxlength="60" placeholder="Ej.: 2.º de Bachillerato"></label>';
+function editSubjectModal(s){
+  openModal('<h3>Editar asignatura</h3><label class="lbl" for="mName">Nombre<input type="text" id="mName" maxlength="80" value="'+esc(s.name)+'"></label><label class="lbl" for="mDate">Fecha del examen<input type="date" id="mDate" value="'+esc(s.examDate||'')+'"></label>'+folderSelect(s.folderId||'')+newFolderInput+colorPicker(subjColor(s))+
+    '<div class="row" style="justify-content:space-between"><button class="btn small danger" type="button" data-mact="del">Eliminar asignatura</button><div class="row"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">Guardar</button></div></div>',b=>{
+    wireSubjectForm(b);
+    b.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;const k=a.dataset.mact;
+      if(k==='cancel')return closeModal();
+      if(k==='del'){closeModal();ACT.delSubject({dataset:{sid:s.id}});return}
+      const name=$('#mName').value.trim();if(!name){toast('Escribe un nombre.');return}
+      s.name=name;s.examDate=$('#mDate').value||null;s.folderId=resolveFolder($('#mFolder').value);const sw=b.querySelector('.sw[aria-checked="true"]');if(sw)s.color=sw.dataset.col;
+      saveSubject(s);closeModal();render();toast('Asignatura guardada.')};
+  });
+}
+function folderModal(f){
+  openModal('<h3>'+(f?'Renombrar carpeta':'Nueva carpeta')+'</h3><p class="muted" style="margin:0">Agrupa tus asignaturas como prefieras: por curso, por trimestre, por oposición…</p><label class="lbl" for="mFName">Nombre<input type="text" id="mFName" maxlength="60" value="'+esc(f?f.name:'')+'" placeholder="Ej.: 2.º de Bachillerato"></label><div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" type="button" data-mact="ok">'+(f?'Guardar':'Crear carpeta')+'</button></div>',b=>{
+    const go=()=>{const n=$('#mFName').value.trim();if(!n){toast('Escribe un nombre.');return}if(f)f.name=n.slice(0,60);else folders().push({id:rid(),name:n.slice(0,60),createdAt:Date.now()});saveMeta();closeModal();render();toast(f?'Carpeta renombrada.':'Carpeta creada.')};
+    b.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='cancel')return closeModal();go()};
+    $('#mFName').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+  });
+}
+Object.assign(ACT,{
+  openSubject:b=>openSubject(b.dataset.sid),
+  backToList:()=>{V.subjView='list';V.readMat=null;render();window.scrollTo(0,0)},
+  editSubject:b=>{const s=S.subjects[b.dataset.sid]||cur();if(s&&!s.example)editSubjectModal(s)},
+  newFolder:()=>folderModal(null),
+  renameFolder:b=>{const f=folders().find(x=>x.id===b.dataset.fid);if(f)folderModal(f)},
+  delFolder:b=>{const f=folders().find(x=>x.id===b.dataset.fid);if(!f)return;const inside=Object.values(S.subjects).filter(s=>s.folderId===f.id);
+    openModal('<h3>¿Eliminar la carpeta «'+esc(f.name)+'»?</h3><p class="muted" style="margin:0">'+(inside.length?'Tiene '+inside.length+' asignatura'+(inside.length===1?'':'s')+'. Elige qué hacer con ella'+(inside.length===1?'':'s')+'.':'La carpeta está vacía.')+'</p>'+(inside.length?'<label class="check" for="mKeep" style="align-self:flex-start"><input type="radio" name="fdel" id="mKeep" checked>Sacar las asignaturas de la carpeta y conservarlas</label><label class="check" for="mAll" style="align-self:flex-start"><input type="radio" name="fdel" id="mAll">Eliminar también las asignaturas, con su temario y progreso</label>':'')+'<div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-mact="cancel">Cancelar</button><button class="btn" style="background:var(--bad);color:var(--surface)" type="button" data-mact="ok">Eliminar carpeta</button></div>',b=>{
+      b.onclick=e=>{const a=e.target.closest('[data-mact]');if(!a)return;if(a.dataset.mact==='ok'){const all=inside.length&&$('#mAll').checked;
+        inside.forEach(s=>{if(all){materialsOf(s.id).forEach(m=>{delete S.materials[m.id];Store.remove('m',m.id)});delete S.subjects[s.id];Store.remove('s',s.id);if(S.meta.activeId===s.id)S.meta.activeId=null}else{s.folderId=null;saveSubject(s)}});
+        S.meta.folders=folders().filter(x=>x.id!==f.id);saveMeta();render();toast('Carpeta eliminada.')}closeModal()}})},
+  toggleFolder:b=>{S.meta.collapsed=S.meta.collapsed||{};const id=b.dataset.fid;if(S.meta.collapsed[id])delete S.meta.collapsed[id];else S.meta.collapsed[id]=true;saveMeta();render()}
+});
 document.addEventListener('click',e=>{
-  const tab=e.target.closest('.tab');if(tab){V.tab=tab.dataset.tab;render();return}
+  const tab=e.target.closest('.tab');if(tab){V.tab=tab.dataset.tab;if(V.tab==='temario')V.subjView='list';render();window.scrollTo(0,0);return}
   const mk=e.target.closest('#reader mark');
   if(mk){const sel=window.getSelection();if(!sel||sel.isCollapsed){const m=curMat();const h=m&&(m.hl||[]).find(x=>x.id===mk.dataset.h);if(h){hlModal(m,h);return}}}
   const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
@@ -2010,7 +2219,7 @@ document.addEventListener('keydown',e=>{if(e.target.id==='chatIn'&&e.key==='Ente
 Store.loadLocal();
 try{applyTheme(localStorage.getItem('mnema.theme')||S.meta.theme||'system',true)}catch(e){applyTheme(S.meta.theme||'system',true)}
 V.podRate=S.meta.podRate||1;setPomo('foco');
-try{const qt=new URLSearchParams(location.search).get('tab');if(['hoy','temario','tarjetas','tests','tutor','progreso','cuenta'].includes(qt))V.tab=qt}catch(e){}
+try{const qt=new URLSearchParams(location.search).get('tab');if(qt==='asignaturas')V.tab='temario';else if(['hoy','temario','tarjetas','tests','tutor','progreso','cuenta'].includes(qt))V.tab=qt}catch(e){}
 document.addEventListener('mnema-install-change',()=>{if(V.tab==='cuenta')render()});
 render();
 Store.init().then(()=>{if(S.meta.theme)applyTheme(S.meta.theme,true);render()});

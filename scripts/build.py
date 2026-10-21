@@ -31,7 +31,7 @@ reset = ('<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:e
          '.booting .shell{visibility:hidden}</style>'
          '<script>document.documentElement.classList.add("booting");setTimeout(function(){document.documentElement.classList.remove("booting")},4000)</script>')
 page = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
-        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
+        '<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">\n'
         '<meta name="description" content="Mnema: sube tu temario y estudia con resúmenes, mapas mentales, pódcast, tarjetas, tests corregidos y tutor.">\n'
         '<meta name="theme-color" content="#1F2C86">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n'
         '<link rel="manifest" href="/manifest.webmanifest">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n'
