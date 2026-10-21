@@ -1428,26 +1428,50 @@ async function pdfText(f){
     out+=tc.items.map(it=>it.str+(it.hasEOL?'\n':' ')).join('')+'\n\n';
   }
   if(out.replace(/\s/g,'').length<40*doc.numPages){
-    const lim=await imageLimits();
-    if(!lim)throw new Error('parece escaneado; entra con tu cuenta para que la IA lo lea');
-    const maxP=Math.min(doc.numPages,40);const blobs=[];
-    for(let p=1;p<=maxP;p++){setStatus('Preparando páginas escaneadas… '+p+' de '+maxP);const pg=await doc.getPage(p);const vp=pg.getViewport({scale:1.4});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;blobs.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.82)))}
-    out=await imagesToText(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas… '+i+' de '+n));
+    const maxP=Math.min(doc.numPages,60);const blobs=[];
+    for(let p=1;p<=maxP;p++){setStatus('Preparando páginas escaneadas… '+p+' de '+maxP);const pg=await doc.getPage(p);const vp=pg.getViewport({scale:1.8});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;blobs.push(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.9)))}
+    const texts=await ocrPages(blobs,(i,n)=>setStatus('Leyendo páginas escaneadas… '+i+' de '+n));
+    out=texts.join('\n\n');
     if(doc.numPages>maxP)toast('Solo se han leído las primeras '+maxP+' páginas escaneadas.');
   }
   return out;
 }
-async function imagesToText(blobs,onProg){
-  const s=await needSample();const lim=await imageLimits();
-  if(!lim)throw{code:'unavailable',message:'Leer fotos con IA necesita entrar con tu cuenta'};
-  const per=Math.max(1,Math.min(lim.maxCount||1,2));const groups=[];for(let i=0;i<blobs.length;i+=per)groups.push(blobs.slice(i,i+per));
-  const res=new Array(groups.length).fill('');let next=0,done=0,fails=0;let lastErr=null;
-  const ask=g=>s('Transcribe fielmente todo el texto de estas imágenes de apuntes o de un libro, en orden. Conserva títulos y listas. Si hay esquemas o tablas, pásalos a texto. Devuelve solo la transcripción, sin comentarios.',{images:g,modelTier:'default'});
-  const worker=async()=>{while(next<groups.length){const i=next++;try{res[i]=(await ask(groups[i])).text}catch(e){try{res[i]=(await ask(groups[i])).text}catch(e2){fails++;lastErr=e2}}done++;onProg&&onProg(Math.min(done*per,blobs.length),blobs.length)}};
+/* Lectura de texto en imágenes: OCR en el propio navegador (rápido) y, si no basta, la IA con tiempo máximo */
+let tessP=null;
+function tessLib(){if(!tessP)tessP=(window.Tesseract?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')).then(()=>window.Tesseract).catch(e=>{tessP=null;throw e});return tessP}
+async function ocrLocal(blobs,onProg){
+  const T=await tessLib();const n=Math.max(1,Math.min(blobs.length,(navigator.hardwareConcurrency||4)>=6?3:2));
+  const sched=T.createScheduler();const ws=await Promise.all(Array.from({length:n},()=>T.createWorker('spa')));ws.forEach(w=>sched.addWorker(w));
+  let done=0;
+  try{return await Promise.all(blobs.map(b=>sched.addJob('recognize',b).then(r=>{done++;onProg&&onProg(done,blobs.length);return (r.data&&r.data.text)||''}).catch(()=>{done++;onProg&&onProg(done,blobs.length);return ''})))}
+  finally{sched.terminate().catch(()=>{})}
+}
+async function aiRead(blobs){
+  const s=await getSample();const lim=s?await imageLimits():false;if(!lim)return null;
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),70000);
+  try{const r=await s('Transcribe fielmente todo el texto de estas imágenes de apuntes o de un libro, en orden. Conserva títulos y listas. Si hay esquemas o tablas, pásalos a texto. Devuelve solo la transcripción, sin comentarios.',{images:blobs,modelTier:'default',signal:ac.signal});return r&&r.text||null}
+  catch(e){return null}finally{clearTimeout(tm)}
+}
+/* PDF escaneado: OCR local primero; las páginas que no salgan bien se intentan con la IA */
+async function ocrPages(blobs,onProg){
   onProg&&onProg(0,blobs.length);
-  await Promise.all(Array.from({length:Math.min(4,groups.length)},worker));
-  if(fails===groups.length&&lastErr)throw lastErr;
-  return res.join('\n\n');
+  let texts;try{texts=await ocrLocal(blobs,onProg)}catch(e){texts=blobs.map(()=>'')}
+  const weak=texts.map((t,i)=>t.replace(/\s/g,'').length<60?i:-1).filter(i=>i>=0);
+  if(weak.length){let k=0;setStatus('Revisando '+weak.length+' página'+(weak.length===1?'':'s')+' difícil'+(weak.length===1?'':'es')+'…');
+    let next=0;const work=async()=>{while(next<weak.length){const i=weak[next++];const t=await aiRead([blobs[i]]);if(t&&t.trim().length>texts[i].trim().length)texts[i]=t;k++;setStatus('Revisando páginas difíciles… '+k+' de '+weak.length)}};
+    await Promise.all(Array.from({length:Math.min(3,weak.length)},work));}
+  if(!texts.some(t=>t.trim()))throw new Error('no se pudo leer el texto de las páginas escaneadas');
+  return texts;
+}
+/* Fotos (pueden ser a mano): primero la IA con tiempo máximo; si falla, OCR local */
+async function imagesToText(blobs,onProg){
+  const out=new Array(blobs.length).fill('');let next=0,done=0;const failed=[];
+  onProg&&onProg(0,blobs.length);
+  const work=async()=>{while(next<blobs.length){const i=next++;const t=await aiRead([blobs[i]]);if(t&&t.trim())out[i]=t;else failed.push(i);done++;onProg&&onProg(done,blobs.length)}};
+  await Promise.all(Array.from({length:Math.min(4,blobs.length)},work));
+  if(failed.length){const t=await ocrLocal(failed.map(i=>blobs[i]),(i,n)=>setStatus('Leyendo fotos… '+i+' de '+n)).catch(()=>[]);failed.forEach((i,k)=>{out[i]=t[k]||''})}
+  if(!out.some(t=>t.trim()))throw new Error('no se pudo leer el texto de las fotos');
+  return out.join('\n\n');
 }
 function addMaterial(s,name,text,tag){tag=tag||{};
   const MAX=100000;const parts=[];for(let i=0;i<text.length;i+=MAX)parts.push(text.slice(i,i+MAX));

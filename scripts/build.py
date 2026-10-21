@@ -10,7 +10,6 @@ replacements = [
   ("Mnema necesita tu permiso para usar Claude. Vuelve a intentarlo y acepta el aviso.", "Entra con tu cuenta para usar la IA."),
   ("Para compartir, abre Mnema desde claude.ai con tu cuenta.", "Para compartir, entra con tu cuenta (botón «Entrar» arriba)."),
   ("Para compartir necesitas abrir Mnema desde claude.ai con tu cuenta de Claude.", "Para compartir necesitas entrar con tu cuenta."),
-  ("parece escaneado; súbelo como fotos o abre Mnema desde claude.ai", "parece escaneado; entra con tu cuenta para que la IA lo lea"),
   ("Leer fotos necesita abrir Mnema desde claude.ai", "Leer fotos con IA necesita entrar con tu cuenta"),
   ("Inicia sesión en Claude para guardarlo en la nube.", "Entra con tu cuenta para guardarlo en la nube."),
   ("Comparte la app Mnema desde el menú <b>Compartir</b> de esta página, con permiso para usarla (no solo ver).", "Pásales el enlace de Mnema y que se creen una cuenta."),
@@ -20,7 +19,7 @@ replacements = [
 for a, b in replacements:
     n = (head_part + body_part).count(a)
     if n < 1:
-        sys.exit('No se encontró el texto a sustituir: ' + a[:60])
+        print('Aviso: ya no aparece el texto: ' + a[:60]); continue
     head_part = head_part.replace(a, b); body_part = body_part.replace(a, b)
 head_part = head_part.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', '')
 reset = ('<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'

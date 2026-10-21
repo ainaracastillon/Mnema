@@ -488,14 +488,17 @@ app.post('/api/ai', auth, async (req, res) => {
       const last = msgs[msgs.length - 1];
       last.content = [{ type: 'text', text: last.content }].concat(imgs.map(i => ({ type: 'image_url', image_url: { url: `data:${i.media_type};base64,${i.data}` } })));
     }
-    let upstream;
+    let upstream; const t0 = Date.now();
+    const pc = new AbortController(); const onAbort = () => pc.abort(); ctrl.signal.addEventListener('abort', onAbort);
+    const firstByte = setTimeout(() => pc.abort(), imgs.length ? 60000 : 90000);
     try {
       upstream = await fetch(p.url, {
-        method: 'POST', signal: ctrl.signal,
+        method: 'POST', signal: pc.signal,
         headers: { 'content-type': 'application/json', authorization: 'Bearer ' + p.key },
         body: JSON.stringify({ model: p.model, stream: true, max_tokens: p.maxTokens, temperature: 0.4, messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(msgs) })
       });
-    } catch (e) { if (ctrl.signal.aborted) return res.end(); lastErr = { status: 502, text: String(e && e.message) }; console.error(p.name, 'fetch', lastErr.text); continue; }
+    } catch (e) { clearTimeout(firstByte); if (ctrl.signal.aborted) return res.end(); lastErr = { status: 504, text: String(e && e.message) }; console.error('IA', p.name, p.model, 'sin respuesta tras', Date.now() - t0, 'ms', imgs.length ? '(' + imgs.length + ' imágenes)' : ''); continue; }
+    clearTimeout(firstByte);
     if (!upstream.ok) { const txt = await upstream.text().catch(() => ''); lastErr = { status: upstream.status, text: txt.slice(0, 500) }; console.error(p.name, upstream.status, lastErr.text);
       if (imgs.length && (upstream.status === 404 || /model_not_found|does not exist|not support/i.test(txt))) { if (p.name === 'groq') VISION.groq = null; else VISION.cf = null; checkVision().catch(() => {}); }
       continue; }
@@ -517,6 +520,7 @@ app.post('/api/ai', auth, async (req, res) => {
       }
     } catch (e) { /* cliente cerró */ }
     if (finish === 'length') res.write('\u0000TRUNCATED');
+    if (imgs.length) console.log('IA', p.name, p.model, imgs.length + ' imágenes', (Date.now() - t0) + ' ms');
     return res.end();
   }
   const st = lastErr && lastErr.status;
